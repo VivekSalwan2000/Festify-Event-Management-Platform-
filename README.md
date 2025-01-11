@@ -1,9 +1,11 @@
 # COSC4P02_Festify
 COSC 4P02: Software Engineering II
+
 Project: Festify - Where Your Events Become Festival
 
 ## Project Website and Demo
 Visit the live site at [.com](https://.com/)
+
 Youtube Video for demonstration [youtu.be/](https://youtu.be/)
 
 
