@@ -3,55 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Festify</title>
+    <title>Organization Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+        }
+        .event-card {
+            background: #fff;
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .event-card h3 {
+            margin: 0;
+            color: #007BFF;
+        }
+        .event-card p {
+            margin: 5px 0;
+            color: #333;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Welcome to My sumant tests</h1>
-        <p>This is amayback sine randon e tesxt.</p>
+        <h1>Organization Dashboard</h1>
+        <p>View and manage upcoming events</p>
     </header>
-    
-    <nav>
-        <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
-    
     <main>
-        <section id="about">
-            <h2>About</h2>
-            <p>This section contains information about the website or the person who built it.</p>
-        </section>
-        
-        <section id="services">
-            <h2>Services</h2>
-            <p>Here are some of the services offered:</p>
-            <ul>
-                <li>Web Development</li>
-                <li>Graphic Design</li>
-                <li>SEO Optimization</li>
-            </ul>
-        </section>
-        
-        <section id="contact">
-            <h2>Contact</h2>
-            <p>If you have any questions, feel free to reach out!</p>
-            <form action="#" method="post">
-                <label for="name">Name:</label><br>
-                <input type="text" id="name" name="name" required><br>
-                <label for="email">Email:</label><br>
-                <input type="email" id="email" name="email" required><br>
-                <label for="message">Message:</label><br>
-                <textarea id="message" name="message" rows="4" required></textarea><br>
-                <button type="submit">Submit</button>
-            </form>
-        </section>
+        <h2>Upcoming Events</h2>
+        <div id="events-container">
+            <!-- Event cards will be dynamically added here by JavaScript -->
+        </div>
     </main>
-    
     <footer>
-        <p>&copy; 2025 My Website. All rights reserved.</p>
+        <p>&copy; 2025 Organization Dashboard. All rights reserved.</p>
     </footer>
+    <script src="app.js"></script>
 </body>
 </html>
