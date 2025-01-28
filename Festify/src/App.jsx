@@ -1,163 +1,128 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Card = ({ children, className }) => (
-  <div className={`shadow rounded ${className}`}>{children}</div>
+// Category data
+const categories = [
+  { title: "Theatre & Art", image: "https://via.placeholder.com/150/1E3A8A" },
+  { title: "Music", image: "https://via.placeholder.com/150/F43F5E" },
+  { title: "Comedy", image: "https://via.placeholder.com/150/F97316" },
+  { title: "Courses", image: "https://via.placeholder.com/150/22C55E" },
+  { title: "Workshops", image: "https://via.placeholder.com/150/3B82F6" },
+  { title: "Pocket Friendly", image: "https://via.placeholder.com/150/14B8A6" },
+];
+
+// Event data
+const events = [
+  {
+    title: "1% Club's Retire Early Masterclass with Sharan Hegde",
+    category: "Courses",
+    date: "January 26 | 4PM",
+    location: "Online",
+    price: "₹450",
+    image: "https://via.placeholder.com/300x200",
+  },
+  {
+    title: "Find your Ikigai (access it anytime, anywhere)",
+    category: "Health & Wellness",
+    date: "July 4 | 1:31PM",
+    location: "Watch On Insider",
+    price: "₹399",
+    image: "https://via.placeholder.com/300x200",
+  },
+  {
+    title: "Tughlaq - A Rehearsed Reading",
+    category: "Theatre",
+    date: "Video on Demand",
+    location: "Watch On Insider",
+    price: "₹149",
+    image: "https://via.placeholder.com/300x200",
+  },
+  {
+    title: "Wine 101 by Gargi Kothari",
+    category: "Courses",
+    date: "Video on Demand",
+    location: "Watch On Insider",
+    price: "₹1500",
+    image: "https://via.placeholder.com/300x200",
+  },
+];
+
+// Category Card Component
+const CategoryCard = ({ title, image }) => (
+  <div className="flex flex-col items-center bg-gray-100 p-4 rounded-md shadow-md hover:shadow-lg transition-all">
+    <img src={image} alt={title} className="w-full h-24 object-cover rounded-md mb-4" />
+    <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+  </div>
 );
 
-const CardContent = ({ children }) => (
-  <div className="p-4">{children}</div>
+// Event Card Component
+const EventCard = ({ event }) => (
+  <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-all">
+    <img src={event.image} alt={event.title} className="w-full h-40 object-cover" />
+    <div className="p-4">
+      <h3 className="font-bold text-lg mb-2">{event.title}</h3>
+      <span className="text-sm bg-pink-500 text-white px-2 py-1 rounded">
+        {event.category}
+      </span>
+      <p className="text-gray-600 mt-2">{event.date}</p>
+      <p className="text-gray-600">{event.location}</p>
+      <div className="flex justify-between items-center mt-4">
+        <span className="text-xl font-bold">{event.price}</span>
+        <button className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">
+          Buy Now
+        </button>
+      </div>
+    </div>
+  </div>
 );
 
-const Button = ({ children, onClick, className }) => (
-  <button
-    onClick={onClick}
-    className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${className}`}
-  >
-    {children}
-  </button>
-);
-
-const LandingPage = () => {
+// Main App Component
+const App = () => {
   return (
-    <div className="bg-gray-900 text-white min-h-screen">
-      <header className="bg-purple-700 p-4 flex justify-between items-center">
-        <div className="text-2xl font-bold">insider.in</div>
+    <div className="bg-gray-50 text-gray-900 min-h-screen">
+      {/* Header */}
+      <header className="bg-blue-900 text-white p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">insider.in</h1>
         <nav className="flex space-x-4">
-          <a href="#" className="hover:underline">
-            Popular Events
-          </a>
-          <a href="#" className="hover:underline">
-            Free Events
-          </a>
-          <a href="#" className="hover:underline">
-            Today's Events
-          </a>
+          <a href="#" className="hover:underline">Popular Events</a>
+          <a href="#" className="hover:underline">Free Events</a>
+          <a href="#" className="hover:underline">Today's Events</a>
         </nav>
-        <div className="flex items-center space-x-4">
-          <Button>List your event</Button>
-          <Button>Work with us</Button>
+        <div className="flex space-x-4">
+          <button className="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">
+            List your event
+          </button>
+          <button className="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">
+            Work with us
+          </button>
         </div>
       </header>
 
-      <section className="relative bg-gray-800 text-center py-12">
-        <h1 className="text-3xl font-bold">Find New Experiences</h1>
-        <p className="text-gray-400">Explore. Discover. Make a Plan.</p>
+      {/* Hero Section */}
+      <section className="text-center bg-gray-100 py-12">
+        <h2 className="text-3xl font-bold mb-4">Find New Experiences</h2>
+        <p className="text-gray-600">Explore. Discover. Make a Plan.</p>
       </section>
 
-      <section className="py-8 px-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {["Theatre & Art", "Comedy", "Music", "Courses", "Workshops"].map(
-          (category, index) => (
-            <Card key={index} className="bg-gray-800 p-4 rounded-md">
-              <CardContent>
-                <h3 className="text-lg font-semibold text-center">{category}</h3>
-              </CardContent>
-            </Card>
-          )
-        )}
+      {/* Categories Section */}
+      <section className="py-8 px-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        {categories.map((category, index) => (
+          <CategoryCard key={index} title={category.title} image={category.image} />
+        ))}
       </section>
-    </div>
-  );
-};
 
-const UserPage = () => {
-  const [profiles, setProfiles] = useState([]);
-  const [showRegisterPopup, setShowRegisterPopup] = useState(false);
-  const [newProfile, setNewProfile] = useState({ name: "", email: "" });
-
-  const addProfile = () => {
-    setProfiles([...profiles, newProfile]);
-    setNewProfile({ name: "", email: "" });
-    setShowRegisterPopup(false);
-  };
-
-  return (
-    <div className="bg-gray-900 text-white min-h-screen p-6">
-      <header className="bg-purple-700 p-4 text-center text-2xl font-bold">
-        Manage Profiles
-      </header>
-
-      <div className="mt-8">
-        <Button
-          className="bg-green-600 hover:bg-green-700 mb-4"
-          onClick={() => setShowRegisterPopup(true)}
-        >
-          Add New Profile
-        </Button>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {profiles.map((profile, index) => (
-            <Card key={index} className="bg-gray-800 p-4 rounded-md">
-              <CardContent>
-                <h2 className="text-xl font-bold">{profile.name}</h2>
-                <p className="text-gray-400">{profile.email}</p>
-              </CardContent>
-            </Card>
+      {/* Featured Events */}
+      <section className="py-8 px-4">
+        <h2 className="text-2xl font-bold mb-6">Featured Events</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {events.map((event, index) => (
+            <EventCard key={index} event={event} />
           ))}
         </div>
-      </div>
+      </section>
 
-      {showRegisterPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-gray-800 p-6 rounded-md shadow-md">
-            <h2 className="text-xl font-bold mb-4">Register New Profile</h2>
-            <input
-              type="text"
-              placeholder="Name"
-              value={newProfile.name}
-              onChange={(e) =>
-                setNewProfile({ ...newProfile, name: e.target.value })
-              }
-              className="w-full p-2 mb-4 rounded-md bg-gray-700 text-white"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={newProfile.email}
-              onChange={(e) =>
-                setNewProfile({ ...newProfile, email: e.target.value })
-              }
-              className="w-full p-2 mb-4 rounded-md bg-gray-700 text-white"
-            />
-            <div className="flex justify-end space-x-4">
-              <Button
-                className="bg-red-600 hover:bg-red-700"
-                onClick={() => setShowRegisterPopup(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="bg-blue-600 hover:bg-blue-700"
-                onClick={addProfile}
-              >
-                Save
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const App = () => {
-  const [page, setPage] = useState("landing");
-
-  return (
-    <div>
-      {page === "landing" ? <LandingPage /> : <UserPage />}
-      <footer className="fixed bottom-0 left-0 right-0 bg-gray-800 p-4 flex justify-center space-x-4">
-        <Button
-          className="bg-purple-600 hover:bg-purple-700"
-          onClick={() => setPage("landing")}
-        >
-          Home
-        </Button>
-        <Button
-          className="bg-purple-600 hover:bg-purple-700"
-          onClick={() => setPage("user")}
-        >
-          Manage Profiles
-        </Button>
+      {/* Footer */}
+      <footer className="bg-blue-900 text-white text-center py-4">
+        © 2025 insider.in | All rights reserved.
       </footer>
     </div>
   );
