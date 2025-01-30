@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Festify - Discover Amazing Events</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="nextpage.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <!-- Logo -->
+            <div class="logo">
+                <img src="/images/festifyLogo.png" alt="Festify Logo" class="logo-img">
+            </div>
+            
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="#" class="nav-item">Popular Events</a>
+                <a href="#" class="nav-item">Free Events</a>
+                <a href="#" class="nav-item">Today's Events</a>
+            </div>
+
+            <!-- Right Side Actions -->
+            <div class="nav-actions">
+                <button class="nav-button">List your event</button>
+                <button class="nav-button">Work with us</button>
+                
+                <!-- Search Button -->
+                <button class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                </button>
+
+                <!-- Profile Button -->
+                <button class="icon-button" onclick="window.location.href='nextpage.html'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </button>
+                
+            </div>
+        </div>
+    </nav>
+<!-- User Profile Header -->
+<header class="profile-header">
+    <div class="profile-info">
+        <h1 class="profile-name">Harmanjot Malhi</h1>
+        <p class="profile-email">malhiharry347@gmail.com</p>
+    </div>
+    <div class="profile-actions">
+        <button class="btn btn-secondary">EDIT PROFILE</button>
+        <button class="btn btn-secondary">SIGN OUT</button>
+    </div>
+</header>
+
+<!-- Navigation Menu -->
+<nav class="nav-menu">
+    <div class="nav-container">
+        <a href="#" class="nav-link active">Edit Profile</a>
+        <a href="#" class="nav-link">Tickets</a>
+        <a href="#" class="nav-link">Passes</a>
+        <a href="#" class="nav-link">Wallet</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="form-wrapper">
+        <div class="form-header">
+            <p class="subtitle">Please update your account details below</p>
+        </div>
+
+        <form>
+            <!-- Personal Details -->
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" placeholder="Enter first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" placeholder="Enter last name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="Enter phone number">
+                </div>
+            </div>
+
+            <!-- Delivery Details -->
+            <div class="form-section">
+                <h2>Delivery details</h2>
+                <p class="section-subtitle">These details will be used to send physical tickets</p>
+
+                <div class="form-group">
+                    <label for="address1">Address 1*</label>
+                    <input type="text" id="address1" required>
+                </div>
+                <div class="form-group">
+                    <label for="address2">Address 2*</label>
+                    <input type="text" id="address2" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="landmark">Landmark</label>
+                        <input type="text" id="landmark">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City*</label>
+                        <input type="text" id="city" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pincode">Pincode*</label>
+                        <input type="text" id="pincode" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State*</label>
+                        <input type="text" id="state" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Address Type*</label>
+                    <div class="radio-group">
+                        <label class="radio">
+                            <input type="radio" name="addressType" value="residential" checked>
+                            Residential
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="addressType" value="business">
+                            Business
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing Details -->
+            <div class="form-section">
+                <h2>Billing Details</h2>
+                <p class="section-subtitle">These details will be shown on your invoice</p>
+
+                <div class="form-group checkbox-group">
+                    <label class="checkbox">
+                        <input type="checkbox" id="sameAsDelivery">
+                        Use same as delivery details
+                    </label>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="billingPincode">Pincode*</label>
+                        <input type="text" id="billingPincode" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="billingState">State*</label>
+                        <input type="text" id="billingState" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-group checkbox-group">
+                    <label>Receive updates on the latest events, exclusive offers and much more in your inbox.</label>
+                    <div class="radio-group">
+                        <label class="radio">
+                            <input type="radio" name="updates" value="yes">
+                            YES
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="updates" value="no">
+                            NO
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">UPDATE</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+
