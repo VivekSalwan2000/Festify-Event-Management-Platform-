@@ -5,72 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Festify - Discover Amazing Events</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="loginPopup.css">
 </head>
+
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <!-- Logo -->
-            <div class="logo">
-                <img src="/images/festifyLogo.png" alt="Festify Logo" class="logo-img">
-            </div>
-            
+    <div id="content">
 
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="#" class="nav-item">Popular Events</a>
-                <a href="#" class="nav-item">Free Events</a>
-                <a href="#" class="nav-item">Today's Events</a>
-            </div>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-container">
 
-            <!-- Right Side Actions -->
-            <div class="nav-actions">
-                <button class="nav-button">List your event</button>
-                <button class="nav-button">Work with us</button>
+                <!-- Logo -->
+                <div class="logo">
+                    <img src="images/festifyLogo.png" alt="Festify Logo" class="logo-img">
+                </div>
                 
-                <!-- Search Button -->
-                <button class="icon-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.3-4.3"/>
-                    </svg>
-                </button>
 
-                <!-- Profile Button -->
-                <button class="icon-button" onclick="window.location.href='nextpage.html'">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                </button>
+                <!-- Navigation Links -->
+                <div class="nav-links">
+                    <a href="#" class="nav-item">Popular Events</a>
+                    <a href="#" class="nav-item">Free Events</a>
+                    <a href="#" class="nav-item">Today's Events</a>
+                </div>
+
+                <!-- Right Side Actions -->
+                <div class="nav-actions">
+                    <button class="nav-button">List your event</button>
+                    <button class="nav-button">Work with us</button>
+                    
+                    <!-- Search Button -->
+                    <button class="icon-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.3-4.3"/>
+                        </svg>
+                    </button>
+
+                    <!-- Profile Button -->
+                    <button class="icon-button" onclick="toggle()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </button>
+                    
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-container">
+                <h1>Discover Amazing Events</h1>
+                <p>Find and book tickets for the best events in your area</p>
                 
+                <div class="search-container">
+                    <input type="text" placeholder="Search events..." class="search-input">
+                    <button class="search-button">Search</button>
+                </div>
             </div>
-        </div>
-    </nav>
+        </section>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <h1>Discover Amazing Events</h1>
-            <p>Find and book tickets for the best events in your area</p>
+        <!-- Events Grid -->
+        <section class="events-section">
+            <div class="container">
+                <h2>Popular Events</h2>
+                <div class="events-grid" id="eventsGrid">
+                    <!-- Event cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div id="popup" class="hidden">
+        <button class="close-btn" onclick="closePopup()">✖</button>
+        <h2>Hey There!</h2>
+        <p>Sign in to purchase tickets, save your favourite events, and much more.</p>
+        <form action="nextpage.html" method="GET">
+            <input type="email" class="input-field" placeholder="Enter your email address" required>
+            <input type="password" class="input-field" placeholder="Enter your password" required>
+            <button type="submit" class="btn">Sign In</button>
+        </form>
+        
+    </div>
+
+        <script type = "text/JavaScript">
+            function toggle(){
+                var blur = document.getElementById('content');
+                var popup = document.getElementById('popup');
+
+                blur.classList.toggle('active');
+                popup.classList.toggle('hidden');
+            }
             
-            <div class="search-container">
-                <input type="text" placeholder="Search events..." class="search-input">
-                <button class="search-button">Search</button>
-            </div>
-        </div>
-    </section>
+            function closePopup() {
+                var content = document.getElementById('content');
+                var popup = document.getElementById('popup');
 
-    <!-- Events Grid -->
-    <section class="events-section">
-        <div class="container">
-            <h2>Popular Events</h2>
-            <div class="events-grid" id="eventsGrid">
-                <!-- Event cards will be inserted here by JavaScript -->
-            </div>
-        </div>
-    </section>
+                content.classList.remove('active');  // Remove blur
+                popup.classList.add('hidden');      // Hide popup
+            }
+        </script>
+        <script src="app.js"></script>
 
-    <script src="app.js"></script>
+
 </body>
 </html>

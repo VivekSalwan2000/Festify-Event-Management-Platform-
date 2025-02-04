@@ -222,7 +222,7 @@ input[type="tel"]:focus {
     cursor: pointer;
     transition: background-color 0.2s;
     width: 50%;
-    margin-left: 8rem;
+    margin-left: 7rem;
 }
 
 .submit-btn:hover {
