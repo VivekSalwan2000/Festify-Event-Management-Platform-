@@ -16,21 +16,21 @@ body {
     background-color: #9333ea;
     color: white;
     text-align: center;
-    padding: 0.75rem;
+    padding: 0.55rem;
     font-size: 0.875rem;
 }
 
 .banner img {
     height: 20px;
     vertical-align: middle;
-    margin: 0 0.5rem;
+    margin: 0 0.1rem;
 }
 
 /* Profile Header Styles */
 .profile-header {
     background-color: #1b2a4e;
     color: white;
-    padding: 0.8rem;
+    padding: 0.7rem;
     display: flex;
     justify-content: space-between;
     padding-left: 9rem;
