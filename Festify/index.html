@@ -1,96 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Festify - Discover Amazing Events</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="loginPopup.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Festify - Discover Amazing Events</title>
+
+  <!-- Your stylesheets -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="loginPopup.css" />
+
+  <!-- Import Firebase as a module -->
+  <script type="module" src="firebase.js"></script>
+
+  <!-- Inline script for handling login logic -->
+  <script type="module">
+    import { 
+      signInUser, 
+      signUpUser, 
+      onUserStateChanged 
+    } from './firebase.js';
+
+    // (Optional) Listen for changes in Auth state
+    onUserStateChanged((user) => {
+      if (user) {
+        console.log('User is logged in:', user.email);
+      } else {
+        console.log('No user is logged in.');
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // We have ONE form with TWO distinct buttons
+      const authForm = document.getElementById('authForm');
+      const signInBtn = document.getElementById('signInBtn');
+      const signUpBtn = document.getElementById('signUpBtn');
+
+      if (authForm && signInBtn && signUpBtn) {
+        // Handle SIGN IN
+        signInBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const email = document.getElementById('loginEmail').value;
+          const password = document.getElementById('loginPassword').value;
+
+          try {
+            await signInUser(email, password);
+            // On successful sign in, redirect to nextpage.html
+            window.location.href = 'nextpage.html';
+          } catch (error) {
+            console.error('Sign In Error:', error);
+            alert('Sign In Error: ' + error.message);
+          }
+        });
+
+        // Handle SIGN UP
+        signUpBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const email = document.getElementById('loginEmail').value;
+          const password = document.getElementById('loginPassword').value;
+
+          try {
+            await signUpUser(email, password);
+            // On successful sign up, redirect to nextpage.html
+            window.location.href = 'nextpage.html';
+          } catch (error) {
+            console.error('Sign Up Error:', error);
+            alert('Sign Up Error: ' + error.message);
+          }
+        });
+      }
+    });
+  </script>
 </head>
 
 <body>
-    <div id="content">
+  <!-- Main content wrapper (for blur effect when popup is active) -->
+  <div id="content">
+    <!-- Navbar -->
+    <nav class="top-nav">
+      <div class="top-nav-container">
+        <a href="#" class="logo">
+          <img src="images/festifyLogo.png" alt="Festify" />
+        </a>
+        <div class="nav-links">
+          <a href="#" class="nav-item">Popular Events</a>
+          <a href="#" class="nav-item">xyz option</a>
+        </div>
+        <div class="nav-actions">
+          <a href="listEventPage1.html" class="nav-item">List your Event</a>
+          <button class="search-btn">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="20" 
+              height="20" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              stroke-width="2" 
+              stroke-linecap="round" 
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </button>
+          <!-- Profile Button triggers the login popup -->
+          <button class="icon-button" onclick="toggle()">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="20" 
+              height="20" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              stroke-width="2" 
+              stroke-linecap="round" 
+              stroke-linejoin="round"
+            >
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
 
-        <!-- Navbar -->
-        <nav class="top-nav">
-            <div class="top-nav-container">
-                <a href="#" class="logo">
-                    <img src="images/festifyLogo.png" alt="insider.in">
-                </a>
-                <div class="nav-links">
-                    <a href="#" class="nav-item">Popular Events</a>
-                    <a href="#" class="nav-item">xyz option</a>
-                </div>
-                <div class="nav-actions">
-                    <a href="listEventPage1.html" class="nav-item">List your Event</a>
-                    <button class="search-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    </button>
-                    <!-- Profile Button -->
-                    <button class="icon-button" onclick="toggle()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </nav>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-container">
+        <h1>Discover Amazing Events</h1>
+        <div class="search-container">
+          <input type="text" placeholder="Search events..." class="search-input" />
+          <button class="search-button">Search</button>
+        </div>
+      </div>
+    </section>
 
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-container">
-                <h1>Discover Amazing Events</h1>
-                
-                <div class="search-container">
-                    <input type="text" placeholder="Search events..." class="search-input">
-                    <button class="search-button">Search</button>
-                </div>
-            </div>
-        </section>
+    <!-- Events Grid -->
+    <section class="events-section">
+      <div class="container">
+        <h2>Popular Events</h2>
+        <div class="events-grid" id="eventsGrid">
+          <!-- Event cards generated by app.js -->
+        </div>
+      </div>
+    </section>
+  </div>
 
-        <!-- Events Grid -->
-        <section class="events-section">
-            <div class="container">
-                <h2>Popular Events</h2>
-                <div class="events-grid" id="eventsGrid">
-                    <!-- Event cards will be inserted here by JavaScript -->
-                </div>
-            </div>
-        </section>
-    </div>
-    
-    <div id="popup" class="hidden">
-        <button class="close-btn" onclick="closePopup()">✖</button>
-        <h2>Hey There!</h2>
-        <p>Sign in to purchase tickets, save your favourite events, and much more.</p>
-        <form action="nextpage.html" method="GET">
-            <input type="email" class="input-field" placeholder="Enter your email address" required>
-            <input type="password" class="input-field" placeholder="Enter your password" required>
-            <button type="submit" class="btn">Sign In</button>
-        </form>
-        
-    </div>
+  <!-- Login Popup -->
+  <div id="popup" class="hidden">
+    <button class="close-btn" onclick="closePopup()">✖</button>
+    <h2>Hey There!</h2>
+    <p>Sign in or Sign up with your email & password.</p>
 
-        <script type = "text/JavaScript">
-            function toggle(){
-                var blur = document.getElementById('content');
-                var popup = document.getElementById('popup');
+    <!-- Single form with two different buttons for Sign In / Sign Up -->
+    <form id="authForm">
+      <input 
+        type="email" 
+        id="loginEmail" 
+        class="input-field" 
+        placeholder="Enter your email address" 
+        required 
+      />
+      <input 
+        type="password" 
+        id="loginPassword" 
+        class="input-field" 
+        placeholder="Enter your password" 
+        required 
+      />
+      <div style="display: flex; gap: 1rem;">
+        <!-- SIGN IN button -->
+        <button class="btn" id="signInBtn">Sign In</button>
+        <!-- SIGN UP button -->
+        <button class="btn" id="signUpBtn">Sign Up</button>
+      </div>
+    </form>
+  </div>
 
-                blur.classList.toggle('active');
-                popup.classList.toggle('hidden');
-            }
-            
-            function closePopup() {
-                var content = document.getElementById('content');
-                var popup = document.getElementById('popup');
+  <!-- Popup toggle logic -->
+  <script>
+    function toggle(){
+      const content = document.getElementById('content');
+      const popup = document.getElementById('popup');
+      content.classList.toggle('active');
+      popup.classList.toggle('hidden');
+    }
 
-                content.classList.remove('active');  // Remove blur
-                popup.classList.add('hidden');      // Hide popup
-            }
-        </script>
-        <script src="app.js"></script>
+    function closePopup() {
+      const content = document.getElementById('content');
+      const popup = document.getElementById('popup');
+      content.classList.remove('active');
+      popup.classList.add('hidden');
+    }
+  </script>
 
-
+  <!-- Your event-rendering logic -->
+  <script src="app.js"></script>
 </body>
 </html>
+
