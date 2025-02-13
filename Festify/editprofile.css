@@ -27,32 +27,7 @@ body {
 }
 
 /* Profile Header Styles */
-.profile-header {
-    background-color: #1b2a4e;
-    color: white;
-    padding: 0.7rem;
-    display: flex;
-    justify-content: space-between;
-    padding-left: 9rem;
-    padding-right: 9rem;
-    align-items: center;
-}
 
-.profile-name {
-    font-size: 1.8rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.profile-email {
-    color: #94a3b8;
-    font-size: 0.875rem;
-}
-
-.profile-actions {
-    display: flex;
-    gap: 1rem;
-}
 
 .btn {
     padding: 0.5rem 1rem;
