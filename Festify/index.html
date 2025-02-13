@@ -43,8 +43,8 @@
 
           try {
             await signInUser(email, password);
-            // On successful sign in, redirect to nextpage.html
-            window.location.href = 'nextpage.html';
+            // On successful sign in, redirect to profile.html
+            window.location.href = 'profile.html';
           } catch (error) {
             console.error('Sign In Error:', error);
             alert('Sign In Error: ' + error.message);
