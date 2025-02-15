@@ -16,7 +16,6 @@
             margin: 0;
             padding: 0;
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #1A2E40;
             color: #fff;
             overflow-x: hidden;
         }
@@ -110,7 +109,7 @@
 
         /* Features Section */
         .features-section {
-            background-color: #fff;
+            background-color: #f8f9fa;
             color: #1A2E40;
             text-align: center;
             padding: 60px 20px;
@@ -137,7 +136,7 @@
 
         
         .feature-item {
-            background-color: #f8f9fa; /* Optional: Light background */
+            background-color: #fff; /* Optional: Light background */
             padding: 20px;
             border-radius: 10px; /* Rounded corners */
         }
@@ -151,6 +150,35 @@
             font-family: 'Exo', sans-serif;
             font-size: 1em;
             color: #333;
+        }
+
+    
+        .clients-section {
+            padding: 50px 20px;
+            text-align: center;
+        }
+        h2 {
+            font-size: 32px;
+            margin-bottom: 5px;
+            color: #121212;
+        }
+        .clients-desc {
+            font-family: 'Exo', sans-serif;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .clients {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .client-logo {
+            max-width: 120px;
+            height: auto;
+            filter: grayscale(100%);
         }
     </style>
 </head>
@@ -218,6 +246,20 @@
                 <p class="feature-title">Automated Payouts</p>
                 <p class="feature-desc">Onboard your brand and collect payouts within 7 days after an event.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Clients Section -->
+    <div class="clients-section">
+        <h2>Our Clients</h2>
+        <p class="clients-desc">Trusted by India's top event organisers and artist communities</p>
+        <div class="clients">
+            <img src="./images/list-your-event-landing-page/oml.jpg" alt="OML" class="client-logo">
+            <img src="./images/list-your-event-landing-page/Kommune.png" alt="Kommune" class="client-logo">
+            <img src="./images/list-your-event-landing-page/qyuki.jpg" alt="Qyuki" class="client-logo">
+            <img src="./images/list-your-event-landing-page/counter-culture.jpg" alt="Counter Culture" class="client-logo">
+            <img src="./images/list-your-event-landing-page/mom.png" alt="Mad Over Marketing" class="client-logo">
+            <img src="./images/list-your-event-landing-page/hunger.png" alt="Hunger Inc." class="client-logo">
         </div>
     </div>
 
