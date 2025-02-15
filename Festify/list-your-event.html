@@ -1,4 +1,5 @@
 <link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,17 +47,6 @@
             text-decoration: none;
             font-size: 1em;
         }
-
-        .navbar .cta-watch {
-            background-color: #fff;
-            padding: 10px 25px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            color: #000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
         /* Hero Section */
         .hero-section {
             background: linear-gradient(270deg, #1B0033, #00334D, #0D1A26, #1B0033);
@@ -154,6 +144,7 @@
 
     
         .clients-section {
+            background-color: #f8f9fa;
             padding: 50px 20px;
             text-align: center;
         }
@@ -180,6 +171,50 @@
             height: auto;
             filter: grayscale(100%);
         }
+
+
+        /* Suitability */
+        .target-section {
+            padding: 50px 20px;
+            text-align: center;
+        }
+        h3 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #121212;
+        }
+        .description {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            width: 250px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+        }
+        .card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .card-text {
+            padding: 15px;
+            font-weight: 700;
+            color: #121212;
+        }
     </style>
 </head>
 <body>
@@ -194,7 +229,6 @@
             <a href="#">Features</a>
             <a href="#">Clients</a>
             <a href="#">Feedback</a>
-            <a href="#" class="cta-watch">WATCH DEMO</a>
         </div>
     </div>
 
@@ -245,6 +279,33 @@
                 <img src="./images/list-your-event-landing-page/automated-payouts.png" class="feature-icon" alt="Automated Payouts">
                 <p class="feature-title">Automated Payouts</p>
                 <p class="feature-desc">Onboard your brand and collect payouts within 7 days after an event.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="target-section">
+        <h3>Suitable For Everyone</h2>
+        <p class="description">Insider supports a wide range of event listings; from independent artists who want to monetize their content to corporates looking for a hassle-free solution for company events, we have something for everyone.</p>
+        <div class="cards-container">
+            <div class="card">
+                <img src="./images/list-your-event-landing-page/venues.png" alt="Venues and Event Organisers">
+                <div class="card-text">VENUES AND EVENT ORGANISERS</div>
+            </div>
+            <div class="card">
+                <img src="./images/list-your-event-landing-page/artists.png" alt="Artists and Creators">
+                <div class="card-text">ARTISTS AND CREATORS</div>
+            </div>
+            <div class="card">
+                <img src="./images/list-your-event-landing-page/courses.png" alt="Course and Workshop Facilitators">
+                <div class="card-text">COURSE AND WORKSHOP FACILITATORS</div>
+            </div>
+            <div class="card">
+                <img src="./images/list-your-event-landing-page/travels.png" alt="Travel Organizers">
+                <div class="card-text">TRAVEL ORGANIZERS</div>
+            </div>
+            <div class="card">
+                <img src="./images/list-your-event-landing-page/corporates.png" alt="Corporates">
+                <div class="card-text">CORPORATES</div>
             </div>
         </div>
     </div>
