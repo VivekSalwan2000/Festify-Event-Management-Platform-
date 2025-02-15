@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Publishing Hero Section</title>
+    <style>
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif; /* Consistent sans-serif */
+            background-color: #1A2E40;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+
+        .hero-section {
+            background: linear-gradient(270deg, #1B0033, #00334D, #0D1A26, #1B0033);
+            background-size: 800% 800%;
+            animation: gradient-animation 15s ease infinite;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            margin-left: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 3em;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .hero-content h1 span {
+            color: #00AEEF;
+        }
+
+        .hero-content p {
+            margin: 20px 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #d3dce6;
+        }
+
+        .cta-button {
+            background-color: #ff007f;
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            background-color: #e60073;
+        }
+
+        .navbar {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            width: 100px;   /* Adjust the width to fit your design */
+            height: auto;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar .nav-links a {
+            color: #d3dce6;
+            text-decoration: none;
+            font-size: 1em;
+        }
+
+        .navbar .cta-watch {
+            background-color: #fff;
+            padding: 10px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">
+            <img src="./images/festifyLogo.png" alt="Logo">
+        </div>
+        <div class="nav-links">
+            <a href="#">Pricing</a>
+            <a href="#">Features</a>
+            <a href="#">Clients</a>
+            <a href="#">Feedback</a>
+            <a href="#" class="cta-watch" style="color: #000">WATCH DEMO</a>
+        </div>
+    </div>
+
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>Publish your event in <span>five</span> minutes.</h1>
+            <p>Craft unique experiences using our simple and powerful event platform. Create, ticket and host both on-ground and digital events on a platform used by millions of live event-loving fans.</p>
+            <a href="#" class="cta-button">LIST YOUR EVENT</a>
+        </div>
+    </div>
+
+</body>
+</html>
