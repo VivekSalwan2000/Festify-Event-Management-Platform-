@@ -1,33 +1,64 @@
+<link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;700&display=swap" rel="stylesheet">
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Publishing Hero Section</title>
+    <title>Event Publishing Platform</title>
     <style>
         @keyframes gradient-animation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-
 
         body, html {
             margin: 0;
             padding: 0;
-            font-family: 'Helvetica Neue', Arial, sans-serif; /* Consistent sans-serif */
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             background-color: #1A2E40;
             color: #fff;
             overflow-x: hidden;
         }
 
+        /* Navbar */
+        .navbar {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
+        .navbar .logo img {
+            width: 100px;
+            height: auto;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar .nav-links a {
+            color: #d3dce6;
+            text-decoration: none;
+            font-size: 1em;
+        }
+
+        .navbar .cta-watch {
+            background-color: #fff;
+            padding: 10px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hero Section */
         .hero-section {
             background: linear-gradient(270deg, #1B0033, #00334D, #0D1A26, #1B0033);
             background-size: 800% 800%;
@@ -77,50 +108,55 @@
             background-color: #e60073;
         }
 
-        .navbar {
-            position: absolute;
-            top: 20px;
-            left: 30px;
-            right: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .navbar .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar .logo img {
-            width: 100px;   /* Adjust the width to fit your design */
-            height: auto;
-        }
-
-        .navbar .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .navbar .nav-links a {
-            color: #d3dce6;
-            text-decoration: none;
-            font-size: 1em;
-        }
-
-        .navbar .cta-watch {
+        /* Features Section */
+        .features-section {
             background-color: #fff;
-            padding: 10px 25px;
-            border-radius: 5px;
-            text-decoration: none;
+            color: #1A2E40;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .features-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            place-items: center;
+            gap: 20px; /* Adjust spacing */
+            text-align: center;
+        }
+
+        .feature-item {
+            max-width: 300px;
+            text-align: center;
+        }
+
+        
+        .feature-item {
+            background-color: #f8f9fa; /* Optional: Light background */
+            padding: 20px;
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        .feature-title {
+            font-size: 1.5em;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-desc {
+            font-family: 'Exo', sans-serif;
+            font-size: 1em;
+            color: #333;
         }
     </style>
 </head>
 <body>
 
+    <!-- Navbar -->
     <div class="navbar">
         <div class="logo">
             <img src="./images/festifyLogo.png" alt="Logo">
@@ -130,10 +166,11 @@
             <a href="#">Features</a>
             <a href="#">Clients</a>
             <a href="#">Feedback</a>
-            <a href="#" class="cta-watch" style="color: #000">WATCH DEMO</a>
+            <a href="#" class="cta-watch">WATCH DEMO</a>
         </div>
     </div>
 
+    <!-- Hero Section -->
     <div class="hero-section">
         <div class="hero-content">
             <h1>Publish your event in <span>five</span> minutes.</h1>
@@ -142,5 +179,48 @@
         </div>
     </div>
 
+    <!-- Features Section -->
+    <div class="features-section">
+        <h2>Features</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <img src="./images/list-your-event-landing-page/flexibility.svg" class="feature-icon" alt="Flexibility">
+                <p class="feature-title">Flexibility</p>
+                <p class="feature-desc">List and manage on-ground and digital experiences through a single dashboard.</p>
+            </div>
+
+            <div class="feature-item">
+                <img src="./images/list-your-event-landing-page/customer-data.png" class="feature-icon" alt="Customer Data">
+                <p class="feature-title">Customer Data</p>
+                <p class="feature-desc">Take an export with all attendee data. Collect additional details using customizable forms.</p>
+            </div>
+
+            <div class="feature-item">
+                <img src="./images/list-your-event-landing-page/communication.svg" class="feature-icon" alt="Communication">
+                <p class="feature-title">Communication</p>
+                <p class="feature-desc">Talk to your ticket buyers, send them instructions or collect feedback via WhatsApp/Email.</p>
+            </div>
+
+            <div class="feature-item">
+                <img src="./images/list-your-event-landing-page/safety-measures.svg" class="feature-icon" alt="Safety Measures">
+                <p class="feature-title">Safety Measures</p>
+                <p class="feature-desc">Specify safety measures you will have at your event keeping your customers at ease.</p>
+            </div>
+
+            <div class="feature-item">
+                <img src="./images/list-your-event-landing-page/interactions-media.svg" class="feature-icon" alt="Interactions & Media">
+                <p class="feature-title">Interactions & Media</p>
+                <p class="feature-desc">Engage your attendees via video, chat, and Q&A. Use music, images, and more for event packaging.</p>
+            </div>
+
+            <div class="feature-item">
+                <img src="./images/list-your-event-landing-page/automated-payouts.png" class="feature-icon" alt="Automated Payouts">
+                <p class="feature-title">Automated Payouts</p>
+                <p class="feature-desc">Onboard your brand and collect payouts within 7 days after an event.</p>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
+
