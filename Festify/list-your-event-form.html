@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f4f4f9;
+        }
+        form {
+            background: #2e2e2e;
+            color: #fff;
+            margin: 50px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 60%;
+            overflow-y: auto;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="number"],
+        input[type="file"],
+        textarea {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            width: 20%;
+            background: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            display: block;
+            margin: 20px auto;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .upload-box {
+            width: 300px;
+            height: 300px;
+            border: 2px dashed #aaa;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+            margin: 20px auto;
+            flex-direction: column;  /* Stack icon and text vertically */
+        }
+        .upload-box:hover {
+            background: #e9e9ef;
+        }
+        .upload-box i {
+            margin: 10px 10px 10px;
+            font-size: 50px;
+            color: #777;
+        }
+        .upload-box p {
+            margin: 10px 0 0;
+            color: #555;
+            font-size: 16px;
+        }
+        .upload-box input[type="file"] {
+            display: none;
+        }
+        .ticket-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 150px;
+    height: 50px;
+    background-color: #fff;
+    margin: 20px auto;
+}
+
+.ticket-selector input[type="number"] {
+    width: 60px;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    color: #333;
+}
+
+.ticket-btn {
+    width: 40px;
+    height: 100%;
+    border: none;
+    background: #4caf50;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.ticket-btn:hover {
+    background: #45a049;
+}
+
+.minus-btn {
+    border-right: 1px solid #ccc;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.plus-btn {
+    border-left: 1px solid #ccc;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    margin: 0;
+}
+    </style>
+</head>
+<body style="background-image: url('./images/list-your-event-landing-page/events.jpg'); background-size: cover;">
+    
+    <form action="upload-event.php" method="post" enctype="multipart/form-data">
+        <h2>Upload Event</h2>
+
+        
+        <label for="event-title">Event Title:</label>
+        <input type="text" id="event-title" name="event-title" required>
+
+        
+        <label for="event-description">Event Description:</label>
+        <textarea id="event-description" name="event-description" required></textarea>
+
+        
+        <label for="event-date">Date:</label>
+        <div class="date-time-group">
+            <input type="date" id="event-date" name="event-date" required>
+        </div>
+
+        <label for="start-time">Start time:</label>
+        <div class="date-time-group">
+            <input type="time" id="start-time" name="start-time" required>
+        </div>
+
+        <label for="end-time">End time:</label>
+        <div class="date-time-group">
+            <input type="time" id="end-time" name="end-time" required>
+        </div>
+
+        
+        <label for="event-location">Location:</label>
+        <input type="text" id="event-location" name="event-location" required>
+
+        
+        <div class="ticket-selector">
+            
+            <button type="button" class="ticket-btn minus-btn" onclick="changeTicketCount(-1)">−</button>
+            <input type="number" id="ticket-count" name="event-tickets" value="1" min="1">
+            <button type="button" class="ticket-btn plus-btn" onclick="changeTicketCount(1)">+</button>
+        </div>
+        
+
+        <label class="upload-box">
+            <input type="file" id="file-upload" multiple>
+            <div>
+                <i class="upload-icon">&#8682;</i>  
+                <p>Click to Upload Files</p>
+            </div>
+        </label>
+
+        <button type="submit">Submit Event</button>
+    </form>
+
+</body>
+<script>
+    function changeTicketCount(amount) {
+        const input = document.getElementById('ticket-count');
+        let value = parseInt(input.value) || 1;
+        value += amount;
+        if (value < 1) value = 1; // Prevent negative or zero values
+        input.value = value;
+    }
+</script>
+
+</html>
