@@ -3,211 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-        <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #f4f4f9;
+    <title>Upload Event</title>
+    <style>
+        body { 
+            background-color: #f0f0f0; 
+            display: block; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            font-family: Arial, sans-serif; 
         }
-        form {
-            background: #2e2e2e;
-            color: #fff;
-            margin: 50px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 60%;
-            overflow-y: auto;
+        .form-container { 
+            background-color: #fff; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+            width: 100%; 
+            max-width: 800px; 
+            margin: 40px auto;
         }
-        h2 {
+        .form-container h2 {
             text-align: center;
             margin-bottom: 20px;
         }
-        label {
+        .form-container label {
             display: block;
-            margin-bottom: 5px;
+            margin-top: 15px;
             font-weight: bold;
         }
-        input[type="text"],
-        input[type="datetime-local"],
-        input[type="number"],
-        input[type="file"],
-        textarea {
-            width: 80%;
+        .form-container input[type="text"],
+        .form-container textarea {
+            width: 100%;
             padding: 10px;
-            margin-bottom: 15px;
+            margin: 5px 0;
+            border-radius: 5px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            box-sizing: border-box;
         }
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        button {
-            width: 20%;
-            background: #4caf50;
-            color: white;
+        .form-container select {
+            width: 100%;
             padding: 10px;
-            border: none;
-            display: block;
-            margin: 20px auto;
+            margin: 5px 0;
             border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
         }
-        button:hover {
-            background: #45a049;
-        }
-        .upload-box {
-            width: 300px;
-            height: 300px;
-            border: 2px dashed #aaa;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
+        .upload-box { 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
             align-items: center;
-            cursor: pointer;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 20px;
             text-align: center;
-            margin: 20px auto;
-            flex-direction: column;  /* Stack icon and text vertically */
+            width: 70%;
+            color: #777;
+            cursor: pointer;
+            margin: 30px auto;
         }
         .upload-box:hover {
-            background: #e9e9ef;
+            background-color: #f9f9f9;
         }
         .upload-box i {
-            margin: 10px 10px 10px;
             font-size: 50px;
-            color: #777;
+            color: #bbb;
         }
-        .upload-box p {
-            margin: 10px 0 0;
-            color: #555;
-            font-size: 16px;
+        .form-container button { 
+            width: 50%; 
+            display: block; 
+            margin: 20px auto 40px; 
+            padding: 10px; 
+            border: none; 
+            border-radius: 5px; 
+            background-color: #007bff; 
+            color: #fff; 
+            font-size: 16px; 
+            cursor: pointer; 
         }
-        .upload-box input[type="file"] {
-            display: none;
+        .form-container button:hover {
+            background-color: #0056b3;
         }
-        .ticket-selector {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-    width: 150px;
-    height: 50px;
-    background-color: #fff;
-    margin: 20px auto;
-}
-
-.ticket-selector input[type="number"] {
-    width: 60px;
-    text-align: center;
-    border: none;
-    outline: none;
-    font-size: 18px;
-    color: #333;
-}
-
-.ticket-btn {
-    width: 40px;
-    height: 100%;
-    border: none;
-    background: #4caf50;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.ticket-btn:hover {
-    background: #45a049;
-}
-
-.minus-btn {
-    border-right: 1px solid #ccc;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-.plus-btn {
-    border-left: 1px solid #ccc;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-input[type="number"]::-webkit-inner-spin-button, 
-input[type="number"]::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    margin: 0;
-}
+        .ticket-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .ticket-container input[type="range"] {
+            flex: 1;
+        }
+        .ticket-container span {
+            font-weight: bold;
+        }
     </style>
+    <script>
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        function updateTicketCount(value) {
+            document.getElementById('ticketCount').innerText = value;
+        }
+    </script>
 </head>
-<body style="background-image: url('./images/list-your-event-landing-page/events.jpg'); background-size: cover;">
-    
-    <form action="upload-event.php" method="post" enctype="multipart/form-data">
-        <h2>Upload Event</h2>
+<body>
+    <h1 style="text-align: center; margin-bottom: 20px;">List Your Event</h1>
+    <div class="form-container">
+        <form>
+            <label for="title">Event Title</label>
+            <input type="text" id="title" placeholder="Event Title" required>
 
-        
-        <label for="event-title">Event Title:</label>
-        <input type="text" id="event-title" name="event-title" required>
+            <label for="description">Event Description</label>
+            <textarea id="description" placeholder="Event Description" rows="4" required></textarea>
 
-        
-        <label for="event-description">Event Description:</label>
-        <textarea id="event-description" name="event-description" required></textarea>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <div style="flex: 1;">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div style="flex: 1;">
+                    <label for="start-time">Start Time</label>
+                    <select id="start-time" required>
+                        <option value="">Select Start Time</option>
+                        <option value="09:00">09:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="13:00">01:00 PM</option>
+                        <option value="14:00">02:00 PM</option>
+                        <option value="15:00">03:00 PM</option>
+                        <option value="16:00">04:00 PM</option>
+                        <option value="17:00">05:00 PM</option>
+                    </select>
+                    <label for="end-time">End Time</label>
+                    <select id="end-time" required>
+                        <option value="">Select End Time</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="13:00">01:00 PM</option>
+                        <option value="14:00">02:00 PM</option>
+                        <option value="15:00">03:00 PM</option>
+                        <option value="16:00">04:00 PM</option>
+                        <option value="17:00">05:00 PM</option>
+                        <option value="18:00">06:00 PM</option>
+                    </select>
+                </div>
+            </div>
 
-        
-        <label for="event-date">Date:</label>
-        <div class="date-time-group">
-            <input type="date" id="event-date" name="event-date" required>
-        </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <div style="flex: 1;">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="Location" required>
+                </div>
+                <div style="flex: 1;">
+                    <label for="tickets">Number of Tickets</label>
+                    <div class="ticket-container">
+                        <input type="range" id="tickets" min="0" max="50000" value="0" oninput="updateTicketCount(this.value)">
+                        <span id="ticketCount">0</span>
+                    </div>
+                </div>
+            </div>
 
-        <label for="start-time">Start time:</label>
-        <div class="date-time-group">
-            <input type="time" id="start-time" name="start-time" required>
-        </div>
-
-        <label for="end-time">End time:</label>
-        <div class="date-time-group">
-            <input type="time" id="end-time" name="end-time" required>
-        </div>
-
-        
-        <label for="event-location">Location:</label>
-        <input type="text" id="event-location" name="event-location" required>
-
-        
-        <div class="ticket-selector">
-            
-            <button type="button" class="ticket-btn minus-btn" onclick="changeTicketCount(-1)">−</button>
-            <input type="number" id="ticket-count" name="event-tickets" value="1" min="1">
-            <button type="button" class="ticket-btn plus-btn" onclick="changeTicketCount(1)">+</button>
-        </div>
-        
-
-        <label class="upload-box">
-            <input type="file" id="file-upload" multiple>
-            <div>
-                <i class="upload-icon">&#8682;</i>  
+            <div class="upload-box" onclick="triggerFileInput()">
+                <i>&#9650;</i>
                 <p>Click to Upload Files</p>
             </div>
-        </label>
+            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
 
-        <button type="submit">Submit Event</button>
-    </form>
-
+            <button type="submit">Submit Event</button>
+        </form>
+    </div>
 </body>
-<script>
-    function changeTicketCount(amount) {
-        const input = document.getElementById('ticket-count');
-        let value = parseInt(input.value) || 1;
-        value += amount;
-        if (value < 1) value = 1; // Prevent negative or zero values
-        input.value = value;
-    }
-</script>
-
 </html>
+
