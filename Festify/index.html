@@ -60,7 +60,7 @@
           try {
             await signUpUser(email, password);
             // On successful sign up, redirect to nextpage.html
-            window.location.href = 'nextpage.html';
+            window.location.href = 'profile.html';
           } catch (error) {
             console.error('Sign Up Error:', error);
             alert('Sign Up Error: ' + error.message);
