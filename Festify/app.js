@@ -1,10 +1,24 @@
+// Function to load footer
+function loadFooter() {
+    fetch('pageFooter.html')
+        .then(response => response.text())
+        .then(data => {
+            document.body.insertAdjacentHTML('beforeend', data);
+        })
+        .catch(error => console.error('Error loading footer:', error));
+}
+
+// Load footer when page loads
+document.addEventListener('DOMContentLoaded', loadFooter);
+
 // Sample event data
 const events = [
     {
-        title: "Summer Music Festival 2024",
+        title: "Summer Music Festival 2024", 
         date: "July 15, 2024",
         location: "Central Park, New York",
         time: "2:00 PM",
+
         imageUrl: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80",
         price: "$49.99"
     },
