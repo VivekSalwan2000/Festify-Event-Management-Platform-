@@ -1,0 +1,255 @@
+<!-- nextpage.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Festify - User Profile</title>
+
+  <!-- Link to your existing CSS -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="editprofile.css"> 
+
+
+  <!-- Firebase config & functions -->
+  <script type="module" src="firebase.js"></script>
+
+  <!-- Inline script that loads user profile or redirects if not logged in -->
+  <script type="module">
+    import {
+      onUserStateChanged,
+      getUserProfile,
+      saveUserProfile,
+      signOutUser
+    } from './firebase.js';
+
+    let currentUser = null;
+
+    // Listen for login state changes
+    onUserStateChanged(async (user) => {
+      if (!user) {
+        // Not logged in, redirect to home (index)
+        window.location.href = 'index.html';
+      } else {
+        currentUser = user;
+        console.log('User logged in:', user.email);
+
+        // Retrieve user profile from Firestore
+        const profileData = await getUserProfile(user.uid);
+        if (profileData) {
+          // Populate form fields
+          document.getElementById('firstName').value = profileData.firstName || '';
+          document.getElementById('lastName').value = profileData.lastName || '';
+          document.getElementById('phone').value = profileData.phone || '';
+          document.getElementById('address1').value = profileData.address1 || '';
+          document.getElementById('address2').value = profileData.address2 || '';
+          document.getElementById('landmark').value = profileData.landmark || '';
+          document.getElementById('city').value = profileData.city || '';
+          document.getElementById('pincode').value = profileData.pincode || '';
+          document.getElementById('state').value = profileData.state || '';
+        }
+      }
+    });
+
+    // When DOM loads, wire up form submission & sign-out
+    window.addEventListener('DOMContentLoaded', () => {
+      const profileForm = document.getElementById('profileForm');
+      if (profileForm) {
+        profileForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!currentUser) return;
+
+          // Gather data from form
+          const profileData = {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            phone: document.getElementById('phone').value,
+            address1: document.getElementById('address1').value,
+            address2: document.getElementById('address2').value,
+            landmark: document.getElementById('landmark').value,
+            city: document.getElementById('city').value,
+            pincode: document.getElementById('pincode').value,
+            state: document.getElementById('state').value,
+          };
+
+          try {
+            await saveUserProfile(currentUser.uid, profileData);
+            alert('Profile updated successfully!');
+          } catch (error) {
+            console.error('Error saving profile:', error);
+            alert('Error: Could not save profile. Check console.');
+          }
+        });
+      }
+
+      // Handle sign-out (Navbar)
+      const navSignOutBtn = document.getElementById('navSignOutBtn');
+      if (navSignOutBtn) {
+        navSignOutBtn.addEventListener('click', async () => {
+          await signOutUser();
+          window.location.href = 'index.html';
+        });
+      }
+
+      // Handle sign-out (Profile Section)
+      const profileSignOutBtn = document.getElementById('profileSignOutBtn');
+      if (profileSignOutBtn) {
+        profileSignOutBtn.addEventListener('click', async () => {
+          await signOutUser();
+          window.location.href = 'index.html';
+        });
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <!-- Include Navigation Bar -->
+  <div id="navbar"></div>
+  <script>
+    fetch('navbar.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('navbar').innerHTML = data;
+      })
+      .catch(error => console.error('Error loading navbar:', error));
+  </script>
+
+
+
+  <!-- Profile Header -->
+
+
+  <!-- Optional Navigation Menu -->
+<nav class="nav-menu">
+    <div class="nav-container">
+      <a href="#" class="nav-link active" onclick="showSection('editProfile')">Edit Profile</a>
+      <a href="#" class="nav-link" onclick="showSection('tickets')">Tickets</a>
+      <a href="#" class="nav-link" onclick="showSection('passes')">Passes</a>
+      <a href="#" class="nav-link" onclick="showSection('wallet')">Wallet</a>
+    </div>
+</nav>
+
+<div id="editProfile" class="tab-content">
+</div>
+<div id="tickets" class="tab-content" style="display:none;">
+    <h2>Tickets Section</h2>
+    <p>Content for tickets goes here.</p>
+</div>
+<div id="passes" class="tab-content" style="display:none;">
+    <h2>Passes Section</h2>
+    <p>Content for passes goes here.</p>
+</div>
+<div id="wallet" class="tab-content" style="display:none;">
+    <h2>Wallet Section</h2>
+    <p>Content for wallet goes here.</p>
+</div>
+
+<script>
+function showSection(section) {
+        const profileForm = document.getElementById('profileForm');
+        if (section !== 'editProfile') {
+            profileForm.style.display = 'none';
+        } else {
+            profileForm.style.display = 'block';
+        }
+
+        const sections = document.querySelectorAll('.tab-content');
+        sections.forEach((sec) => {
+            sec.style.display = 'none';
+        });
+        document.getElementById(section).style.display = 'block';
+
+        const links = document.querySelectorAll('.nav-link');
+        links.forEach((link) => {
+            link.classList.remove('active');
+        });
+        document.querySelector(`a[onclick="showSection('${section}')"]`).classList.add('active');
+    }
+</script>
+
+
+  <!-- Main container for the form -->
+  <div class="container">
+    <div class="form-wrapper">
+      <div class="form-header">
+        <p class="subtitle">... Sumant placeholder</p>
+      </div>
+
+      <form id="profileForm">
+        <!-- Personal Details -->
+        <div class="form-section">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" placeholder="Enter first name">
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" placeholder="Enter last name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter phone number">
+          </div>
+        </div>
+
+        <!-- Delivery Details -->
+        <div class="form-section">
+          <h2>Delivery details</h2>
+          <p class="section-subtitle">These details will be used for physical tickets</p>
+
+          <div class="form-group">
+            <label for="address1">Address 1*</label>
+            <input type="text" id="address1" required>
+          </div>
+          <div class="form-group">
+            <label for="address2">Address 2*</label>
+            <input type="text" id="address2" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="landmark">Landmark</label>
+              <input type="text" id="landmark">
+            </div>
+            <div class="form-group">
+              <label for="city">City*</label>
+              <input type="text" id="city" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pincode">Pincode*</label>
+              <input type="text" id="pincode" required>
+            </div>
+            <div class="form-group">
+              <label for="state">State*</label>
+              <input type="text" id="state" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Details (optional) -->
+        <div class="form-section">
+          <h2>Billing Details</h2>
+          <p class="section-subtitle">These details will appear on your invoice</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="billingPincode">Pincode*</label>
+              <input type="text" id="billingPincode">
+            </div>
+            <div class="form-group">
+              <label for="billingState">State*</label>
+              <input type="text" id="billingState">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">UPDATE</button>
+      </form>
+    </div>
+  </div>
+  <script src="app.js"></script>
+  </body>
+</html>

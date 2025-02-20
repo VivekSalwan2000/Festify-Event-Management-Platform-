@@ -7,7 +7,6 @@
 
   <!-- Your stylesheets -->
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="loginPopup.css" />
 
   <!-- Import Firebase as a module -->
   <script type="module" src="firebase.js"></script>
@@ -44,8 +43,8 @@
 
           try {
             await signInUser(email, password);
-            // On successful sign in, redirect to nextpage.html
-            window.location.href = 'nextpage.html';
+            // On successful sign in, redirect to profile.html
+            window.location.href = 'profile.html';
           } catch (error) {
             console.error('Sign In Error:', error);
             alert('Sign In Error: ' + error.message);
@@ -61,7 +60,7 @@
           try {
             await signUpUser(email, password);
             // On successful sign up, redirect to nextpage.html
-            window.location.href = 'nextpage.html';
+            window.location.href = 'profile.html';
           } catch (error) {
             console.error('Sign Up Error:', error);
             alert('Sign Up Error: ' + error.message);
@@ -75,54 +74,18 @@
 <body>
   <!-- Main content wrapper (for blur effect when popup is active) -->
   <div id="content">
-    <!-- Navbar -->
-    <nav class="top-nav">
-      <div class="top-nav-container">
-        <a href="#" class="logo">
-          <img src="images/festifyLogo.png" alt="Festify" />
-        </a>
-        <div class="nav-links">
-          <a href="#" class="nav-item">Popular Events</a>
-          <a href="#" class="nav-item">xyz option</a>
-        </div>
-        <div class="nav-actions">
-          <a href="listEventPage1.html" class="nav-item">List your Event</a>
-          <button class="search-btn">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              stroke-width="2" 
-              stroke-linecap="round" 
-              stroke-linejoin="round"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.3-4.3"></path>
-            </svg>
-          </button>
-          <!-- Profile Button triggers the login popup -->
-          <button class="icon-button" onclick="toggle()">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              stroke-width="2" 
-              stroke-linecap="round" 
-              stroke-linejoin="round"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </nav>
+    <!-- Include Navigation Bar -->
+    <div id="navbar"></div>
+    <script>
+      fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('navbar').innerHTML = data;
+        })
+        .catch(error => console.error('Error loading navbar:', error));
+    </script>
+
+
 
     <!-- Hero Section -->
     <section class="hero">
@@ -196,6 +159,6 @@
 
   <!-- Your event-rendering logic -->
   <script src="app.js"></script>
-</body>
-</html>
+  </body>
 
+</html>
