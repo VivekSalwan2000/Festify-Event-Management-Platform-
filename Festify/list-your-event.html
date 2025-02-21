@@ -50,15 +50,31 @@
         }
         /* Hero Section */
         .hero-section {
-            background: linear-gradient(270deg, #1B0033, #00334D, #0D1A26, #1B0033);
-            background-size: 800% 800%;
-            animation: gradient-animation 15s ease infinite;
+            background: url('./images/festify\ 1.avif') no-repeat center center/cover;
             display: flex;
             align-items: center;
             text-align: left;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
         }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
 
         .hero-content {
             max-width: 600px;
