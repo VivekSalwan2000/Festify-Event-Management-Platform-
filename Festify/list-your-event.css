@@ -1,0 +1,192 @@
+/* Styles for List Your Event Page */
+
+/* Navbar */
+.navbar {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar .logo img {
+    width: 100px;
+    height: auto;
+}
+
+.navbar .nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar .nav-links a {
+    color: #d3dce6;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(270deg, #1B0033, #00334D, #0D1A26, #1B0033);
+    background-size: 800% 800%;
+    animation: gradient-animation 15s ease infinite;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.hero-content {
+    max-width: 600px;
+    margin-left: 20px;
+}
+
+.hero-content h1 {
+    font-size: 3em;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.hero-content h1 span {
+    color: #00AEEF;
+}
+
+.hero-content p {
+    margin: 20px 0;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #d3dce6;
+}
+
+.cta-button {
+    background-color: #ff007f;
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.cta-button:hover {
+    background-color: #e60073;
+}
+
+/* Features Section */
+.features-section {
+    background-color: #f8f9fa;
+    color: #1A2E40;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.features-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    place-items: center;
+    gap: 20px; /* Adjust spacing */
+    text-align: center;
+}
+
+.feature-item {
+    max-width: 300px;
+    text-align: center;
+}
+
+.feature-item {
+    background-color: #fff; /* Optional: Light background */
+    padding: 20px;
+    border-radius: 10px; /* Rounded corners */
+}
+
+.feature-title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.feature-desc {
+    font-family: 'Exo', sans-serif;
+    font-size: 1em;
+    color: #333;
+}
+
+/* Clients Section */
+.clients-section {
+    background-color: #f8f9fa;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.clients-desc {
+    font-family: 'Exo', sans-serif;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.clients {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.client-logo {
+    max-width: 120px;
+    height: auto;
+    filter: grayscale(100%);
+}
+
+/* Suitability */
+.target-section {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.description {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: #666;
+    max-width: 800px;
+    margin: 0 auto 40px;
+}
+
+.cards-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    width: 250px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.card-text {
+    padding: 15px;
+    font-weight: 700;
+    color: #121212;
+}
