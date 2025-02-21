@@ -145,3 +145,19 @@ document.addEventListener('DOMContentLoaded', () => {
 function triggerFileInput() {
     document.getElementById('fileInput').click();
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        events,
+        formatDate,
+        formatCurrency,
+        renderEvents,
+        showEventForm,
+        hideEventForm,
+        showProfileForm,
+        hideProfileForm,
+        resetDashboard,
+        triggerFileInput
+    };
+  }
+  
