@@ -2,6 +2,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="styles.css" />
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -217,8 +218,9 @@
         }
     </style>
 </head>
-<body>
 
+<body>
+<div id="content">
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">
@@ -237,7 +239,7 @@
         <div class="hero-content">
             <h1>Publish your event in <span>five</span> minutes.</h1>
             <p>Craft unique experiences using our simple and powerful event platform. Create, ticket and host both on-ground and digital events on a platform used by millions of live event-loving fans.</p>
-            <a href="#" class="cta-button">LIST YOUR EVENT</a>
+            <a href="#" class="cta-button" onclick="toggle()">LIST YOUR EVENT</a>
         </div>
     </div>
 
@@ -323,6 +325,54 @@
             <img src="./images/list-your-event-landing-page/hunger.png" alt="Hunger Inc." class="client-logo">
         </div>
     </div>
+</div>
+
+    <!-- Login Popup -->
+  <div id="popup" class="hidden">
+    <button class="close-btn" onclick="closePopup()">✖</button>
+    <h2>Hey Organizer!</h2>
+    <p>Sign in or Sign up with your email & password.</p>
+
+    <!-- Single form with two different buttons for Sign In / Sign Up -->
+    <form id="authForm" action="list-your-event-form.html">
+      <input 
+        type="email" 
+        id="loginEmail" 
+        class="input-field" 
+        placeholder="Enter your email address" 
+        required 
+      />
+      <input 
+        type="password" 
+        id="loginPassword" 
+        class="input-field" 
+        placeholder="Enter your password" 
+        required 
+      />
+      <div style="display: flex; gap: 1rem;">
+        <!-- SIGN IN button -->
+        <button class="btn" id="signInBtn">Sign In</button>
+        <!-- SIGN UP button -->
+        <button class="btn" id="signUpBtn" >Sign Up</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function toggle(){
+      const content = document.getElementById('content');
+      const popup = document.getElementById('popup');
+      content.classList.toggle('active');
+      popup.classList.toggle('hidden');
+    }
+
+    function closePopup() {
+      const content = document.getElementById('content');
+      const popup = document.getElementById('popup');
+      content.classList.remove('active');
+      popup.classList.add('hidden');
+    }
+  </script>
 
   <script src="app.js"></script>
   </body>
