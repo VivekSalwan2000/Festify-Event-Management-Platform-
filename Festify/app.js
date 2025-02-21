@@ -137,3 +137,9 @@ function renderEvents() {
 document.addEventListener('DOMContentLoaded', () => {
     renderEvents();
 });
+
+// export the functions for testing.
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { loadFooter, createEventCard, renderEvents };
+}
+  
