@@ -14,7 +14,6 @@ body {
     color: #2c3e50;
 }
 
-
 /* Navbar */
 .navbar {
     position: absolute;
@@ -23,16 +22,21 @@ body {
     right: 30px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+justify-content: flex-end; /* Align items to the right */
+
+
+
     z-index: 10; /* Ensure navbar is above other elements */
 }
-
-
-
 
 .navbar .logo img {
     width: 100px;
     height: auto;
+    transition: transform 0.3s; /* Add transition for hover effect */
+}
+
+.navbar .logo img:hover {
+    transform: scale(1.1); /* Scale up the logo on hover */
 }
 
 .navbar .nav-links {
@@ -54,13 +58,6 @@ body {
     background-color: rgba(255, 0, 127, 0.7); /* Change to semi-transparent on hover */
 }
 
-
-.navbar .nav-links a:hover {
-    background-color: #ff007f; /* Change background on hover */
-}
-
-
-
 /* Hero Section */
 .hero-section {
     background: url('./images/festify\ 1.avif') no-repeat center center/cover;
@@ -72,8 +69,6 @@ body {
     position: relative;
     overflow: hidden;
 }
-
-
 
 .hero-section::before {
     content: '';
@@ -117,7 +112,6 @@ body {
     animation: textGlow 3s ease-in-out infinite alternate;
 }
 
-
 @keyframes textGlow {
     0% {
         text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
@@ -150,30 +144,10 @@ body {
     cursor: pointer;
 }
 
-
-
-
-.cta-button::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300%;
-    height: 300%;
-    background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10.01%);
-    transform: translate(-50%, -50%) scale(0);
-    transition: transform 0.5s ease;
-    pointer-events: none;
-}
-
 .cta-button:hover {
     background-color: #e60073;
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.cta-button:hover::before {
-    transform: translate(-50%, -50%) scale(1);
 }
 
 /* Features Section */
@@ -183,8 +157,6 @@ body {
     text-align: center;
     padding: 60px 20px;
 }
-
-
 
 .features-section h2 {
     font-size: 2.5em;
@@ -214,7 +186,6 @@ body {
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
-
 .feature-title {
     font-size: 1.5em;
     font-weight: bold;
@@ -232,8 +203,6 @@ body {
     padding: 50px 20px;
     text-align: center;
 }
-
-
 
 .clients-section h2 {
     font-size: 32px;
@@ -267,8 +236,6 @@ body {
     padding: 50px 20px;
     text-align: center;
 }
-
-
 
 .target-section h3 {
     font-size: 36px;
@@ -306,7 +273,6 @@ body {
     transform: scale(1.05);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
-
 
 .card img {
     width: 100%;
