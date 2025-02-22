@@ -153,6 +153,7 @@ import {
   
   // File upload helper (if needed)
   function triggerFileInput() {
+    consol
     document.getElementById('fileInput').click();
   }
   
@@ -231,4 +232,9 @@ import {
 
   document.getElementById("cancel_Profile").addEventListener("click", hideProfileForm);
   document.getElementById("cancel_Create_Event").addEventListener("click", hideEventForm);
+
+  document.getElementById("upload-box").addEventListener("click", () => {
+
+    document.getElementById('fileInput').click();
+  })
   
