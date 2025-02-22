@@ -170,7 +170,7 @@ import {
       const location = document.getElementById('location').value;
       const tickets = document.getElementById('ticketInput').value;
       // Use a placeholder image URL (replace with your upload logic if needed)
-      const imageUrl = "https://via.placeholder.com/150";
+      const imageUrl = "https://costar.brightspotcdn.com/dims4/default/7838159/2147483647/strip/true/crop/2048x1365+0+0/resize/2048x1365!/quality/100/?url=http%3A%2F%2Fcostar-brightspot.s3.us-east-1.amazonaws.com%2F20230608_CAN_Toronto_Skyline_0001.jpg";
       const price = "$0";
   
       // Include the organizerId when creating a new event
