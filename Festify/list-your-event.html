@@ -10,7 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
   <!-- Your main stylesheet (if you have one) -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="list-your-event.css">
+
 
   <!-- Inline CSS for gradient hero, features, etc. -->
   <style>
@@ -54,14 +55,13 @@
 
     /* Hero Section */
     .hero-section {
-      background: linear-gradient(270deg, #1B0033, #00334D, #0D1A26, #1B0033);
-      background-size: 800% 800%;
-      animation: gradient-animation 15s ease infinite;
+      background: url('./images/1.avif') no-repeat center center/cover;
       display: flex;
       align-items: center;
       text-align: left;
       min-height: 100vh;
       padding: 20px;
+      position: relative;
     }
     .hero-content {
       max-width: 600px;
@@ -273,28 +273,24 @@
 
     <!-- Hero Section -->
     <div class="hero-section">
-      <div class="hero-content">
-        <h1>Publish your event in <span>five</span> minutes.</h1>
-        <p>
-          Craft unique experiences using our simple and powerful event platform.
-          Create, ticket and host both on-ground and digital events on a platform
-          used by millions of live event-loving fans.
-        </p>
-        <a href="#" class="cta-button" onclick="toggle()">LIST YOUR EVENT</a>
-      </div>
+        <div class="hero-content">
+            <h1>Publish your event in <span>five</span> minutes.</h1>
+            <p>Craft unique experiences using our simple and powerful event platform. Create, ticket and host both on-ground and digital events on a platform used by millions of live event-loving fans.</p>
+            <a href="#" class="cta-button" onclick="toggle()">LIST YOUR EVENT</a>
+        </div>
     </div>
+
 
     <!-- Features Section -->
     <div class="features-section">
-      <h2>Features</h2>
-      <div class="features-grid">
-        <div class="feature-item">
-          <img src="./images/list-your-event-landing-page/flexibility.svg" class="feature-icon" alt="Flexibility">
-          <p class="feature-title">Flexibility</p>
-          <p class="feature-desc">
-            List and manage on-ground and digital experiences through a single dashboard.
-          </p>
-        </div>
+        <h2>Features</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <img src="./images/list-your-event-landing-page/flexibility.svg" class="feature-icon" alt="Flexibility">
+                <p class="feature-title">Flexibility</p>
+                <p class="feature-desc">List and manage on-ground and digital experiences through a single dashboard.</p>
+            </div>
+
 
         <div class="feature-item">
           <img src="./images/list-your-event-landing-page/customer-data.png" class="feature-icon" alt="Customer Data">
@@ -372,17 +368,18 @@
 
     <!-- Clients Section -->
     <div class="clients-section">
-      <h2>Our Clients</h2>
-      <p class="clients-desc">Trusted by India's top event organisers and artist communities</p>
-      <div class="clients">
-        <img src="./images/list-your-event-landing-page/oml.jpg" alt="OML" class="client-logo">
-        <img src="./images/list-your-event-landing-page/Kommune.png" alt="Kommune" class="client-logo">
-        <img src="./images/list-your-event-landing-page/qyuki.jpg" alt="Qyuki" class="client-logo">
-        <img src="./images/list-your-event-landing-page/counter-culture.jpg" alt="Counter Culture" class="client-logo">
-        <img src="./images/list-your-event-landing-page/mom.png" alt="Mad Over Marketing" class="client-logo">
-        <img src="./images/list-your-event-landing-page/hunger.png" alt="Hunger Inc." class="client-logo">
-      </div>
+        <h2>Our Clients</h2>
+        <p class="clients-desc">Trusted by India's top event organisers and artist communities</p>
+        <div class="clients">
+            <img src="./images/list-your-event-landing-page/oml.jpg" alt="OML" class="client-logo">
+            <img src="./images/list-your-event-landing-page/Kommune.png" alt="Kommune" class="client-logo">
+            <img src="./images/list-your-event-landing-page/qyuki.jpg" alt="Qyuki" class="client-logo">
+            <img src="./images/list-your-event-landing-page/counter-culture.jpg" alt="Counter Culture" class="client-logo">
+            <img src="./images/list-your-event-landing-page/mom.png" alt="Mad Over Marketing" class="client-logo">
+            <img src="./images/list-your-event-landing-page/hunger.png" alt="Hunger Inc." class="client-logo">
+        </div>
     </div>
+
   </div> <!-- End #content -->
 
   <!-- Login Popup -->
@@ -436,4 +433,3 @@
   <script type="module" src="app.js"></script>
 </body>
 </html>
-
