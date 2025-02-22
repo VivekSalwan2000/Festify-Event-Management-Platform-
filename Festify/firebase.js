@@ -110,3 +110,5 @@ export async function createNewEvent(eventData) {
     throw error;
   }
 }
+
+
