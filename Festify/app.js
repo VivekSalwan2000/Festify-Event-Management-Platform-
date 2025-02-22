@@ -73,3 +73,9 @@ async function renderEventsFromDB() {
 document.addEventListener('DOMContentLoaded', () => {
   renderEventsFromDB();
 });
+
+// export the functions for testing.
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { loadFooter, createEventCard, renderEvents };
+}
+  
