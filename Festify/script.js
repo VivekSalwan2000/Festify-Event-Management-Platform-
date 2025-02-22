@@ -229,6 +229,6 @@ import {
     });
   }
 
-  document.getElementById("Cancel").addEventListener("click", hideEventForm);
-
+  document.getElementById("cancel_Profile").addEventListener("click", hideProfileForm);
+  document.getElementById("cancel_Create_Event").addEventListener("click", hideEventForm);
   
