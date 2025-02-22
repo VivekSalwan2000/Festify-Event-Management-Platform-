@@ -228,4 +228,7 @@ import {
       }
     });
   }
+
+  document.getElementById("Cancel").addEventListener("click", hideEventForm);
+
   
