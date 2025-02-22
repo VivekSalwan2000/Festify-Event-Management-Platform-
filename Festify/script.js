@@ -1,147 +1,231 @@
-// Event data
-const events = [
-    {
-        id: 1,
-        title: "Tech Conference 2024",
-        date: "2024-06-15",
-        status: "upcoming",
-        attendees: 250,
-        revenue: 12500
-    },
-    {
-        id: 2,
-        title: "Digital Marketing Summit",
-        date: "2024-03-20",
-        status: "upcoming",
-        attendees: 150,
-        revenue: 7500
-    },
-    {
-        id: 3,
-        title: "Startup Networking Event",
-        date: "2024-01-10",
-        status: "past",
-        attendees: 100,
-        revenue: 5000
+// script.js
+import {
+    createNewEvent,
+    fetchUserEvents,
+    onUserStateChanged,
+    getUserProfile,
+    saveUserProfile
+  } from './firebase.js';
+  
+  let currentUser = null;
+  
+  // Listen for auth state changes and load profile data
+  onUserStateChanged(async (user) => {
+    if (user) {
+      currentUser = user;
+      // Load user's profile from Firestore and populate profile form fields
+      const profileData = await getUserProfile(user.uid);
+      if (profileData) {
+        document.getElementById('orgName').value = profileData.orgName || '';
+        document.getElementById('phone').value = profileData.phone || '';
+        document.getElementById('email').value = profileData.email || '';
+        document.getElementById('address').value = profileData.address || '';
+        document.getElementById('website').value = profileData.website || '';
+      }
+      // Render events for the logged-in organizer
+      renderEventsFromDB();
+    } else {
+      currentUser = null;
+      // Optionally redirect if user is not logged in:
+      // window.location.href = 'index.html';
     }
-];
-
-// Date formatting
-function formatDate(dateString) {
+  });
+  
+  // Helper: Format date
+  function formatDate(dateString) {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
-}
-
-// Currency formatting
-function formatCurrency(amount) {
+  }
+  
+  // Helper: Format currency
+  function formatCurrency(amount) {
     return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0
     }).format(amount);
-}
-
-// Render events
-function renderEvents() {
-    const eventsGrid = document.getElementById('eventsGrid');
-    eventsGrid.innerHTML = events.map((event, index) => `
-        <div class="event-card" style="animation-delay: ${index * 0.1}s">
+  }
+  
+  // Render events from Firestore for the current user
+  async function renderEventsFromDB() {
+    if (!currentUser) return;
+    try {
+      const events = await fetchUserEvents(currentUser.uid);
+      const eventsGrid = document.getElementById('eventsGrid');
+      if (eventsGrid) {
+        eventsGrid.innerHTML = events.map((event, index) => `
+          <div class="event-card" style="animation-delay: ${index * 0.1}s">
             <div class="event-card-content">
-                <div class="event-header">
-                    <div>
-                        <h3 class="event-title">${event.title}</h3>
-                        <p class="event-date">
-                            <i class="fas fa-calendar"></i>
-                            ${formatDate(event.date)}
-                        </p>
-                    </div>
-                    <span class="event-status ${event.status === 'upcoming' ? 'status-upcoming' : 'status-past'}">
-                        ${event.status}
-                    </span>
+              <div class="event-header">
+                <div>
+                  <h3 class="event-title">${event.title}</h3>
+                  <p class="event-date">
+                    <i class="fas fa-calendar"></i>
+                    ${event.date ? formatDate(event.date) : ''}
+                  </p>
                 </div>
-                <div class="event-stats">
-                    <div>
-                        <p class="stat-label">
-                            <i class="fas fa-users"></i>
-                            Attendees
-                        </p>
-                        <p class="stat-value">${event.attendees}</p>
-                    </div>
-                    <div>
-                        <p class="stat-label">
-                            <i class="fas fa-money-bill-wave"></i>
-                            Revenue
-                        </p>
-                        <p class="stat-value">${formatCurrency(event.revenue)}</p>
-                    </div>
+                <span class="event-status ${event.status === 'upcoming' ? 'status-upcoming' : 'status-past'}">
+                  ${event.status || ''}
+                </span>
+              </div>
+              <div class="event-stats">
+                <div>
+                  <p class="stat-label">
+                    <i class="fas fa-users"></i>
+                    Attendees
+                  </p>
+                  <p class="stat-value">${event.attendees || 0}</p>
                 </div>
+                <div>
+                  <p class="stat-label">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Revenue
+                  </p>
+                  <p class="stat-value">${event.revenue ? formatCurrency(event.revenue) : '$0'}</p>
+                </div>
+              </div>
             </div>
-        </div>
-    `).join('');
-}
-
-// Show event form
-function showEventForm() {
+          </div>
+        `).join('');
+      }
+    } catch (error) {
+      console.error("Error rendering events:", error);
+    }
+  }
+  
+  // Toggling form functions
+  function showEventForm() {
     document.getElementById('eventFormSection').style.display = 'block';
     document.getElementById('profileFormSection').style.display = 'none';
     document.querySelector('.metrics-section').style.display = 'none';
     document.querySelector('.events-section').style.display = 'none';
-}
-
-
-// Hide event form
-function hideEventForm() {
+  }
+  
+  function hideEventForm() {
     document.getElementById('eventFormSection').style.display = 'none';
     document.getElementById('profileFormSection').style.display = 'none';
     document.querySelector('.metrics-section').style.display = 'block';
     document.querySelector('.events-section').style.display = 'block';
-}
-
-
-// Show profile form
-function showProfileForm() {
+  }
+  
+  function showProfileForm() {
     document.getElementById('profileFormSection').style.display = 'block';
     document.querySelector('.metrics-section').style.display = 'none';
     document.querySelector('.events-section').style.display = 'none';
     document.getElementById('eventFormSection').style.display = 'none';
-}
-
-// Hide profile form
-function hideProfileForm() {
+  }
+  
+  function hideProfileForm() {
     document.getElementById('profileFormSection').style.display = 'none';
     document.querySelector('.metrics-section').style.display = 'block';
     document.querySelector('.events-section').style.display = 'block';
-}
-
-// Reset dashboard to original state
-function resetDashboard() {
+  }
+  
+  function resetDashboard() {
     hideEventForm();
     hideProfileForm();
-    renderEvents(); // Re-render events when resetting
-}
-
-// Initialize the dashboard
-document.addEventListener('DOMContentLoaded', () => {
-    renderEvents();
-
-    // Create New Event button
-    document.querySelector('.btn-primary').addEventListener('click', function() {
-        hideProfileForm();
-        showEventForm();
-    });
-
-    
-    // Logo click to reset dashboard
-    document.querySelector('.logo').addEventListener('click', function(e) {
+    renderEventsFromDB();
+  }
+  
+  // DOMContentLoaded event listener
+  document.addEventListener('DOMContentLoaded', () => {
+    // "Create New Event" button click
+    const createNewEventBtn = document.getElementById('createNewEventBtn');
+    if (createNewEventBtn) {
+      createNewEventBtn.addEventListener('click', showEventForm);
+    }
+  
+    // Logo click resets dashboard
+    const logo = document.querySelector('.logo');
+    if (logo) {
+      logo.addEventListener('click', (e) => {
         e.preventDefault();
         resetDashboard();
-    });
-
-    // Edit profile button
-    document.querySelector('.btn-outline').addEventListener('click', showProfileForm);
-});
-
-// File upload functions
-function triggerFileInput() {
+      });
+    }
+  
+    // "Edit Profile" button click
+    const editProfileBtn = document.querySelector('.btn.btn-outline');
+    if (editProfileBtn) {
+      editProfileBtn.addEventListener('click', showProfileForm);
+    }
+  });
+  
+  // File upload helper (if needed)
+  function triggerFileInput() {
     document.getElementById('fileInput').click();
-}
+  }
+  
+  // Event form submission handler
+  const eventForm = document.getElementById('eventForm');
+  if (eventForm) {
+    eventForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const date = document.getElementById('date').value;
+      const startTime = document.getElementById('start-time').value;
+      const endTime = document.getElementById('end-time').value;
+      const location = document.getElementById('location').value;
+      const tickets = document.getElementById('ticketInput').value;
+      // Use a placeholder image URL (replace with your upload logic if needed)
+      const imageUrl = "https://via.placeholder.com/150";
+      const price = "$0";
+  
+      // Include the organizerId when creating a new event
+      const eventData = {
+        title,
+        description,
+        date,
+        startTime,
+        endTime,
+        location,
+        tickets: parseInt(tickets),
+        imageUrl,
+        price,
+        status: "upcoming",
+        organizerId: currentUser ? currentUser.uid : null,
+        createdAt: new Date().toISOString()
+      };
+  
+      try {
+        await createNewEvent(eventData);
+        alert('Event created successfully!');
+        hideEventForm();
+        renderEventsFromDB();
+      } catch (error) {
+        alert('Error creating event: ' + error.message);
+      }
+    });
+  }
+  
+  // Profile form submission handler
+  const profileForm = document.getElementById('profileForm');
+  if (profileForm) {
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentUser) {
+        alert("No user is logged in. Please log in again.");
+        return;
+      }
+      const orgName = document.getElementById('orgName').value;
+      const phone = document.getElementById('phone').value;
+      const email = document.getElementById('email').value;
+      const address = document.getElementById('address').value;
+      const website = document.getElementById('website').value;
+      try {
+        await saveUserProfile(currentUser.uid, {
+          orgName,
+          phone,
+          email,
+          address,
+          website
+        });
+        alert('Profile updated successfully!');
+        hideProfileForm();
+      } catch (error) {
+        alert('Error updating profile: ' + error.message);
+      }
+    });
+  }
+  

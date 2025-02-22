@@ -8,15 +8,19 @@ import {
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-
 import {
   getFirestore,
   doc,
   setDoc,
-  getDoc
+  getDoc,
+  collection,
+  getDocs,
+  addDoc,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
-// TODO: Replace with your app's Firebase project configuration
+// TODO: Replace with your Firebase project configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDe0ZCrJCtspANzB-is2Hh8gvkyvLNcRmA",
   authDomain: "fir-festify.firebaseapp.com",
@@ -33,61 +37,76 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/**
- * signUpUser(email, password)
- * Creates a new user in Firebase Auth
- * Returns the user credential
- */
+/* ------------------------------
+   Authentication Functions
+------------------------------ */
 export async function signUpUser(email, password) {
   const userCred = await createUserWithEmailAndPassword(auth, email, password);
   return userCred;
 }
 
-/**
- * signInUser(email, password)
- * Signs in an existing user
- * Returns the user credential
- */
 export async function signInUser(email, password) {
   const userCred = await signInWithEmailAndPassword(auth, email, password);
   return userCred;
 }
 
-/**
- * signOutUser()
- * Signs out the currently logged in user
- */
 export function signOutUser() {
   return signOut(auth);
 }
 
-/**
- * onUserStateChanged(callback)
- * Triggers the callback whenever the Auth state changes (login/logout)
- */
 export function onUserStateChanged(callback) {
   return onAuthStateChanged(auth, callback);
 }
 
-/**
- * saveUserProfile(uid, profileData)
- * Stores/updates the user's profile in Firestore under "users/{uid}"
- */
 export async function saveUserProfile(uid, profileData) {
   const docRef = doc(db, "users", uid);
   await setDoc(docRef, profileData, { merge: true });
 }
 
-/**
- * getUserProfile(uid)
- * Gets the user's profile from Firestore
- */
 export async function getUserProfile(uid) {
   const docRef = doc(db, "users", uid);
   const snapshot = await getDoc(docRef);
-  if (snapshot.exists()) {
-    return snapshot.data();
-  } else {
-    return null;
+  return snapshot.exists() ? snapshot.data() : null;
+}
+
+/* ------------------------------
+   Event Functions
+------------------------------ */
+// Function to fetch all events (if needed)
+export async function fetchEvents() {
+  try {
+    const eventsCol = collection(db, "events");
+    const eventsSnapshot = await getDocs(eventsCol);
+    const eventsList = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return eventsList;
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return [];
+  }
+}
+
+// New function: fetch events for a specific organizer (user)
+export async function fetchUserEvents(userId) {
+  try {
+    const eventsCol = collection(db, "events");
+    const q = query(eventsCol, where("organizerId", "==", userId));
+    const eventsSnapshot = await getDocs(q);
+    const eventsList = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return eventsList;
+  } catch (error) {
+    console.error("Error fetching user events:", error);
+    return [];
+  }
+}
+
+// Function to create a new event
+export async function createNewEvent(eventData) {
+  try {
+    const docRef = await addDoc(collection(db, "events"), eventData);
+    console.log("Event created with ID:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error creating event:", error);
+    throw error;
   }
 }
