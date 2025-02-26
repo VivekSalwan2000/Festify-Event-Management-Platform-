@@ -65,7 +65,6 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    backdrop-filter: blur(5px);
 }
 
 .nav-item::before,
