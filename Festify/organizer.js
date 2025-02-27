@@ -43,13 +43,5 @@ document.getElementById('signUpBtn').addEventListener('click', async (e) => {
   }
 });
 
-//handling the functionality of when you click check then only you
-//can enter the price and if the checkbox is unclicked then the price 
-//field will be disabled
-document.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
-  checkbox.addEventListener("change", function () {
-    const priceInput = this.parentElement.nextElementSibling;
-    priceInput.disabled = !this.checked;
-    if (!this.checked) priceInput.value = "";
-  });
-});
+
+

@@ -237,4 +237,16 @@ import {
 
     document.getElementById('fileInput').click();
   })
-  
+
+
+  //handling the functionality of when you click check then only you
+//can enter the price and if the checkbox is unclicked then the price 
+//field will be disabled
+document.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
+  checkbox.addEventListener("change", function () {
+    console.log("hello");
+    const priceInput = this.closest(".ticket-options").querySelector("input[type='number']");
+    priceInput.disabled = !this.checked;
+    if (!this.checked) priceInput.value = "";
+  });
+});
