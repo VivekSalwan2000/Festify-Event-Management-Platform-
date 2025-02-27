@@ -735,7 +735,7 @@ status-past {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #21262d;
+    background-color: rgba(59, 130, 246, 0.5);
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 10px;
