@@ -1,8 +1,8 @@
 // app.js
-
+ 
 // Import the fetchEvents function from firebase.js
 import { fetchEvents } from './firebase.js';
-
+ 
 // Function to load footer (if you have a separate footer file)
 function loadFooter() {
   fetch('pageFooter.html')
@@ -10,10 +10,10 @@ function loadFooter() {
     .then(data => { document.body.insertAdjacentHTML('beforeend', data); })
     .catch(error => console.error('Error loading footer:', error));
 }
-
+ 
 // Load footer when page loads
 document.addEventListener('DOMContentLoaded', loadFooter);
-
+ 
 // Function to create event card HTML
 function createEventCard(event) {
   return `
@@ -55,25 +55,52 @@ function createEventCard(event) {
     </div>
   `;
 }
-
+ 
+// Store all events globally for filtering
+let allEvents = [];
+ 
+// Function to filter events based on search input
+function filterEvents(searchTerm) {
+  if (!searchTerm) return allEvents;
+ 
+  searchTerm = searchTerm.toLowerCase();
+  return allEvents.filter(event =>
+    event.title.toLowerCase().startsWith(searchTerm)
+  );
+}
+ 
+// Function to render events
+function renderEvents(events) {
+  const eventsGrid = document.getElementById('eventsGrid');
+  if (eventsGrid) {
+    eventsGrid.innerHTML = events.map(event => createEventCard(event)).join('');
+  }
+}
+ 
 // Function to render events fetched from Firestore
 async function renderEventsFromDB() {
   try {
-    const events = await fetchEvents();
-    const eventsGrid = document.getElementById('eventsGrid');
-    if (eventsGrid) {
-      eventsGrid.innerHTML = events.map(event => createEventCard(event)).join('');
-    }
+    allEvents = await fetchEvents();
+    renderEvents(allEvents);
   } catch (error) {
     console.error("Error rendering events:", error);
   }
 }
-
+ 
 // Initialize the page and render events when DOM loads
 document.addEventListener('DOMContentLoaded', () => {
   renderEventsFromDB();
+ 
+  // Add search functionality
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const filteredEvents = filterEvents(e.target.value);
+      renderEvents(filteredEvents);
+    });
+  }
 });
-
+ 
 // export the functions for testing.
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { loadFooter, createEventCard, renderEvents };
