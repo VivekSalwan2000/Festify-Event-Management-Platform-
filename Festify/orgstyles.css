@@ -146,6 +146,12 @@ h1::after {
     box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
 }
 
+.btn-secondary {
+    background: red; /* Set the background color to red */
+    color: white; /* Set the text color to white */
+    border: none; /* Remove border */
+}
+
 .btn-outline:hover {
     border-color: #3b82f6;
     transform: translateY(-2px);
@@ -155,6 +161,10 @@ h1::after {
 .btn-primary:hover {
     transform: translateY(-2px) scale(1.02);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-secondary:hover {
+    background: darkred; /* Darker shade on hover */
 }
 
 .btn i {
