@@ -79,9 +79,13 @@ import {
                 <div>
                   <p class="stat-label">
                     <i class="fas fa-money-bill-wave"></i>
-                    Revenue
+                    Prices
                   </p>
-                  <p class="stat-value">${event.revenue ? formatCurrency(event.revenue) : '$0'}</p>
+                  <div class="price-list">
+                    <p class="price-item">General: ${formatCurrency(event.prices?.general || 0)}</p>
+                    ${event.prices?.child ? `<p class="price-item">Below 13: ${formatCurrency(event.prices.child)}</p>` : ''}
+                    ${event.prices?.senior ? `<p class="price-item">Above 55: ${formatCurrency(event.prices.senior)}</p>` : ''}
+                  </div>
                 </div>
               </div>
             </div>
@@ -169,9 +173,11 @@ import {
       const endTime = document.getElementById('end-time').value;
       const location = document.getElementById('location').value;
       const tickets = document.getElementById('ticketInput').value;
+      const childPrice = document.getElementById('childPrice').value;
+      const generalPrice = document.getElementById('generalPrice').value;
+      const seniorPrice = document.getElementById('seniorPrice').value;
       // Use a placeholder image URL (replace with your upload logic if needed)
       const imageUrl = "https://costar.brightspotcdn.com/dims4/default/7838159/2147483647/strip/true/crop/2048x1365+0+0/resize/2048x1365!/quality/100/?url=http%3A%2F%2Fcostar-brightspot.s3.us-east-1.amazonaws.com%2F20230608_CAN_Toronto_Skyline_0001.jpg";
-      const price = "$0";
   
       // Include the organizerId when creating a new event
       const eventData = {
@@ -183,7 +189,11 @@ import {
         location,
         tickets: parseInt(tickets),
         imageUrl,
-        price,
+        prices: {
+          general: parseFloat(generalPrice),
+          ...(document.getElementById('enableChildPrice').checked && { child: parseFloat(childPrice) }),
+          ...(document.getElementById('enableSeniorPrice').checked && { senior: parseFloat(seniorPrice) })
+        },
         status: "upcoming",
         organizerId: currentUser ? currentUser.uid : null,
         createdAt: new Date().toISOString()
@@ -234,19 +244,18 @@ import {
   document.getElementById("cancel_Create_Event").addEventListener("click", hideEventForm);
 
   document.getElementById("upload-box").addEventListener("click", () => {
-
     document.getElementById('fileInput').click();
-  })
-
-
-  //handling the functionality of when you click check then only you
-//can enter the price and if the checkbox is unclicked then the price 
-//field will be disabled
-document.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
-  checkbox.addEventListener("change", function () {
-    console.log("hello");
-    const priceInput = this.closest(".ticket-options").querySelector("input[type='number']");
-    priceInput.disabled = !this.checked;
-    if (!this.checked) priceInput.value = "";
   });
-});
+
+  // Handle enabling/disabling price inputs based on checkboxes
+  document.getElementById('enableChildPrice').addEventListener('change', function() {
+    const childPriceInput = document.getElementById('childPrice');
+    childPriceInput.disabled = !this.checked;
+    if (!this.checked) childPriceInput.value = '';
+  });
+
+  document.getElementById('enableSeniorPrice').addEventListener('change', function() {
+    const seniorPriceInput = document.getElementById('seniorPrice');
+    seniorPriceInput.disabled = !this.checked;
+    if (!this.checked) seniorPriceInput.value = '';
+  });
