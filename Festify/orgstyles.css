@@ -397,6 +397,7 @@ label {
 
 input[type="text"],
 input[type="date"],
+input[type="time"],
 input[type="email"],
 input[type="tel"],
 input[type="url"],
@@ -444,6 +445,7 @@ select option {
 
 input[type="text"]:hover,
 input[type="date"]:hover,
+input[type="time"]:hover,
 input[type="email"]:hover,
 input[type="tel"]:hover,
 input[type="url"]:hover,
@@ -456,6 +458,7 @@ select:hover {
 
 input[type="text"]:focus,
 input[type="date"]:focus,
+input[type="time"]:focus,
 input[type="email"]:focus,
 input[type="tel"]:focus,
 input[type="url"]:focus,
@@ -864,4 +867,27 @@ input[type="number"]::-webkit-inner-spin-button {
 /* Hide arrows in number input for Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Time input specific styles */
+input[type="time"] {
+  cursor: text;
+  font-size: 1rem;
+  color: #ffffff;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  height: 3.2rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Style the time input's clear button and calendar button */
+input[type="time"]::-webkit-clear-button,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.8;
 }
