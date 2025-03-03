@@ -145,27 +145,33 @@
               </div>
             </div>
 
-            <div class="form-group-ticket-types" style="background-color: rgba(0, 0, 0, 0.5)">
-              <label>Ticket Types & Prices</label>
-              <div class="ticket-options">
-                <label>
-                  <input type="checkbox" id="juniorTicket" /> Junior
-                </label>
-                <input type="number" id="juniorPrice" placeholder="Price" disabled/>
-              </div>
-              <div class="ticket-options">
-                <label>
-                  <input type="checkbox" id="generalTicket" /> General
-                </label>
-                <input type="number" id="generalPrice" placeholder="Price" disabled/>
-              </div>
-              <div class="ticket-options">
-                <label>
-                  <input type="checkbox" id="seniorTicket" /> Senior
-                </label>
-                <input type="number" id="seniorPrice" placeholder="Price" disabled/>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="generalPrice">General Price ($)</label>
+                <input type="number" id="generalPrice" min="0" step="0.01" placeholder="0.00" required />
               </div>
             </div>
+
+            <div class="form-row">
+              <div class="form-group price-option">
+                <div class="checkbox-wrapper">
+                  <input type="checkbox" id="enableChildPrice" />
+                  <label for="enableChildPrice">Add this option: Below 13</label>
+                </div>
+                <input type="number" id="childPrice" min="0" step="0.01" placeholder="0.00" disabled />
+              </div>
+              <div class="form-group price-option">
+                <div class="checkbox-wrapper">
+                  <input type="checkbox" id="enableSeniorPrice" />
+                  <label for="enableSeniorPrice">Add this option: Above 55</label>
+                </div>
+                <input type="number" id="seniorPrice" min="0" step="0.01" placeholder="0.00" disabled />
+              </div>
+            </div>
+
+
+
+
 
             <div class="upload-box" id="upload-box">
               <i class="fas fa-cloud-upload-alt"></i>
