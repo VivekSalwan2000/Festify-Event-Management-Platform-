@@ -155,8 +155,11 @@
               <i class="fas fa-cloud-upload-alt"></i>
               <p>Click to Upload Files</p>
             </div>
-            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" />
-
+            <div class="image-preview-container">
+              <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" />
+              <img id="preview-selected-image" style="display:none;">
+            </div>
+            
             <div class="form-actions">
               <button type="button" class="btn btn-secondary" id="cancel_Create_Event">Cancel</button>
               <button type="submit" class="btn btn-primary">Create Event</button>
