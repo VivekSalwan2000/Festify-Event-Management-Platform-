@@ -111,4 +111,10 @@ export async function createNewEvent(eventData) {
   }
 }
 
+export async function updateEvent(eventId, eventData) {
+  const eventRef = firebase.firestore().collection('events').doc(eventId);
+  await eventRef.update(eventData);
+}
+
+
 

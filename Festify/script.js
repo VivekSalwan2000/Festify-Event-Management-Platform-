@@ -50,53 +50,88 @@ import {
   async function renderEventsFromDB() {
     if (!currentUser) return;
     try {
-      const events = await fetchUserEvents(currentUser.uid);
-      const eventsGrid = document.getElementById('eventsGrid');
-      if (eventsGrid) {
-        eventsGrid.innerHTML = events.map((event, index) => `
-          <div class="event-card" style="animation-delay: ${index * 0.1}s">
-            <div class="event-card-content">
-              <div class="event-header">
-                <div>
-                  <h3 class="event-title">${event.title}</h3>
-                  <p class="event-date">
-                    <i class="fas fa-calendar"></i>
-                    ${event.date ? formatDate(event.date) : ''}
-                  </p>
+        const events = await fetchUserEvents(currentUser.uid);
+        const eventsGrid = document.getElementById('eventsGrid');
+        if (eventsGrid) {
+            eventsGrid.innerHTML = events.map((event, index) => `
+                <div class="event-card" style="animation-delay: ${index * 0.1}s" data-event-id="${event.id}">
+                    <div class="event-card-content">
+                        <div class="event-header">
+                            <div>
+                                <h3 class="event-title">${event.title}</h3>
+                                <p class="event-date">
+                                    <i class="fas fa-calendar"></i>
+                                    ${event.date ? formatDate(event.date) : ''}
+                                </p>
+                            </div>
+                            <span class="event-status ${event.status === 'upcoming' ? 'status-upcoming' : 'status-past'}">
+                                ${event.status || ''}
+                            </span>
+                        </div>
+                        <div class="event-stats">
+                            <div>
+                                <p class="stat-label"><i class="fas fa-users"></i> Attendees</p>
+                                <p class="stat-value">${event.attendees || 0}</p>
+                            </div>
+                            <div>
+                                <p class="stat-label"><i class="fas fa-money-bill-wave"></i> Prices</p>
+                                <div class="price-list">
+                                    <p class="price-item">General: ${formatCurrency(event.prices?.general || 0)}</p>
+                                    ${event.prices?.child ? `<p class="price-item">Below 13: ${formatCurrency(event.prices.child)}</p>` : ''}
+                                    ${event.prices?.senior ? `<p class="price-item">Above 55: ${formatCurrency(event.prices.senior)}</p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <span class="event-status ${event.status === 'upcoming' ? 'status-upcoming' : 'status-past'}">
-                  ${event.status || ''}
-                </span>
-              </div>
-              <div class="event-stats">
-                <div>
-                  <p class="stat-label">
-                    <i class="fas fa-users"></i>
-                    Attendees
-                  </p>
-                  <p class="stat-value">${event.attendees || 0}</p>
-                </div>
-                <div>
-                  <p class="stat-label">
-                    <i class="fas fa-money-bill-wave"></i>
-                    Prices
-                  </p>
-                  <div class="price-list">
-                    <p class="price-item">General: ${formatCurrency(event.prices?.general || 0)}</p>
-                    ${event.prices?.child ? `<p class="price-item">Below 13: ${formatCurrency(event.prices.child)}</p>` : ''}
-                    ${event.prices?.senior ? `<p class="price-item">Above 55: ${formatCurrency(event.prices.senior)}</p>` : ''}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `).join('');
-      }
+            `).join('');
+
+            // Add event listeners to event cards
+            document.querySelectorAll('.event-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const eventId = card.getAttribute('data-event-id');
+                    editEvent(eventId);
+                });
+            });
+        }
     } catch (error) {
-      console.error("Error rendering events:", error);
+        console.error("Error rendering events:", error);
     }
+}
+
+async function editEvent(eventId) {
+  if (!currentUser) return;
+
+  try {
+      const events = await fetchUserEvents(currentUser.uid);
+      const event = events.find(e => e.id === eventId);
+
+      if (event) {
+          // Populate form fields with event data
+          document.getElementById('title').value = event.title || '';
+          document.getElementById('description').value = event.description || '';
+          document.getElementById('date').value = event.date || '';
+          document.getElementById('start-time').value = event.startTime || '';
+          document.getElementById('end-time').value = event.endTime || '';
+          document.getElementById('location').value = event.location || '';
+          document.getElementById('ticketInput').value = event.tickets || '';
+
+          // Handle price fields
+          document.getElementById('generalPrice').value = event.prices?.general || '';
+          document.getElementById('enableChildPrice').checked = event.prices?.child !== undefined;
+          document.getElementById('childPrice').value = event.prices?.child || '';
+          document.getElementById('enableSeniorPrice').checked = event.prices?.senior !== undefined;
+          document.getElementById('seniorPrice').value = event.prices?.senior || '';
+
+          // Store event ID in a hidden field
+          document.getElementById('eventForm').setAttribute('data-event-id', eventId);
+
+          showEventForm();
+      }
+  } catch (error) {
+      console.error("Error loading event for editing:", error);
   }
-  
+}
   // Toggling form functions
   function showEventForm() {
     document.getElementById('eventFormSection').style.display = 'block';

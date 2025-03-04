@@ -869,6 +869,22 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+#updateEvent {
+    background-color: #f0f0f0; 
+    color: black; 
+    font-size: 0.875rem; 
+    padding: 5px 10px; 
+    border: 1px solid #ccc; 
+    radius: 20px; 
+    text-align: left; 
+    margin-left: 10px; 
+    cursor: pointer; 
+  }
+  
+  #updateEvent:hover {
+    background-color: #e0e0e0; /* Slightly darker grey on hover */
+  }
+
 /* Time input specific styles */
 input[type="time"] {
   cursor: text;
