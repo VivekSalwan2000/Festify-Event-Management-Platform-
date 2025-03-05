@@ -158,9 +158,89 @@
             </div>
             
             <div class="form-actions">
-              <button type="button" class="btn btn-secondary" id="updateEvent">Update Event</button>
               <button type="button" class="btn btn-secondary" id="cancel_Create_Event">Cancel</button>
               <button type="submit" class="btn btn-primary" id="eventSubmitButton">Create Event</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Edit Event Form Section (Hidden by default) -->
+      <section class="event-form-section" id="editEventFormSection" style="display: none;">
+        <div class="form-container">
+          <h2 class="section-title">
+            <i class="fas fa-edit"></i>
+            Edit Event
+          </h2>
+          <form id="editEventForm">
+            <label for="editTitle">Event Title</label>
+            <input type="text" id="editTitle" placeholder="Event Title" required />
+
+            <label for="editDescription">Event Description</label>
+            <textarea id="editDescription" placeholder="Event Description" rows="4" required></textarea>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editDate">Date</label>
+                <input type="date" id="editDate" required />
+              </div>
+              <div class="form-group">
+                <label for="editStartTime">Start Time</label>
+                <input type="time" id="editStartTime" required />
+              </div>
+              <div class="form-group">
+                <label for="editEndTime">End Time</label>
+                <input type="time" id="editEndTime" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editLocation">Location</label>
+                <input type="text" id="editLocation" placeholder="Location" required />
+              </div>
+              <div class="form-group">
+                <label for="editTicketInput">Number of Tickets</label>
+                <input type="number" id="editTicketInput" min="0" max="50000" value="0" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editGeneralPrice">General Price ($)</label>
+                <input type="number" id="editGeneralPrice" min="0" step="0.01" placeholder="0.00" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group price-option">
+                <div class="checkbox-wrapper">
+                  <input type="checkbox" id="editEnableChildPrice" />
+                  <label for="editEnableChildPrice">Add this option: Below 13</label>
+                </div>
+                <input type="number" id="editChildPrice" min="0" step="0.01" placeholder="0.00" disabled />
+              </div>
+              <div class="form-group price-option">
+                <div class="checkbox-wrapper">
+                  <input type="checkbox" id="editEnableSeniorPrice" />
+                  <label for="editEnableSeniorPrice">Add this option: Above 55</label>
+                </div>
+                <input type="number" id="editSeniorPrice" min="0" step="0.01" placeholder="0.00" disabled />
+              </div>
+            </div>
+
+            <div class="upload-box" id="editUpload-box">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Click to Upload Files</p>
+            </div>
+            <div class="image-preview-container">
+              <input type="file" id="editFileInput" accept="image/*" multiple style="display: none;" />
+              <img id="editPreview-selected-image" style="display:none;">
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="cancel_Edit_Event">Cancel</button>
+              <button type="submit" class="btn btn-primary">Update Event</button>
             </div>
           </form>
         </div>

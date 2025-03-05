@@ -17,7 +17,8 @@ import {
   getDocs,
   addDoc,
   query,
-  where
+  where,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 // TODO: Replace with your Firebase project configuration
@@ -158,10 +159,29 @@ export async function createNewEvent(eventData) {
   }
 }
 
-export async function updateEvent(eventId, eventData) {
-  const eventRef = firebase.firestore().collection('events').doc(eventId);
-  await eventRef.update(eventData);
+// Define an asynchronous function to get event by ID
+export async function getEventById(eventId) {
+  try {
+    const eventDoc = await getDoc(doc(db, "events", eventId));
+    if (eventDoc.exists()) {
+      return { id: eventDoc.id, ...eventDoc.data() };
+    }
+    return null;
+  } catch (error) {
+    console.error("Error getting event:", error);
+    throw error;
+  }
 }
 
-
-
+// Define an asynchronous function to update an event
+export async function updateEvent(eventId, eventData) {
+  try {
+    const eventRef = doc(db, "events", eventId);
+    await updateDoc(eventRef, eventData);
+    console.log("Event updated successfully");
+    return true;
+  } catch (error) {
+    console.error("Error updating event:", error);
+    throw error;
+  }
+}
