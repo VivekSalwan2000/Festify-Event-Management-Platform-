@@ -907,3 +907,23 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 input[type="time"]::-webkit-calendar-picker-indicator:hover {
   opacity: 0.8;
 }
+
+
+
+/* Image Preview styles */ 
+
+.image-preview-container {
+    width: 50%;
+    margin: 0 auto;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+}
+
+.image-preview-container img {
+    width: 100%;
+    height: 100%;;
+    display: none;
+}
+.image-preview-container input {
+    display: none;
+}

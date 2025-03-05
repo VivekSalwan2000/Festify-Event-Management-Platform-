@@ -294,3 +294,28 @@ async function editEvent(eventId) {
     seniorPriceInput.disabled = !this.checked;
     if (!this.checked) seniorPriceInput.value = '';
   });
+
+
+    /* function is activated when someone clicks on the input image button*/
+    const previewImage = (event) => {
+
+      //getting images currently associated with the event
+      const imageFiles = event.target.files;
+      //number of files/images
+      const imageFilesLength = imageFiles.length;
+  
+      if(imageFilesLength > 0) {
+  
+        //image uploaded
+        const imageFile = imageFiles[0];
+        const imageURL = URL.createObjectURL(imageFile);
+        const filePreview = document.getElementById('preview-selected-image');
+        // input the image tag with the image and unhiding the tag
+        filePreview.src = imageURL;
+        filePreview.style.display = 'block';
+      }
+  
+    }
+  
+    // event listener for when the input changes
+    document.getElementById('fileInput').addEventListener('change', previewImage);
