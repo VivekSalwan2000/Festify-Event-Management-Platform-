@@ -19,6 +19,7 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
 
 // TODO: Replace with your Firebase project configuration
 const firebaseConfig = {
@@ -42,6 +43,9 @@ const auth = getAuth(app);
 
 // Initialize Firestore (Firebase's NoSQL database) for the app
 const db = getFirestore(app);
+
+// Add this after other Firebase initializations
+const storage = getStorage(app);
 
 
 /* ------------------------------
@@ -154,6 +158,19 @@ export async function createNewEvent(eventData) {
     console.error("Error creating event:", error);
 
     // Throw the error to be handled by the caller
+    throw error;
+  }
+}
+
+// Add this new function to handle image upload
+export async function uploadEventImage(file) {
+  try {
+    const storageRef = ref(storage, 'event-images/' + Date.now() + '_' + file.name);
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading image:", error);
     throw error;
   }
 }

@@ -4,7 +4,8 @@ import {
     fetchUserEvents,
     onUserStateChanged,
     getUserProfile,
-    saveUserProfile
+    saveUserProfile,
+    uploadEventImage
   } from './firebase.js';
   
   let currentUser = null;
@@ -68,6 +69,7 @@ import {
                   ${event.status || ''}
                 </span>
               </div>
+              ${event.imageUrl ? `<img src="${event.imageUrl}" alt="${event.title}" class="event-image" />` : ''}
               <div class="event-stats">
                 <div>
                   <p class="stat-label">
@@ -166,46 +168,45 @@ import {
   if (eventForm) {
     eventForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const title = document.getElementById('title').value;
-      const description = document.getElementById('description').value;
-      const date = document.getElementById('date').value;
-      const startTime = document.getElementById('start-time').value;
-      const endTime = document.getElementById('end-time').value;
-      const location = document.getElementById('location').value;
-      const tickets = document.getElementById('ticketInput').value;
-      const childPrice = document.getElementById('childPrice').value;
-      const generalPrice = document.getElementById('generalPrice').value;
-      const seniorPrice = document.getElementById('seniorPrice').value;
-      // Use a placeholder image URL (replace with your upload logic if needed)
-      const imageUrl = "https://costar.brightspotcdn.com/dims4/default/7838159/2147483647/strip/true/crop/2048x1365+0+0/resize/2048x1365!/quality/100/?url=http%3A%2F%2Fcostar-brightspot.s3.us-east-1.amazonaws.com%2F20230608_CAN_Toronto_Skyline_0001.jpg";
-  
-      // Include the organizerId when creating a new event
-      const eventData = {
-        title,
-        description,
-        date,
-        startTime,
-        endTime,
-        location,
-        tickets: parseInt(tickets),
-        imageUrl,
-        prices: {
-          general: parseFloat(generalPrice),
-          ...(document.getElementById('enableChildPrice').checked && { child: parseFloat(childPrice) }),
-          ...(document.getElementById('enableSeniorPrice').checked && { senior: parseFloat(seniorPrice) })
-        },
-        status: "upcoming",
-        organizerId: currentUser ? currentUser.uid : null,
-        createdAt: new Date().toISOString()
-      };
-  
+      
       try {
+        // Get the image file
+        const imageFile = document.getElementById('fileInput').files[0];
+        let imageUrl = null;
+        
+        if (imageFile) {
+          imageUrl = await uploadEventImage(imageFile);
+        }
+
+        // Get other form data
+        const eventData = {
+          title: document.getElementById('title').value,
+          description: document.getElementById('description').value,
+          date: document.getElementById('date').value,
+          startTime: document.getElementById('start-time').value,
+          endTime: document.getElementById('end-time').value,
+          location: document.getElementById('location').value,
+          tickets: parseInt(document.getElementById('ticketInput').value),
+          generalPrice: parseFloat(document.getElementById('generalPrice').value),
+          childPrice: document.getElementById('enableChildPrice').checked ? parseFloat(document.getElementById('childPrice').value) : null,
+          seniorPrice: document.getElementById('enableSeniorPrice').checked ? parseFloat(document.getElementById('seniorPrice').value) : null,
+          imageUrl: imageUrl, // Add the image URL to event data
+          organizerId: currentUser ? currentUser.uid : null
+        };
+
         await createNewEvent(eventData);
-        alert('Event created successfully!');
-        hideEventForm();
+        
+        // Reset form and hide it
+        e.target.reset();
+        document.getElementById('preview-selected-image').style.display = 'none';
+        document.getElementById('eventFormSection').style.display = 'none';
+        
+        // Refresh events display if needed
         renderEventsFromDB();
+        
       } catch (error) {
-        alert('Error creating event: ' + error.message);
+        console.error("Error creating event:", error);
+        alert("Failed to create event. Please try again.");
       }
     });
   }
