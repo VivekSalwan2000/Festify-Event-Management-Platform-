@@ -33,19 +33,14 @@ const firebaseConfig = {
   measurementId: "G-TNBDKZEDH1"
 };
 
-// Initialize the Firebase app with the provided configuration
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase Analytics for the app
 const analytics = getAnalytics(app);
 
-// Initialize Firebase Authentication for the app
 const auth = getAuth(app);
 
-// Initialize Firestore (Firebase's NoSQL database) for the app
 const db = getFirestore(app);
 
-// Add this after other Firebase initializations
 const storage = getStorage(app);
 
 
