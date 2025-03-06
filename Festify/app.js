@@ -1,6 +1,8 @@
 // app.js
 import { fetchEvents } from './firebase.js';
 
+let eventsCache = []; // Cache to store fetched events
+
 // Global variables
 let currentImageIndex = 0;
 let currentEvent = null;

@@ -88,6 +88,16 @@
         <h1>Discover Amazing Events</h1>
         <div class="search-container">
           <input type="text" id="searchInput" placeholder="Search events..." class="search-input" />
+          <script>
+            document.getElementById('searchInput').addEventListener('input', function() {
+              const query = this.value.toLowerCase();
+              const events = document.querySelectorAll('.event-card'); // Assuming event cards have this class
+              events.forEach(event => {
+                const title = event.querySelector('.event-title').textContent.toLowerCase(); // Assuming event title has this class
+                event.style.display = title.includes(query) ? '' : 'none';
+              });
+            });
+          </script>
 
 
         </div>
