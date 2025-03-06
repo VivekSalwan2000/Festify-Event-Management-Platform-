@@ -171,11 +171,21 @@ import {
       
       try {
         // Get the image file
-        const imageFile = document.getElementById('fileInput').files[0];
+        const imageFile1 = document.getElementById('fileInput1').files[0];
+        const imageFile2 = document.getElementById('fileInput2').files[0];
+        const imageFile3 = document.getElementById('fileInput3').files[0];
         let imageUrl = null;
+        let imageUrl2 = null;
+        let imageUrl3 = null;
         
-        if (imageFile) {
-          imageUrl = await uploadEventImage(imageFile);
+        if (imageFile1) {
+          imageUrl = await uploadEventImage(imageFile1);
+        }
+        if (imageFile2) {
+          imageUrl2 = await uploadEventImage(imageFile2);
+        }
+        if (imageFile3) {
+          imageUrl3 = await uploadEventImage(imageFile3);
         }
 
         // Get other form data
@@ -191,6 +201,8 @@ import {
           childPrice: document.getElementById('enableChildPrice').checked ? parseFloat(document.getElementById('childPrice').value) : null,
           seniorPrice: document.getElementById('enableSeniorPrice').checked ? parseFloat(document.getElementById('seniorPrice').value) : null,
           imageUrl: imageUrl, // Add the image URL to event data
+          imageUrl2: imageUrl2,
+          imageUrl3: imageUrl3,
           organizerId: currentUser ? currentUser.uid : null
         };
 
@@ -198,7 +210,9 @@ import {
         
         // Reset form and hide it
         e.target.reset();
-        document.getElementById('preview-selected-image').style.display = 'none';
+        document.getElementById('preview-selected-image1').style.display = 'none';
+        document.getElementById('preview-selected-image2').style.display = 'none';
+        document.getElementById('preview-selected-image3').style.display = 'none';
         document.getElementById('eventFormSection').style.display = 'none';
         
         // Refresh events display if needed
@@ -244,8 +258,14 @@ import {
   document.getElementById("cancel_Profile").addEventListener("click", hideProfileForm);
   document.getElementById("cancel_Create_Event").addEventListener("click", hideEventForm);
 
-  document.getElementById("upload-box").addEventListener("click", () => {
-    document.getElementById('fileInput').click();
+  document.getElementById("upload-box1").addEventListener("click", () => {
+    document.getElementById('fileInput1').click();
+  });
+  document.getElementById("upload-box2").addEventListener("click", () => {
+    document.getElementById('fileInput2').click();
+  });
+  document.getElementById("upload-box3").addEventListener("click", () => {
+    document.getElementById('fileInput3').click();
   });
 
   // Handle enabling/disabling price inputs based on checkboxes
@@ -263,25 +283,24 @@ import {
 
 
     /* function is activated when someone clicks on the input image button*/
-    const previewImage = (event) => {
-
-      //getting images currently associated with the event
+    const previewImages = (event, previewId) => {
+      // Get images currently associated with the event
       const imageFiles = event.target.files;
-      //number of files/images
       const imageFilesLength = imageFiles.length;
-  
-      if(imageFilesLength > 0) {
-  
-        //image uploaded
+    
+      if (imageFilesLength > 0) {
+        // Get the first image uploaded
         const imageFile = imageFiles[0];
         const imageURL = URL.createObjectURL(imageFile);
-        const filePreview = document.getElementById('preview-selected-image');
-        // input the image tag with the image and unhiding the tag
+        const filePreview = document.getElementById(previewId);
+        
+        // Input the image tag with the image and unhide the tag
         filePreview.src = imageURL;
         filePreview.style.display = 'block';
       }
-  
-    }
-  
-    // event listener for when the input changes
-    document.getElementById('fileInput').addEventListener('change', previewImage);
+    };
+    
+    // Attach event listeners for three different file inputs
+    document.getElementById('fileInput1').addEventListener('change', (event) => previewImages(event, 'preview-selected-image1'));
+    document.getElementById('fileInput2').addEventListener('change', (event) => previewImages(event, 'preview-selected-image2'));
+    document.getElementById('fileInput3').addEventListener('change', (event) => previewImages(event, 'preview-selected-image3'));

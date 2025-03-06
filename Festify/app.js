@@ -20,7 +20,7 @@ function createEventCard(event) {
     <div class="event-card">
       <div class="event-image-container">
         <img src="${event.imageUrl}" alt="${event.title}" class="event-image">
-        <div class="event-price">${event.price}</div>
+        <div class="event-price">${event.generalPrice}</div>
       </div>
       <div class="event-details">
         <h3 class="event-title">${event.title}</h3>
@@ -41,7 +41,7 @@ function createEventCard(event) {
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
-          <span>${event.time}</span>
+          <span>${event.startTime}</span>
         </div>
         <div class="event-info">
           <!-- SVG for location (insert your SVG content below) -->
