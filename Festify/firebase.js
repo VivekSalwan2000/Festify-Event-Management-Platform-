@@ -17,7 +17,8 @@ import {
   getDocs,
   addDoc,
   query,
-  where
+  where,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
 
@@ -32,19 +33,14 @@ const firebaseConfig = {
   measurementId: "G-TNBDKZEDH1"
 };
 
-// Initialize the Firebase app with the provided configuration
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase Analytics for the app
 const analytics = getAnalytics(app);
 
-// Initialize Firebase Authentication for the app
 const auth = getAuth(app);
 
-// Initialize Firestore (Firebase's NoSQL database) for the app
 const db = getFirestore(app);
 
-// Add this after other Firebase initializations
 const storage = getStorage(app);
 
 
@@ -162,6 +158,19 @@ export async function createNewEvent(eventData) {
   }
 }
 
+// Define an asynchronous function to get event by ID
+export async function getEventById(eventId) {
+  try {
+    const eventDoc = await getDoc(doc(db, "events", eventId));
+    if (eventDoc.exists()) {
+      return { id: eventDoc.id, ...eventDoc.data() };
+    }
+    return null;
+  } catch (error) {
+    console.error("Error getting event:", error);
+    throw error;
+  }
+}
 // Add this new function to handle image upload
 export async function uploadEventImage(file) {
   try {
@@ -176,3 +185,15 @@ export async function uploadEventImage(file) {
 }
 
 
+// Define an asynchronous function to update an event
+export async function updateEvent(eventId, eventData) {
+  try {
+    const eventRef = doc(db, "events", eventId);
+    await updateDoc(eventRef, eventData);
+    console.log("Event updated successfully");
+    return true;
+  } catch (error) {
+    console.error("Error updating event:", error);
+    throw error;
+  }
+}
