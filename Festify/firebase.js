@@ -91,20 +91,31 @@ export async function getUserProfile(uid) {
 // Define an asynchronous function to fetch all events
 export async function fetchEvents() {
   try {
+    console.log('Attempting to fetch events from Firestore...');
     // Get the reference to the "events" collection in the database
     const eventsCol = collection(db, "events");
+    console.log('Events collection reference created');
 
     // Execute the query to get the events snapshot
+    console.log('Executing getDocs query...');
     const eventsSnapshot = await getDocs(eventsCol);
+    console.log('Query executed, snapshot received');
 
     // Map through the snapshot documents to create an array of event objects with their id and data
-    const eventsList = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const eventsList = eventsSnapshot.docs.map(doc => {
+      const data = doc.data();
+      console.log('Event data:', data);
+      return { id: doc.id, ...data };
+    });
 
+    console.log('Total events fetched:', eventsList.length);
     // Return the list of events
     return eventsList;
   } catch (error) {
     // Log any errors that occur during the fetch operation
     console.error("Error fetching events:", error);
+    console.error("Error details:", error.message);
+    console.error("Error stack:", error.stack);
 
     // Return an empty array in case of an error
     return [];

@@ -159,43 +159,263 @@ body {
     }
 }
 
+/* Event Details Popup */
+#eventPopup {
+    padding: 20px;
+    background: white;
+}
+
+.event-popup-content {
+    padding: 20px;
+    position: relative;
+}
+
+#eventDescription {
+    margin: 20px 0;
+    line-height: 1.6;
+    color: #666;
+}
+
+#eventTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.event-images-slider {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.event-images {
+    display: flex;
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.event-images img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-size: 24px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.slider-btn:hover {
+    opacity: 1;
+    background: rgba(0,0,0,0.7);
+}
+
+.slider-btn.prev {
+    left: 15px;
+}
+
+.slider-btn.next {
+    right: 15px;
+}
+
+.event-images-slider:hover .slider-btn {
+    opacity: 0.7;
+}
+
+.event-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ticket-section {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.ticket-types {
+    display: grid;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.ticket-type {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.ticket-type:hover {
+    background: #f0f0f0;
+}
+
+.ticket-type label {
+    font-weight: 600;
+    color: #333;
+}
+
+.ticket-price {
+    font-weight: bold;
+    color: #007bff;
+    font-size: 1.1em;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-selector button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-selector button:hover {
+    background: #0056b3;
+}
+
+.quantity-selector button:active {
+    transform: scale(0.95);
+}
+
+.quantity-selector input {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.proceed-payment-btn {
+    width: 100%;
+    padding: 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 30px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.proceed-payment-btn:hover {
+    background: #0056b3;
+}
+
 /* Popup Styles */
-#content.active {
-    filter: blur(20px); 
-    transition: filter 0.2s ease-in-out; 
-    pointer-events: none;
-    user-select: none;
-}
-
-#popup {
-    position: fixed;
-    border-radius: 1rem;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 450px;
-    padding: 50px;
-    background: #fff;
-    box-shadow: 0 5px 30px rgba(0,0,0,.30);
-}
-
 .hidden {
     display: none;
 }
 
+/* Common popup styles */
+#popup, #eventPopup {
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+}
+
+/* Login popup specific styles */
+#popup {
+    top: 40%;
+    width: 450px;
+    padding: 50px;
+    border-radius: 1rem;
+}
+
+/* Event popup specific styles */
+#eventPopup {
+    top: 50%;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    border-radius: 12px;
+    overflow-y: auto;
+    z-index: 2000;
+}
+
+/* Close button styles */
 .close-btn {
     position: absolute;
-    top: 2px;
-    right: 10px;
+    right: 15px;
     background: none;
     border: none;
-    font-size: 18px;
     cursor: pointer;
     color: #333;
+    z-index: 2001;
+}
+
+#popup .close-btn {
+    top: 2px;
+    font-size: 18px;
+}
+
+#eventPopup .close-btn {
+    top: 10px;
+    font-size: 24px;
 }
 
 .close-btn:hover {
     color: red;
+}
+
+/* Content blur effect */
+#content {
+    transition: filter 0.3s ease;
+    min-height: 100vh;
+}
+
+#content.active {
+    filter: blur(5px);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Prevent body scroll when popup is open */
+body.popup-open {
+    overflow: hidden;
 }
 
 h2 {
