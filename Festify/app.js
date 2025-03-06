@@ -7,6 +7,14 @@ let eventsCache = []; // Cache to store fetched events
 let currentImageIndex = 0;
 let currentEvent = null;
 
+// Function to format time from 24-hour to 12-hour format with AM/PM
+function formatTime(time) {
+  const [hour, minute] = time.split(':');
+  const suffix = hour >= 12 ? 'PM' : 'AM';
+  const formattedHour = hour % 12 || 12; // Convert to 12-hour format
+  return `${formattedHour}:${minute} ${suffix}`;
+}
+
 // Function to create event card HTML
 function createEventCard(event) {
   const eventData = encodeURIComponent(JSON.stringify(event));
@@ -32,7 +40,7 @@ function createEventCard(event) {
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
-          <span>${event.startTime}</span>
+          <span>${formatTime(event.startTime)} - ${formatTime(event.endTime)}</span>
         </div>
         <div class="event-info">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -61,29 +69,29 @@ export function showEventPopup(encodedEventData) {
     document.getElementById('eventTitle').textContent = event.title;
     document.getElementById('eventDescription').textContent = event.description || '';
     document.getElementById('eventDate').textContent = event.date;
-    document.getElementById('eventTime').textContent = event.startTime;
+    document.getElementById('eventTime').textContent = `${formatTime(event.startTime)} - ${formatTime(event.endTime)}`;
     document.getElementById('eventLocation').textContent = event.location;
     
-  // Update ticket prices
-  document.getElementById('generalPrice').textContent = event.generalPrice ? `$${event.generalPrice}` : 'N/A';
-  
-  // Show/hide senior and child ticket options
-  const seniorTickets = document.getElementById('seniorTickets');
-  const childTickets = document.getElementById('childTickets');
-  
-  if (event.seniorPrice) {
-    seniorTickets.style.display = 'grid';
-    document.getElementById('seniorPrice').textContent = `$${event.seniorPrice}`;
-  } else {
-    seniorTickets.style.display = 'none';
-  }
-  
-  if (event.childPrice) {
-    childTickets.style.display = 'grid';
-    document.getElementById('childPrice').textContent = `$${event.childPrice}`;
-  } else {
-    childTickets.style.display = 'none';
-  }
+    // Update ticket prices
+    document.getElementById('generalPrice').textContent = event.generalPrice ? `$${event.generalPrice}` : 'N/A';
+    
+    // Show/hide senior and child ticket options
+    const seniorTickets = document.getElementById('seniorTickets');
+    const childTickets = document.getElementById('childTickets');
+    
+    if (event.seniorPrice) {
+      seniorTickets.style.display = 'grid';
+      document.getElementById('seniorPrice').textContent = `$${event.seniorPrice}`;
+    } else {
+      seniorTickets.style.display = 'none';
+    }
+    
+    if (event.childPrice) {
+      childTickets.style.display = 'grid';
+      document.getElementById('childPrice').textContent = `$${event.childPrice}`;
+    } else {
+      childTickets.style.display = 'none';
+    }
     
     // Reset quantities
     document.getElementById('generalQuantity').value = '0';
