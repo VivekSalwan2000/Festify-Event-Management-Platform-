@@ -87,9 +87,9 @@ async function renderEventsFromDB() {
                   Prices
                 </p>
                 <div class="price-list">
-                  <p class="price-item">General: ${formatCurrency(event.prices?.general || 0)}</p>
-                  ${event.prices?.child ? `<p class="price-item">Below 13: ${formatCurrency(event.prices.child)}</p>` : ''}
-                  ${event.prices?.senior ? `<p class="price-item">Above 55: ${formatCurrency(event.prices.senior)}</p>` : ''}
+                  <p class="price-item">General: ${formatCurrency(event.generalPrice)}</p>
+                  <p class="price-item">Below 13: ${formatCurrency(event.childPrice)}</p>
+                  <p class="price-item">Above 55: ${formatCurrency(event.seniorPrice)}</p>
                 </div>
               </div>
             </div>
@@ -290,10 +290,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('preview-selected-image1').style.display = 'none';
         document.getElementById('preview-selected-image2').style.display = 'none';
         document.getElementById('preview-selected-image3').style.display = 'none';
-        document.getElementById('eventFormSection').style.display = 'none';
         
         // Refresh events display if needed
         renderEventsFromDB();
+        hideEventForm();
         
       } catch (error) {
         console.error("Error creating event:", error);
