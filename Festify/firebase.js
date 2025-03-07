@@ -18,7 +18,8 @@ import {
   addDoc,
   query,
   where,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
 
@@ -200,3 +201,15 @@ export async function updateEvent(eventId, eventData) {
     throw error;
   }
 }
+
+export async function deleteEvent(eventId) {
+  try {
+    const eventRef = doc(db, "events", eventId);
+    await deleteDoc(eventRef);
+    return true;
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    throw error;
+  }
+}
+

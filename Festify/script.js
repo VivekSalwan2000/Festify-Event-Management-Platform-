@@ -7,7 +7,8 @@ import {
   saveUserProfile,
   uploadEventImage,
   updateEvent,
-  getEventById
+  getEventById,
+  deleteEvent
 } from './firebase.js';
 
 let currentUser = null;
@@ -180,6 +181,9 @@ function hideEditForm() {
 
 // Function to populate edit form with event data
 function populateEditForm(event) {
+  const editEventForm = document.getElementById('editEventForm');
+  editEventForm.dataset.eventId = event.id;
+
   document.getElementById('editTitle').value = event.title || '';
   document.getElementById('editDescription').value = event.description || '';
   document.getElementById('editDate').value = event.date || '';
@@ -232,9 +236,6 @@ function populateEditForm(event) {
   } else {
     document.getElementById('editPreview-selected-image3').style.display = 'none';
   }
-
-  // Store the event ID in the form's dataset for later use
-  document.getElementById('editEventForm').dataset.eventId = event.id;
 }
 
 // Wait for DOM to be fully loaded before attaching event listeners
@@ -518,4 +519,38 @@ document.addEventListener('DOMContentLoaded', () => {
     seniorPriceInput.disabled = !this.checked;
     if (!this.checked) seniorPriceInput.value = '';
   });
+
+  // Delete Event button functionality
+  const deleteEventBtn = document.getElementById("delete_Event");
+  if (deleteEventBtn) {
+    deleteEventBtn.addEventListener("click", async () => {
+      try {
+        const editEventForm = document.getElementById('editEventForm');
+        if (!editEventForm) {
+          throw new Error('Edit form not found');
+        }
+
+        const eventId = editEventForm.dataset.eventId;
+        if (!eventId) {
+          throw new Error('Could not find event ID');
+        }
+        
+        const confirmed = confirm("Are you sure you want to delete this event? This action cannot be undone.");
+        
+        if (confirmed) {
+          const success = await deleteEvent(eventId);
+          if (success) {
+            alert("Event deleted successfully!");
+            hideEditForm();
+            await renderEventsFromDB();
+          } else {
+            throw new Error('Delete operation failed');
+          }
+        }
+      } catch (error) {
+        console.error("Error deleting event:", error);
+        alert("Failed to delete event. Error: " + error.message);
+      }
+    });
+  }
 });
