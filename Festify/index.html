@@ -98,8 +98,6 @@
               });
             });
           </script>
-
-
         </div>
       </div>
     </section>
@@ -118,13 +116,18 @@
   <div id="eventPopup" class="hidden">
     <button class="close-btn" onclick="closeEventPopup()">✖</button>
     <div class="event-popup-content">
-      <div class="event-images-slider">
-        <div class="event-images" id="eventImages">
-          <!-- Images will be injected here -->
+          <div class="event-image-container" style="position: relative; display: flex; justify-content: center;">
+            <div class="event-images" id="eventImages" style="display: flex; justify-content: space-around;">
+              <img src="" alt="Event Image 1" id="eventImage1" style="max-width: 30%; height: auto; border-radius: 8px;"/>
+              <img src="" alt="Event Image 2" id="eventImage2" style="max-width: 30%; height: auto; border-radius: 8px;"/>
+              <img src="" alt="Event Image 3" id="eventImage3" style="max-width: 30%; height: auto; border-radius: 8px;"/>
+            </div>
+            <div class="image-hover-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+              <img src="" alt="Hovered Image" id="hoveredImage" style="max-width: 100%; height: auto; border-radius: 8px; display: none;"/>
+            </div>
+
         </div>
-        <button class="slider-btn prev" onclick="prevImage()">❮</button>
-        <button class="slider-btn next" onclick="nextImage()">❯</button>
-      </div>
+
       <h2 id="eventTitle"></h2>
       <div class="event-popup-details">
         <p id="eventDescription"></p>
@@ -244,13 +247,8 @@
       input.value = newValue;
     }
 
-    window.prevImage = function() {
-      window.dispatchEvent(new CustomEvent('prevImage'));
-    }
+    // Remove slider functionality
 
-    window.nextImage = function() {
-      window.dispatchEvent(new CustomEvent('nextImage'));
-    }
 
     window.proceedToPayment = function() {
       window.dispatchEvent(new CustomEvent('proceedToPayment'));

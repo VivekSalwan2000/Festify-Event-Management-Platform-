@@ -54,8 +54,8 @@ function createEventCard(event) {
   `;
 }
 
-// Function to show event popup
-export function showEventPopup(encodedEventData) {
+window.showEventPopup = function(encodedEventData) {
+
   try {
     console.log('Received encoded event data:', encodedEventData);
     const eventData = decodeURIComponent(encodedEventData);
@@ -98,15 +98,27 @@ export function showEventPopup(encodedEventData) {
     document.getElementById('seniorQuantity').value = '0';
     document.getElementById('childQuantity').value = '0';
     
-    // Update image slider
-    const imagesContainer = document.getElementById('eventImages');
-    const images = event.images || [event.imageUrl];
-    imagesContainer.innerHTML = images.map(img => 
-      `<img src="${img}" alt="${event.title}">`
-    ).join('');
-    updateImageSlider();
+    // Directly set the image sources
+    document.getElementById('eventImage1').src = event.imageUrl || '';
+    document.getElementById('eventImage2').src = event.imageUrl2 || '';
+    document.getElementById('eventImage3').src = event.imageUrl3 || '';
+
     
-    // Show popup
+    // Show popup and set up hover effect
+    const images = document.querySelectorAll('.event-images img');
+    const hoveredImage = document.getElementById('hoveredImage');
+
+    images.forEach((image) => {
+        image.addEventListener('mouseover', () => {
+            hoveredImage.src = image.src; // Set the hovered image source
+            hoveredImage.style.display = 'block'; // Show the hovered image
+        });
+
+        image.addEventListener('mouseout', () => {
+            hoveredImage.style.display = 'none'; // Hide the hovered image
+        });
+    });
+
     document.getElementById('content').classList.add('active');
     document.getElementById('eventPopup').classList.remove('hidden');
     document.body.classList.add('popup-open');
