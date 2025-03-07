@@ -152,19 +152,11 @@ export async function fetchUserEvents(userId) {
 // Define an asynchronous function to create a new event with the provided event data
 export async function createNewEvent(eventData) {
   try {
-    // Add a new document to the "events" collection with the provided event data
     const docRef = await addDoc(collection(db, "events"), eventData);
-
-    // Log the ID of the newly created event document
     console.log("Event created with ID:", docRef.id);
-
-    // Return the ID of the newly created event
     return docRef.id;
   } catch (error) {
-    // Log any errors that occur during the event creation process
     console.error("Error creating event:", error);
-
-    // Throw the error to be handled by the caller
     throw error;
   }
 }

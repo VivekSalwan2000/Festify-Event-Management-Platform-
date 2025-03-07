@@ -5,7 +5,9 @@ import {
   onUserStateChanged,
   getUserProfile,
   saveUserProfile,
-  uploadEventImage
+  uploadEventImage,
+  updateEvent,
+  getEventById
 } from './firebase.js';
 
 let currentUser = null;
@@ -55,7 +57,7 @@ async function renderEventsFromDB() {
     const eventsGrid = document.getElementById('eventsGrid');
     if (eventsGrid) {
       eventsGrid.innerHTML = events.map((event, index) => `
-        <div class="event-card" style="animation-delay: ${index * 0.1}s">
+        <div class="event-card" style="animation-delay: ${index * 0.1}s" data-event-id="${event.id}">
           <div class="event-card-content">
             <div class="event-header">
               <div>
@@ -93,6 +95,19 @@ async function renderEventsFromDB() {
           </div>
         </div>
       `).join('');
+
+      // Add click event listeners to all event cards
+      const eventCards = eventsGrid.querySelectorAll('.event-card');
+      eventCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const eventId = card.getAttribute('data-event-id');
+          const event = events.find(e => e.id === eventId);
+          if (event) {
+            populateEditForm(event);
+            showEditForm();
+          }
+        });
+      });
     }
   } catch (error) {
     console.error("Error rendering events:", error);
@@ -133,15 +148,235 @@ function resetDashboard() {
   renderEventsFromDB();
 }
 
-// DOMContentLoaded event listener
+// Function to preview images
+const previewImages = (event, previewId) => {
+  const imageFiles = event.target.files;
+  const imageFilesLength = imageFiles.length;
+
+  if (imageFilesLength > 0) {
+    const imageFile = imageFiles[0];
+    const imageURL = URL.createObjectURL(imageFile);
+    const filePreview = document.getElementById(previewId);
+    filePreview.src = imageURL;
+    filePreview.style.display = 'block';
+  }
+};
+
+// Function to show edit form
+function showEditForm() {
+  document.getElementById('editEventFormSection').style.display = 'block';
+  document.getElementById('eventFormSection').style.display = 'none';
+  document.getElementById('profileFormSection').style.display = 'none';
+  document.querySelector('.metrics-section').style.display = 'none';
+  document.querySelector('.events-section').style.display = 'none';
+}
+
+// Function to hide edit form
+function hideEditForm() {
+  document.getElementById('editEventFormSection').style.display = 'none';
+  document.querySelector('.metrics-section').style.display = 'block';
+  document.querySelector('.events-section').style.display = 'block';
+}
+
+// Function to populate edit form with event data
+function populateEditForm(event) {
+  document.getElementById('editTitle').value = event.title || '';
+  document.getElementById('editDescription').value = event.description || '';
+  document.getElementById('editDate').value = event.date || '';
+  document.getElementById('editStartTime').value = event.startTime || '';
+  document.getElementById('editEndTime').value = event.endTime || '';
+  document.getElementById('editLocation').value = event.location || '';
+  document.getElementById('editTicketInput').value = event.tickets || 0;
+  document.getElementById('editGeneralPrice').value = event.prices?.general || 0;
+
+  // Handle child price
+  if (event.prices?.child) {
+    document.getElementById('editEnableChildPrice').checked = true;
+    document.getElementById('editChildPrice').disabled = false;
+    document.getElementById('editChildPrice').value = event.prices.child;
+  } else {
+    document.getElementById('editEnableChildPrice').checked = false;
+    document.getElementById('editChildPrice').disabled = true;
+    document.getElementById('editChildPrice').value = '';
+  }
+
+  // Handle senior price
+  if (event.prices?.senior) {
+    document.getElementById('editEnableSeniorPrice').checked = true;
+    document.getElementById('editSeniorPrice').disabled = false;
+    document.getElementById('editSeniorPrice').value = event.prices.senior;
+  } else {
+    document.getElementById('editEnableSeniorPrice').checked = false;
+    document.getElementById('editSeniorPrice').disabled = true;
+    document.getElementById('editSeniorPrice').value = '';
+  }
+
+  // Handle existing images
+  if (event.imageUrl) {
+    document.getElementById('editPreview-selected-image1').src = event.imageUrl;
+    document.getElementById('editPreview-selected-image1').style.display = 'block';
+  } else {
+    document.getElementById('editPreview-selected-image1').style.display = 'none';
+  }
+
+  if (event.imageUrl2) {
+    document.getElementById('editPreview-selected-image2').src = event.imageUrl2;
+    document.getElementById('editPreview-selected-image2').style.display = 'block';
+  } else {
+    document.getElementById('editPreview-selected-image2').style.display = 'none';
+  }
+
+  if (event.imageUrl3) {
+    document.getElementById('editPreview-selected-image3').src = event.imageUrl3;
+    document.getElementById('editPreview-selected-image3').style.display = 'block';
+  } else {
+    document.getElementById('editPreview-selected-image3').style.display = 'none';
+  }
+
+  // Store the event ID in the form's dataset for later use
+  document.getElementById('editEventForm').dataset.eventId = event.id;
+}
+
+// Wait for DOM to be fully loaded before attaching event listeners
 document.addEventListener('DOMContentLoaded', () => {
-  // "Create New Event" button click
+  // Create Event form submission handler
+  const eventForm = document.getElementById('eventForm');
+  if (eventForm) {
+    eventForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      try {
+        // Get the image file
+        const imageFile1 = document.getElementById('fileInput1').files[0];
+        const imageFile2 = document.getElementById('fileInput2').files[0];
+        const imageFile3 = document.getElementById('fileInput3').files[0];
+        let imageUrl = null;
+        let imageUrl2 = null;
+        let imageUrl3 = null;
+        
+        if (imageFile1) {
+          imageUrl = await uploadEventImage(imageFile1);
+        }
+        if (imageFile2) {
+          imageUrl2 = await uploadEventImage(imageFile2);
+        }
+        if (imageFile3) {
+          imageUrl3 = await uploadEventImage(imageFile3);
+        }
+
+        // Get other form data
+        const eventData = {
+          title: document.getElementById('title').value,
+          description: document.getElementById('description').value,
+          date: document.getElementById('date').value,
+          startTime: document.getElementById('start-time').value,
+          endTime: document.getElementById('end-time').value,
+          location: document.getElementById('location').value,
+          tickets: parseInt(document.getElementById('ticketInput').value),
+          generalPrice: parseFloat(document.getElementById('generalPrice').value),
+          childPrice: document.getElementById('enableChildPrice').checked ? parseFloat(document.getElementById('childPrice').value) : null,
+          seniorPrice: document.getElementById('enableSeniorPrice').checked ? parseFloat(document.getElementById('seniorPrice').value) : null,
+          imageUrl: imageUrl, // Add the image URL to event data
+          imageUrl2: imageUrl2,
+          imageUrl3: imageUrl3,
+          organizerId: currentUser ? currentUser.uid : null
+        };
+
+        await createNewEvent(eventData);
+        
+        // Reset form and hide it
+        e.target.reset();
+        document.getElementById('preview-selected-image1').style.display = 'none';
+        document.getElementById('preview-selected-image2').style.display = 'none';
+        document.getElementById('preview-selected-image3').style.display = 'none';
+        document.getElementById('eventFormSection').style.display = 'none';
+        
+        // Refresh events display if needed
+        renderEventsFromDB();
+        
+      } catch (error) {
+        console.error("Error creating event:", error);
+        alert("Failed to create event. Please try again.");
+      }
+    });
+  }
+
+  // Edit Event form submission handler
+  const editEventForm = document.getElementById('editEventForm');
+  if (editEventForm) {
+    editEventForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const eventId = editEventForm.dataset.eventId;
+      if (!eventId) {
+        alert('Error: No event ID found');
+        return;
+      }
+
+      try {
+        // Handle image uploads first
+        const imageFile1 = document.getElementById('editFileInput1').files[0];
+        const imageFile2 = document.getElementById('editFileInput2').files[0];
+        const imageFile3 = document.getElementById('editFileInput3').files[0];
+        
+        let imageUrl = null;
+        let imageUrl2 = null;
+        let imageUrl3 = null;
+
+        if (imageFile1) {
+          imageUrl = await uploadEventImage(imageFile1);
+        }
+        if (imageFile2) {
+          imageUrl2 = await uploadEventImage(imageFile2);
+        }
+        if (imageFile3) {
+          imageUrl3 = await uploadEventImage(imageFile3);
+        }
+
+        // Get updated event data from form
+        const updatedEventData = {
+          title: document.getElementById('editTitle').value,
+          description: document.getElementById('editDescription').value,
+          date: document.getElementById('editDate').value,
+          startTime: document.getElementById('editStartTime').value,
+          endTime: document.getElementById('editEndTime').value,
+          location: document.getElementById('editLocation').value,
+          tickets: parseInt(document.getElementById('editTicketInput').value),
+          prices: {
+            general: parseFloat(document.getElementById('editGeneralPrice').value),
+            ...(document.getElementById('editEnableChildPrice').checked && {
+              child: parseFloat(document.getElementById('editChildPrice').value)
+            }),
+            ...(document.getElementById('editEnableSeniorPrice').checked && {
+              senior: parseFloat(document.getElementById('editSeniorPrice').value)
+            })
+          }
+        };
+
+        // Only include new image URLs if files were uploaded
+        if (imageUrl) updatedEventData.imageUrl = imageUrl;
+        if (imageUrl2) updatedEventData.imageUrl2 = imageUrl2;
+        if (imageUrl3) updatedEventData.imageUrl3 = imageUrl3;
+
+        // Update the event in Firebase
+        await updateEvent(eventId, updatedEventData);
+        alert('Event updated successfully!');
+        hideEditForm();
+        renderEventsFromDB(); // Refresh the events list
+      } catch (error) {
+        console.error('Error updating event:', error);
+        alert('Error updating event: ' + error.message);
+      }
+    });
+  }
+
+  // Create New Event button
   const createNewEventBtn = document.getElementById('createNewEventBtn');
   if (createNewEventBtn) {
     createNewEventBtn.addEventListener('click', showEventForm);
   }
 
-  // Logo click resets dashboard
+  // Logo click handler
   const logo = document.querySelector('.logo');
   if (logo) {
     logo.addEventListener('click', (e) => {
@@ -150,157 +385,137 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // "Edit Profile" button click
+  // Edit Profile button
   const editProfileBtn = document.querySelector('.btn.btn-outline');
   if (editProfileBtn) {
     editProfileBtn.addEventListener('click', showProfileForm);
   }
-});
 
-// File upload helper (if needed)
-function triggerFileInput() {
-  consol
-  document.getElementById('fileInput').click();
-}
+  // Cancel Edit button
+  const cancelEditBtn = document.getElementById('cancel_Edit_Event');
+  if (cancelEditBtn) {
+    cancelEditBtn.addEventListener('click', hideEditForm);
+  }
 
-// Event form submission handler
-const eventForm = document.getElementById('eventForm');
-if (eventForm) {
-  eventForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    try {
-      // Get the image file
-      const imageFile1 = document.getElementById('fileInput1').files[0];
-      const imageFile2 = document.getElementById('fileInput2').files[0];
-      const imageFile3 = document.getElementById('fileInput3').files[0];
-      let imageUrl = null;
-      let imageUrl2 = null;
-      let imageUrl3 = null;
-      
-      if (imageFile1) {
-        imageUrl = await uploadEventImage(imageFile1);
+  // Edit form price checkbox handlers
+  const editEnableChildPrice = document.getElementById('editEnableChildPrice');
+  if (editEnableChildPrice) {
+    editEnableChildPrice.addEventListener('change', function() {
+      const childPriceInput = document.getElementById('editChildPrice');
+      childPriceInput.disabled = !this.checked;
+      if (!this.checked) childPriceInput.value = '';
+    });
+  }
+
+  const editEnableSeniorPrice = document.getElementById('editEnableSeniorPrice');
+  if (editEnableSeniorPrice) {
+    editEnableSeniorPrice.addEventListener('change', function() {
+      const seniorPriceInput = document.getElementById('editSeniorPrice');
+      seniorPriceInput.disabled = !this.checked;
+      if (!this.checked) seniorPriceInput.value = '';
+    });
+  }
+
+  // Edit form image upload handlers
+  const editUploadBox1 = document.getElementById('editUpload-box1');
+  if (editUploadBox1) {
+    editUploadBox1.addEventListener('click', () => {
+      document.getElementById('editFileInput1').click();
+    });
+  }
+
+  const editUploadBox2 = document.getElementById('editUpload-box2');
+  if (editUploadBox2) {
+    editUploadBox2.addEventListener('click', () => {
+      document.getElementById('editFileInput2').click();
+    });
+  }
+
+  const editUploadBox3 = document.getElementById('editUpload-box3');
+  if (editUploadBox3) {
+    editUploadBox3.addEventListener('click', () => {
+      document.getElementById('editFileInput3').click();
+    });
+  }
+
+  // Edit form file input change handlers
+  const editFileInput1 = document.getElementById('editFileInput1');
+  if (editFileInput1) {
+    editFileInput1.addEventListener('change', (event) => 
+      previewImages(event, 'editPreview-selected-image1'));
+  }
+
+  const editFileInput2 = document.getElementById('editFileInput2');
+  if (editFileInput2) {
+    editFileInput2.addEventListener('change', (event) => 
+      previewImages(event, 'editPreview-selected-image2'));
+  }
+
+  const editFileInput3 = document.getElementById('editFileInput3');
+  if (editFileInput3) {
+    editFileInput3.addEventListener('change', (event) => 
+      previewImages(event, 'editPreview-selected-image3'));
+  }
+
+  // File upload helper (if needed)
+  function triggerFileInput() {
+    consol
+    document.getElementById('fileInput').click();
+  }
+
+  // Profile form submission handler
+  const profileForm = document.getElementById('profileForm');
+  if (profileForm) {
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentUser) {
+        alert("No user is logged in. Please log in again.");
+        return;
       }
-      if (imageFile2) {
-        imageUrl2 = await uploadEventImage(imageFile2);
+      const orgName = document.getElementById('orgName').value;
+      const phone = document.getElementById('phone').value;
+      const email = document.getElementById('email').value;
+      const address = document.getElementById('address').value;
+      const website = document.getElementById('website').value;
+      try {
+        await saveUserProfile(currentUser.uid, {
+          orgName,
+          phone,
+          email,
+          address,
+          website
+        });
+        alert('Profile updated successfully!');
+        hideProfileForm();
+      } catch (error) {
+        alert('Error updating profile: ' + error.message);
       }
-      if (imageFile3) {
-        imageUrl3 = await uploadEventImage(imageFile3);
-      }
+    });
+  }
 
-      // Get other form data
-      const eventData = {
-        title: document.getElementById('title').value,
-        description: document.getElementById('description').value,
-        date: document.getElementById('date').value,
-        startTime: document.getElementById('start-time').value,
-        endTime: document.getElementById('end-time').value,
-        location: document.getElementById('location').value,
-        tickets: parseInt(document.getElementById('ticketInput').value),
-        generalPrice: parseFloat(document.getElementById('generalPrice').value),
-        childPrice: document.getElementById('enableChildPrice').checked ? parseFloat(document.getElementById('childPrice').value) : null,
-        seniorPrice: document.getElementById('enableSeniorPrice').checked ? parseFloat(document.getElementById('seniorPrice').value) : null,
-        imageUrl: imageUrl, // Add the image URL to event data
-        imageUrl2: imageUrl2,
-        imageUrl3: imageUrl3,
-        organizerId: currentUser ? currentUser.uid : null
-      };
+  document.getElementById("cancel_Profile").addEventListener("click", hideProfileForm);
+  document.getElementById("cancel_Create_Event").addEventListener("click", hideEventForm);
 
-      await createNewEvent(eventData);
-      
-      // Reset form and hide it
-      e.target.reset();
-      document.getElementById('preview-selected-image1').style.display = 'none';
-      document.getElementById('preview-selected-image2').style.display = 'none';
-      document.getElementById('preview-selected-image3').style.display = 'none';
-      document.getElementById('eventFormSection').style.display = 'none';
-      
-      // Refresh events display if needed
-      renderEventsFromDB();
-      
-    } catch (error) {
-      console.error("Error creating event:", error);
-      alert("Failed to create event. Please try again.");
-    }
+  document.getElementById("upload-box1").addEventListener("click", () => {
+    document.getElementById('fileInput1').click();
   });
-}
-
-// Profile form submission handler
-const profileForm = document.getElementById('profileForm');
-if (profileForm) {
-  profileForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!currentUser) {
-      alert("No user is logged in. Please log in again.");
-      return;
-    }
-    const orgName = document.getElementById('orgName').value;
-    const phone = document.getElementById('phone').value;
-    const email = document.getElementById('email').value;
-    const address = document.getElementById('address').value;
-    const website = document.getElementById('website').value;
-    try {
-      await saveUserProfile(currentUser.uid, {
-        orgName,
-        phone,
-        email,
-        address,
-        website
-      });
-      alert('Profile updated successfully!');
-      hideProfileForm();
-    } catch (error) {
-      alert('Error updating profile: ' + error.message);
-    }
+  document.getElementById("upload-box2").addEventListener("click", () => {
+    document.getElementById('fileInput2').click();
   });
-}
+  document.getElementById("upload-box3").addEventListener("click", () => {
+    document.getElementById('fileInput3').click();
+  });
 
-document.getElementById("cancel_Profile").addEventListener("click", hideProfileForm);
-document.getElementById("cancel_Create_Event").addEventListener("click", hideEventForm);
+  // Handle enabling/disabling price inputs based on checkboxes
+  document.getElementById('enableChildPrice').addEventListener('change', function() {
+    const childPriceInput = document.getElementById('childPrice');
+    childPriceInput.disabled = !this.checked;
+    if (!this.checked) childPriceInput.value = '';
+  });
 
-document.getElementById("upload-box1").addEventListener("click", () => {
-  document.getElementById('fileInput1').click();
+  document.getElementById('enableSeniorPrice').addEventListener('change', function() {
+    const seniorPriceInput = document.getElementById('seniorPrice');
+    seniorPriceInput.disabled = !this.checked;
+    if (!this.checked) seniorPriceInput.value = '';
+  });
 });
-document.getElementById("upload-box2").addEventListener("click", () => {
-  document.getElementById('fileInput2').click();
-});
-document.getElementById("upload-box3").addEventListener("click", () => {
-  document.getElementById('fileInput3').click();
-});
-
-// Handle enabling/disabling price inputs based on checkboxes
-document.getElementById('enableChildPrice').addEventListener('change', function() {
-  const childPriceInput = document.getElementById('childPrice');
-  childPriceInput.disabled = !this.checked;
-  if (!this.checked) childPriceInput.value = '';
-});
-
-document.getElementById('enableSeniorPrice').addEventListener('change', function() {
-  const seniorPriceInput = document.getElementById('seniorPrice');
-  seniorPriceInput.disabled = !this.checked;
-  if (!this.checked) seniorPriceInput.value = '';
-});
-
-
-  /* function is activated when someone clicks on the input image button*/
-  const previewImages = (event, previewId) => {
-    // Get images currently associated with the event
-    const imageFiles = event.target.files;
-    const imageFilesLength = imageFiles.length;
-  
-    if (imageFilesLength > 0) {
-      // Get the first image uploaded
-      const imageFile = imageFiles[0];
-      const imageURL = URL.createObjectURL(imageFile);
-      const filePreview = document.getElementById(previewId);
-      
-      // Input the image tag with the image and unhide the tag
-      filePreview.src = imageURL;
-      filePreview.style.display = 'block';
-    }
-  };
-  
-  // Attach event listeners for three different file inputs
-  document.getElementById('fileInput1').addEventListener('change', (event) => previewImages(event, 'preview-selected-image1'));
-  document.getElementById('fileInput2').addEventListener('change', (event) => previewImages(event, 'preview-selected-image2'));
-  document.getElementById('fileInput3').addEventListener('change', (event) => previewImages(event, 'preview-selected-image3'));
