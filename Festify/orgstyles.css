@@ -512,6 +512,10 @@ select:focus {
     border-radius: 1.2rem;
 }
 
+.form-actions .btn-danger {
+    margin-right: auto;
+}
+
 .ticket-container {
     display: flex;
     align-items: center;
@@ -933,4 +937,17 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
   height: auto;
   border-radius: 10px;
   margin-top: 10px;
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
 }
