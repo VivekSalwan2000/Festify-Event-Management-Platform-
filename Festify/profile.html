@@ -10,6 +10,65 @@
   <link rel="stylesheet" href="editprofile.css">
   <link rel="stylesheet" href="footer.css">
 
+  <!-- Add Google Maps JavaScript API with error handling and fallback -->
+  <script>
+    // Flag to track API loading status
+    window.googleMapsLoaded = false;
+    
+    // Function to handle Google Maps API errors
+    function gm_authFailure() {
+      console.error('Google Maps API authentication error - API key may be restricted or invalid');
+      
+      // Add a message to the address field
+      const addressField = document.getElementById('address1');
+      if (addressField) {
+        addressField.placeholder = "Enter address manually (autocomplete unavailable)";
+      }
+    }
+    
+    // Function to initialize autocomplete once the page is loaded
+    function initializeGoogleMaps() {
+      try {
+        // Initialize Google Places Autocomplete
+        const addressField = document.getElementById('address1');
+        if (addressField && window.google && window.google.maps && window.google.maps.places) {
+          const autocomplete = new google.maps.places.Autocomplete(addressField, {
+            types: ['address']
+          });
+          console.log('Google Places Autocomplete initialized successfully');
+          window.googleMapsLoaded = true;
+        } else {
+          console.error('Google Maps API not fully loaded');
+        }
+      } catch (error) {
+        console.error('Error initializing Google Places Autocomplete:', error);
+      }
+    }
+    
+    // Fallback function in case Google Maps fails to load
+    function handleGoogleMapsFailure() {
+      console.warn('Google Maps API failed to load or initialize properly - using fallback');
+      const addressField = document.getElementById('address1');
+      if (addressField) {
+        addressField.placeholder = "Enter address manually (autocomplete unavailable)";
+      }
+    }
+    
+    // Set a timeout to check if Google Maps loaded
+    setTimeout(function() {
+      if (!window.googleMapsLoaded) {
+        handleGoogleMapsFailure();
+      }
+    }, 5000); // Check after 5 seconds
+  </script>
+  
+  <!-- Load Google Maps API asynchronously with timeout -->
+  <script 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcrRHK-st29FhV04EVfKvTLxcBlvnyg9s&libraries=places&callback=initializeGoogleMaps" 
+    async 
+    defer
+    onerror="handleGoogleMapsFailure()">
+  </script>
 
   <!-- Firebase config & functions -->
   <script type="module" src="firebase.js"></script>
@@ -53,6 +112,9 @@
 
     // When DOM loads, wire up form submission & sign-out
     window.addEventListener('DOMContentLoaded', () => {
+      // Initialize Google Places Autocomplete
+      initializeGoogleMaps();
+
       const profileForm = document.getElementById('profileForm');
       if (profileForm) {
         profileForm.addEventListener('submit', async (e) => {
@@ -173,7 +235,7 @@ function showSection(section) {
   <div class="container">
     <div class="form-wrapper">
       <div class="form-header">
-        <p class="subtitle">... Sumant placeholder</p>
+        <p class="subtitle"><h2>Personal Details</h2></p>
       </div>
 
       <form id="profileForm">
