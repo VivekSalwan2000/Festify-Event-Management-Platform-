@@ -191,7 +191,7 @@ function populateEditForm(event) {
   document.getElementById('editEndTime').value = event.endTime || '';
   document.getElementById('editLocation').value = event.location || '';
   document.getElementById('editTicketInput').value = event.tickets || 0;
-  document.getElementById('editGeneralPrice').value = event.prices?.general || 0;
+  document.getElementById('editGeneralPrice').value = event.generalPrice;
 
   // Handle child price
   if (event.prices?.child) {
@@ -343,15 +343,9 @@ document.addEventListener('DOMContentLoaded', () => {
           endTime: document.getElementById('editEndTime').value,
           location: document.getElementById('editLocation').value,
           tickets: parseInt(document.getElementById('editTicketInput').value),
-          prices: {
-            general: parseFloat(document.getElementById('editGeneralPrice').value),
-            ...(document.getElementById('editEnableChildPrice').checked && {
-              child: parseFloat(document.getElementById('editChildPrice').value)
-            }),
-            ...(document.getElementById('editEnableSeniorPrice').checked && {
-              senior: parseFloat(document.getElementById('editSeniorPrice').value)
-            })
-          }
+          generalPrice: parseFloat(document.getElementById('editGeneralPrice').value),
+          childPrice: document.getElementById('editEnableChildPrice').checked ? parseFloat(document.getElementById('editChildPrice').value) : null,
+          seniorPrice: document.getElementById('editEnableSeniorPrice').checked ? parseFloat(document.getElementById('editSeniorPrice').value) : null,
         };
 
         // Only include new image URLs if files were uploaded
@@ -497,16 +491,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById("cancel_Profile").addEventListener("click", hideProfileForm);
   document.getElementById("cancel_Create_Event").addEventListener("click", hideEventForm);
 
-  document.getElementById("upload-box1").addEventListener("click", () => {
-    document.getElementById('fileInput1').click();
-  });
-  document.getElementById("upload-box2").addEventListener("click", () => {
-    document.getElementById('fileInput2').click();
-  });
-  document.getElementById("upload-box3").addEventListener("click", () => {
-    document.getElementById('fileInput3').click();
-  });
-
   // Handle enabling/disabling price inputs based on checkboxes
   document.getElementById('enableChildPrice').addEventListener('change', function() {
     const childPriceInput = document.getElementById('childPrice');
@@ -519,6 +503,32 @@ document.addEventListener('DOMContentLoaded', () => {
     seniorPriceInput.disabled = !this.checked;
     if (!this.checked) seniorPriceInput.value = '';
   });
+
+  function setupImagePreview(uploadBoxId, fileInputId, imgPreviewId) {
+    const uploadBox = document.getElementById(uploadBoxId);
+    const fileInput = document.getElementById(fileInputId);
+    const imgPreview = document.getElementById(imgPreviewId);
+
+    uploadBox.addEventListener("click", function () {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener("change", function () {
+        const file = fileInput.files[0];
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imgPreview.src = e.target.result;
+                imgPreview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+setupImagePreview("upload-box1", "fileInput1", "preview-selected-image1");
+setupImagePreview("upload-box2", "fileInput2", "preview-selected-image2");
+setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
 
   // Delete Event button functionality
   const deleteEventBtn = document.getElementById("delete_Event");
