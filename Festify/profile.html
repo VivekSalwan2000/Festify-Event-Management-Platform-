@@ -72,7 +72,7 @@
       </div>
       <div class="nav-links" style="display: flex; justify-content: flex-end; flex-grow: 1;">
 
-        <a href="#" class="nav-item" onclick="showSection('indYourEvent')">Find an Event</a>
+        <a href="#" class="nav-item" onclick="showSection('FindEvent')">Find an Event</a>
 
       </div>
       <div class="nav-actions" style="display: flex; justify-content: flex-end;">
@@ -113,7 +113,7 @@
   <!-- Optional Navigation Menu -->
   <div id="editProfile" class="tab-content">
   </div>
-  <div id="indYourEvent" class="tab-content" style="display:none;">
+  <div id="FindEvent" class="tab-content" style="display:none;">
       <h2>Ind Your Event Section</h2>
       <p>Content for Ind Your Event goes here.</p>
   </div>
@@ -124,33 +124,42 @@
   </div>
 
   <script>
-  function showSection(section) {
-          const profileForm = document.getElementById('profileForm');
-          if (section !== 'editProfile') {
-              profileForm.style.display = 'none';
-          } else {
-              profileForm.style.display = 'block';
-          }
-
-          const sections = document.querySelectorAll('.tab-content');
-          sections.forEach((sec) => {
-              sec.style.display = 'none';
-          });
-          document.getElementById(section).style.display = 'block';
-
-          const links = document.querySelectorAll('.nav-link');
-          links.forEach((link) => {
-              link.classList.remove('active');
-          });
-          document.querySelector(`a[onclick="showSection('${section}')"]`).classList.add('active');
-      }
-
-      // Function to sign out the user
-      async function signOutUser() {
-          // Clear session data if applicable
-          // For example: sessionStorage.clear();
-          window.location.href = 'index.html'; // Redirect to login page
-      }
+    function showSection(section) {
+        const profileForm = document.getElementById('profileForm');
+        if (section !== 'editProfile') {
+            profileForm.style.display = 'none';
+        } else {
+            profileForm.style.display = 'block';
+        }
+  
+        const sections = document.querySelectorAll('.tab-content');
+        sections.forEach((sec) => {
+            sec.style.display = 'none';
+        });
+  
+        document.getElementById(section).style.display = 'block';
+  
+        const links = document.querySelectorAll('.nav-link');
+        links.forEach((link) => {
+            link.classList.remove('active');
+        });
+  
+        const activeLink = document.querySelector(`a[onclick="showSection('${section}')"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+    }
+  
+    // Set the default section when the page loads
+    document.addEventListener("DOMContentLoaded", function () {
+      showSection('FindEvent');  // Default to "Find an Event"
+    });
+  
+    // Function to sign out the user
+    async function signOutUser() {
+        // Clear session data if applicable
+        window.location.href = 'index.html'; // Redirect to login page
+    }
   </script>
 
   <!-- Main container for the form -->
