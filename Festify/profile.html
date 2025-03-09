@@ -11,159 +11,56 @@
   <link rel="stylesheet" href="footer.css">
   <link rel="stylesheet" href="navbar.css"> <!-- Include navbar styles -->
 
-  <!-- Add Google Maps JavaScript API with error handling and fallback -->
-  <script>
-    // Flag to track API loading status
-    window.googleMapsLoaded = false;
-    
-    // Function to handle Google Maps API errors
-    function gm_authFailure() {
-      console.error('Google Maps API authentication error - API key may be restricted or invalid');
-      
-      // Add a message to the address field
-      const addressField = document.getElementById('address1');
-      if (addressField) {
-        addressField.placeholder = "Enter address manually (autocomplete unavailable)";
-      }
+  <style>
+    .dropdown {
+      position: relative;
+      display: inline-block;
     }
-    
-    // Function to initialize autocomplete once the page is loaded
-    function initializeGoogleMaps() {
-      try {
-        // Initialize Google Places Autocomplete
-        const addressField = document.getElementById('address1');
-        if (addressField && window.google && window.google.maps && window.google.maps.places) {
-          const autocomplete = new google.maps.places.Autocomplete(addressField, {
-            types: ['address']
-          });
-          console.log('Google Places Autocomplete initialized successfully');
-          window.googleMapsLoaded = true;
-        } else {
-          console.error('Google Maps API not fully loaded');
-        }
-      } catch (error) {
-        console.error('Error initializing Google Places Autocomplete:', error);
-      }
+
+    .dropbtn {
+      color: rgb(224, 224, 224);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
     }
-    
-    // Fallback function in case Google Maps fails to load
-    function handleGoogleMapsFailure() {
-      console.warn('Google Maps API failed to load or initialize properly - using fallback');
-      const addressField = document.getElementById('address1');
-      if (addressField) {
-        addressField.placeholder = "Enter address manually (autocomplete unavailable)";
-      }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #0f172a; /* Match navbar background */
+      min-width: 160px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      z-index: 1;
     }
-    
-    // Set a timeout to check if Google Maps loaded
-    setTimeout(function() {
-      if (!window.googleMapsLoaded) {
-        handleGoogleMapsFailure();
-      }
-    }, 5000); // Check after 5 seconds
-  </script>
-  
-  <!-- Load Google Maps API asynchronously with timeout -->
-  <script 
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcrRHK-st29FhV04EVfKvTLxcBlvnyg9s&libraries=places&callback=initializeGoogleMaps" 
-    async 
-    defer
-    onerror="handleGoogleMapsFailure()">
-  </script>
 
-  <!-- Firebase config & functions -->
-  <script type="module" src="firebase.js"></script>
+    .dropdown-content a {
+      color: rgb(224, 224, 224);
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      transition: background 0.3s ease;
+    }
 
-  <!-- Inline script that loads user profile or redirects if not logged in -->
-  <script type="module">
-    import {
-      onUserStateChanged,
-      getUserProfile,
-      saveUserProfile,
-      signOutUser
-    } from './firebase.js';
+    .dropdown-content a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
 
-    let currentUser = null;
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
 
-    // Listen for login state changes
-    onUserStateChanged(async (user) => {
-      if (!user) {
-        // Not logged in, redirect to home (index)
-        window.location.href = 'index.html';
-      } else {
-        currentUser = user;
-        console.log('User logged in:', user.email);
+    .dropdown:hover .dropbtn {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+      transform: translateY(-2px);
+    }
 
-        // Retrieve user profile from Firestore
-        const profileData = await getUserProfile(user.uid);
-        if (profileData) {
-          // Populate form fields
-          document.getElementById('firstName').value = profileData.firstName || '';
-          document.getElementById('lastName').value = profileData.lastName || '';
-          document.getElementById('phone').value = profileData.phone || '';
-          document.getElementById('address1').value = profileData.address1 || '';
-          document.getElementById('address2').value = profileData.address2 || '';
-          document.getElementById('landmark').value = profileData.landmark || '';
-          document.getElementById('city').value = profileData.city || '';
-          document.getElementById('pincode').value = profileData.pincode || '';
-          document.getElementById('state').value = profileData.state || '';
-        }
-      }
-    });
-
-    // When DOM loads, wire up form submission & sign-out
-    window.addEventListener('DOMContentLoaded', () => {
-      // Initialize Google Places Autocomplete
-      initializeGoogleMaps();
-
-      const profileForm = document.getElementById('profileForm');
-      if (profileForm) {
-        profileForm.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          if (!currentUser) return;
-
-          // Gather data from form
-          const profileData = {
-            firstName: document.getElementById('firstName').value,
-            lastName: document.getElementById('lastName').value,
-            phone: document.getElementById('phone').value,
-            address1: document.getElementById('address1').value,
-            address2: document.getElementById('address2').value,
-            landmark: document.getElementById('landmark').value,
-            city: document.getElementById('city').value,
-            pincode: document.getElementById('pincode').value,
-            state: document.getElementById('state').value,
-          };
-
-          try {
-            await saveUserProfile(currentUser.uid, profileData);
-            alert('Profile updated successfully!');
-          } catch (error) {
-            console.error('Error saving profile:', error);
-            alert('Error: Could not save profile. Check console.');
-          }
-        });
-      }
-
-      // Handle sign-out (Navbar)
-      const navSignOutBtn = document.getElementById('navSignOutBtn');
-      if (navSignOutBtn) {
-        navSignOutBtn.addEventListener('click', async () => {
-          await signOutUser();
-          window.location.href = 'index.html';
-        });
-      }
-
-      // Handle sign-out (Profile Section)
-      const profileSignOutBtn = document.getElementById('profileSignOutBtn');
-      if (profileSignOutBtn) {
-        profileSignOutBtn.addEventListener('click', async () => {
-          await signOutUser();
-          window.location.href = 'index.html';
-        });
-      }
-    });
-  </script>
+  </style>
 </head>
 
 <body>
@@ -174,11 +71,17 @@
         <img src="images/festifyLogo.png" alt="Festify">
       </div>
       <div class="nav-links">
-        <a href="#" class="nav-item active" onclick="showSection('editProfile')">Edit Profile</a>
-        <a href="#" class="nav-item" onclick="showSection('tickets')">Tickets</a>
+
       </div>
       <div class="nav-actions">
-        <button id="navSignOutBtn" class="icon-button">Sign Out</button>
+        <div class="dropdown">
+          <button class="dropbtn">Account</button>
+          <div class="dropdown-content">
+            <a href="#" onclick="showSection('editProfile')">Edit Profile</a>
+            <a href="#" onclick="showSection('tickets')">Tickets</a>
+            <a href="#" id="navSignOutBtn" onclick="signOutUser()">Sign Out</a>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -213,6 +116,13 @@
               link.classList.remove('active');
           });
           document.querySelector(`a[onclick="showSection('${section}')"]`).classList.add('active');
+      }
+
+      // Function to sign out the user
+      async function signOutUser() {
+          // Clear session data if applicable
+          // For example: sessionStorage.clear();
+          window.location.href = 'index.html'; // Redirect to login page
       }
   </script>
 
