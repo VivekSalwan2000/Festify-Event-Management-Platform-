@@ -72,7 +72,8 @@
       </div>
       <div class="nav-links" style="display: flex; justify-content: flex-end; flex-grow: 1;">
 
-        <a href="#" class="nav-item">Find an Event</a>
+        <a href="#" class="nav-item" onclick="showSection('indYourEvent')">Find an Event</a>
+
       </div>
       <div class="nav-actions" style="display: flex; justify-content: flex-end;">
         <a href="list-your-event.html" class="nav-item">List your Event</a>
@@ -97,7 +98,9 @@
 
           <div class="dropdown-content">
             <a href="#" onclick="showSection('editProfile')">Edit Profile</a>
+
             <a href="#" onclick="showSection('tickets')">Tickets</a>
+
             <a href="#" id="navSignOutBtn" onclick="signOutUser()">Sign Out</a>
           </div>
         </div>
@@ -110,7 +113,12 @@
   <!-- Optional Navigation Menu -->
   <div id="editProfile" class="tab-content">
   </div>
+  <div id="indYourEvent" class="tab-content" style="display:none;">
+      <h2>Ind Your Event Section</h2>
+      <p>Content for Ind Your Event goes here.</p>
+  </div>
   <div id="tickets" class="tab-content" style="display:none;">
+
       <h2>Tickets Section</h2>
       <p>Content for tickets goes here.</p>
   </div>
