@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="editprofile.css">
   <link rel="stylesheet" href="footer.css">
+  <link rel="stylesheet" href="navbar.css"> <!-- Include navbar styles -->
 
   <!-- Add Google Maps JavaScript API with error handling and fallback -->
   <script>
@@ -166,35 +167,31 @@
 </head>
 
 <body>
-  <!-- Include Navigation Bar -->
-  <div id="navbar"></div>
-  <script>
-    fetch('navbar.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('navbar').innerHTML = data;
-      })
-      .catch(error => console.error('Error loading navbar:', error));
-  </script>
+  <!-- Hard Coded Navigation Bar -->
+  <nav class="top-nav">
+    <div class="top-nav-container">
+      <div class="logo">
+        <img src="images/festifyLogo.png" alt="Festify">
+      </div>
+      <div class="nav-links">
+        <a href="#" class="nav-item active" onclick="showSection('editProfile')">Edit Profile</a>
+        <a href="#" class="nav-item" onclick="showSection('tickets')">Tickets</a>
+      </div>
+      <div class="nav-actions">
+        <button id="navSignOutBtn" class="icon-button">Sign Out</button>
+      </div>
+    </div>
+  </nav>
 
   <!-- Profile Header -->
 
   <!-- Optional Navigation Menu -->
-  <nav class="nav-menu">
-    <div class="nav-container">
-      <a href="#" class="nav-link active" onclick="showSection('editProfile')">Edit Profile</a>
-      <a href="#" class="nav-link" onclick="showSection('tickets')">Tickets</a>
-      <!-- Removed Passes and Wallet Tabs -->
-    </div>
-  </nav>
-
   <div id="editProfile" class="tab-content">
   </div>
   <div id="tickets" class="tab-content" style="display:none;">
       <h2>Tickets Section</h2>
       <p>Content for tickets goes here.</p>
   </div>
-  <!-- Removed Passes and Wallet Sections -->
 
   <script>
   function showSection(section) {
@@ -311,5 +308,5 @@
       .catch(error => console.error('Error loading footer:', error));
   </script>
   <script src="app.js"></script>
-  </body>
+</body>
 </html>
