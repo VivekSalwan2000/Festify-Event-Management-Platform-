@@ -71,13 +71,10 @@
         <img src="images/festifyLogo.png" alt="Festify">
       </div>
       <div class="nav-links" style="display: flex; justify-content: flex-end; flex-grow: 1;">
-
         <a href="#" class="nav-item" onclick="showSection('FindEvent')">Find an Event</a>
-
       </div>
       <div class="nav-actions" style="display: flex; justify-content: flex-end;">
         <a href="list-your-event.html" class="nav-item">List your Event</a>
-      <div class="nav-actions">
         <div class="dropdown">
           <button class="icon-button" onclick="toggle()">
             <svg 
@@ -98,9 +95,7 @@
 
           <div class="dropdown-content">
             <a href="#" onclick="showSection('editProfile')">Edit Profile</a>
-
             <a href="#" onclick="showSection('tickets')">Tickets</a>
-
             <a href="#" id="navSignOutBtn" onclick="signOutUser()">Sign Out</a>
           </div>
         </div>
@@ -111,14 +106,11 @@
   <!-- Profile Header -->
 
   <!-- Optional Navigation Menu -->
-  <div id="editProfile" class="tab-content">
-  </div>
+  <div id="editProfile" class="tab-content"></div>
   <div id="FindEvent" class="tab-content" style="display:none;">
-      <h2>Ind Your Event Section</h2>
-      <p>Content for Ind Your Event goes here.</p>
+      <h2>Replace this part with index search and grid - sumant</h2>
   </div>
   <div id="tickets" class="tab-content" style="display:none;">
-
       <h2>Tickets Section</h2>
       <p>Content for tickets goes here.</p>
   </div>
@@ -164,11 +156,6 @@
 
   <!-- Main container for the form -->
   <div class="container">
-    <div class="form-wrapper">
-      <div class="form-header">
-        <p class="subtitle"><h2>Personal Details</h2></p>
-      </div>
-
       <form id="profileForm">
         <!-- Personal Details -->
         <div class="form-section">
@@ -242,7 +229,6 @@
         <button type="submit" class="submit-btn">UPDATE</button>
       </form>
     </div>
-  </div>
   <!-- Include Footer -->
   <div id="footer"></div>
   <script>
