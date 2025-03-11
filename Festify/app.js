@@ -134,28 +134,6 @@ window.closeEventPopup = function() {
   document.body.classList.remove('popup-open');
 };
 
-// Function to update image slider
-function updateImageSlider() {
-  if (!currentEvent) return;
-  const imagesContainer = document.getElementById('eventImages');
-  imagesContainer.style.transform = `translateX(-${currentImageIndex * 100}%)`;
-}
-
-// Functions for image navigation
-window.prevImage = function() {
-  if (!currentEvent) return;
-  const images = currentEvent.images || [currentEvent.imageUrl];
-  currentImageIndex = Math.max(0, currentImageIndex - 1);
-  updateImageSlider();
-};
-
-window.nextImage = function() {
-  if (!currentEvent) return;
-  const images = currentEvent.images || [currentEvent.imageUrl];
-  currentImageIndex = Math.min(images.length - 1, currentImageIndex + 1);
-  updateImageSlider();
-};
-
 // Function to update ticket quantities
 window.updateQuantity = function(type, change) {
   const input = document.getElementById(`${type}Quantity`);
@@ -163,15 +141,6 @@ window.updateQuantity = function(type, change) {
   input.value = newValue;
 };
 
-// Function to handle payment
-window.proceedToPayment = function() {
-  const quantities = {
-    general: parseInt(document.getElementById('generalQuantity').value || '0'),
-    senior: parseInt(document.getElementById('seniorQuantity').value || '0'),
-    child: parseInt(document.getElementById('childQuantity').value || '0')
-  };
-  console.log('Proceeding to payment with quantities:', quantities);
-};
 
 // Function to render events
 function renderEvents(events) {
