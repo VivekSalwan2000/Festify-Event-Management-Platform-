@@ -177,7 +177,7 @@
             </div>
           </div>
         </div>
-        <button class="proceed-payment-btn" onclick="proceedToPayment()">Proceed to Payment</button>
+        <button class="proceed-payment-btn" onclick="toggle()">Proceed to Payment</button>
       </div>
     </div>
   </div>
@@ -241,18 +241,6 @@
       document.body.classList.remove('popup-open');
     }
 
-    window.updateQuantity = function(type, change) {
-      const input = document.getElementById(`${type}Quantity`);
-      const newValue = Math.max(0, parseInt(input.value || '0') + change);
-      input.value = newValue;
-    }
-
-    // Remove slider functionality
-
-
-    window.proceedToPayment = function() {
-      window.dispatchEvent(new CustomEvent('proceedToPayment'));
-    }
   </script>
   <script type="module" src="app.js"></script>
 </body>
