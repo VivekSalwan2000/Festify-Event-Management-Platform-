@@ -408,3 +408,50 @@ p {
     font-size: 16px;
     font-weight: bold;
 }
+
+/* Slider container with fixed dimensions */
+.slider {
+    position: relative;
+    width: 600px; /* Increased width */
+    height: 400px; /* Increased height */
+    overflow: hidden;
+    margin: 0 auto;
+  }
+  
+  /* Container for slides */
+  .slides {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Each slide image */
+  .slide {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+  
+  /* Navigation buttons */
+  .slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    z-index: 10;
+  }
+  
+  .slider-btn.prev {
+    left: 10px;
+  }
+  
+  .slider-btn.next {
+    right: 10px;
+  }
+  
+  

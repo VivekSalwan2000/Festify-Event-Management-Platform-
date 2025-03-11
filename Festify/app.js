@@ -1,7 +1,7 @@
-// app.js
 import { fetchEvents } from './firebase.js';
 
 let currentEvent = null;
+let slideIndex = 0;
 
 // Format time from 24-hour to 12-hour format with AM/PM
 function formatTime(time) {
@@ -50,7 +50,7 @@ function createEventCard(event) {
   `;
 }
 
-// Show event popup with event details
+// Show event popup with event details and initialize slider
 window.showEventPopup = function(encodedEventData) {
   try {
     if (!encodedEventData) throw new Error("No event data provided");
@@ -117,7 +117,7 @@ window.showEventPopup = function(encodedEventData) {
     const childQty = document.getElementById('childQuantity');
     if (childQty) childQty.value = '0';
     
-    // Set images for popup
+    // Set images for slider
     const eventImage1 = document.getElementById('eventImage1');
     if (eventImage1) eventImage1.src = event.imageUrl || '';
     const eventImage2 = document.getElementById('eventImage2');
@@ -125,22 +125,11 @@ window.showEventPopup = function(encodedEventData) {
     const eventImage3 = document.getElementById('eventImage3');
     if (eventImage3) eventImage3.src = event.imageUrl3 || '';
     
-    // Setup hover effect for images
-    const images = document.querySelectorAll('.event-images img');
-    const hoveredImage = document.getElementById('hoveredImage');
-    if (hoveredImage) {
-      images.forEach((image) => {
-        image.addEventListener('mouseover', () => {
-          hoveredImage.src = image.src;
-          hoveredImage.style.display = 'block';
-        });
-        image.addEventListener('mouseout', () => {
-          hoveredImage.style.display = 'none';
-        });
-      });
-    }
+    // Initialize slider
+    slideIndex = 0;
+    showSlide(slideIndex);
     
-    // Show popup (if available)
+    // Show popup
     const contentElem = document.getElementById('content');
     if (contentElem) contentElem.classList.add('active');
     else console.warn("Element with id 'content' not found.");
@@ -175,6 +164,34 @@ window.updateQuantity = function(type, change) {
   if (!input) return;
   const currentVal = parseInt(input.value, 10) || 0;
   input.value = Math.max(0, currentVal + change);
+};
+
+// Slider functionality
+function showSlide(n) {
+  const slides = document.getElementsByClassName('slide');
+  if (!slides || slides.length === 0) return;
+  
+  // Loop around if out of bounds
+  if (n >= slides.length) { slideIndex = 0; }
+  if (n < 0) { slideIndex = slides.length - 1; }
+  
+  // Hide all slides
+  for (let i = 0; i < slides.length; i++) {
+    slides[i].style.display = 'none';
+  }
+  
+  // Show current slide
+  slides[slideIndex].style.display = 'block';
+}
+
+window.nextSlide = function() {
+  slideIndex++;
+  showSlide(slideIndex);
+};
+
+window.prevSlide = function() {
+  slideIndex--;
+  showSlide(slideIndex);
 };
 
 // Render events in the grid

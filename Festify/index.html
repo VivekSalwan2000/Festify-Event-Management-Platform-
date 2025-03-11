@@ -94,73 +94,74 @@
   </div>
 
   <!-- Event Details Popup -->
-  <div id="eventPopup" class="hidden">
-    <button class="close-btn" onclick="closeEventPopup()">✖</button>
-    <div class="event-popup-content">
-      <div class="event-image-container" style="position: relative; display: flex; justify-content: center;">
-        <div class="event-images" id="eventImages" style="display: flex; justify-content: space-around;">
-          <img src="" alt="Event Image 1" id="eventImage1" style="max-width: 30%; height: auto; border-radius: 8px;" />
-          <img src="" alt="Event Image 2" id="eventImage2" style="max-width: 30%; height: auto; border-radius: 8px;" />
-          <img src="" alt="Event Image 3" id="eventImage3" style="max-width: 30%; height: auto; border-radius: 8px;" />
-        </div>
-        <div class="image-hover-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-          <img src="" alt="Hovered Image" id="hoveredImage" style="max-width: 100%; height: auto; border-radius: 8px; display: none;" />
-        </div>
+<div id="eventPopup" class="hidden">
+  <button class="close-btn" onclick="closeEventPopup()">✖</button>
+  <div class="event-popup-content">
+    <!-- Slider Container -->
+    <div class="slider" id="slider">
+      <button class="slider-btn prev" onclick="prevSlide()">❮</button>
+      <div class="slides">
+        <img src="" alt="Event Image 1" id="eventImage1" class="slide" />
+        <img src="" alt="Event Image 2" id="eventImage2" class="slide" />
+        <img src="" alt="Event Image 3" id="eventImage3" class="slide" />
       </div>
+      <button class="slider-btn next" onclick="nextSlide()">❯</button>
+    </div>
 
-      <h2 id="eventTitle"></h2>
-      <div class="event-popup-details">
-        <p id="eventDescription"></p>
-        <div class="event-info-grid">
-          <div class="info-item">
-            <strong>Date:</strong>
-            <span id="eventDate"></span>
-          </div>
-          <div class="info-item">
-            <strong>Time:</strong>
-            <span id="eventTime"></span>
-          </div>
-          <div class="info-item">
-            <strong>Location:</strong>
-            <span id="eventLocation"></span>
-          </div>
+    <h2 id="eventTitle"></h2>
+    <div class="event-popup-details">
+      <p id="eventDescription"></p>
+      <div class="event-info-grid">
+        <div class="info-item">
+          <strong>Date:</strong>
+          <span id="eventDate"></span>
         </div>
-        <div class="ticket-section">
-          <h3>Tickets</h3>
-          <div class="ticket-types">
-            <div class="ticket-type">
-              <label>General Admission</label>
-              <div class="ticket-price" id="generalPrice"></div>
-              <div class="quantity-selector">
-                <button onclick="updateQuantity('general', -1)">-</button>
-                <input type="number" id="generalQuantity" value="0" min="0" readonly />
-                <button onclick="updateQuantity('general', 1)">+</button>
-              </div>
-            </div>
-            <div class="ticket-type" id="seniorTickets" style="display: none;">
-              <label>Senior</label>
-              <div class="ticket-price" id="seniorPrice"></div>
-              <div class="quantity-selector">
-                <button onclick="updateQuantity('senior', -1)">-</button>
-                <input type="number" id="seniorQuantity" value="0" min="0" readonly />
-                <button onclick="updateQuantity('senior', 1)">+</button>
-              </div>
-            </div>
-            <div class="ticket-type" id="childTickets" style="display: none;">
-              <label>Child</label>
-              <div class="ticket-price" id="childPrice"></div>
-              <div class="quantity-selector">
-                <button onclick="updateQuantity('child', -1)">-</button>
-                <input type="number" id="childQuantity" value="0" min="0" readonly />
-                <button onclick="updateQuantity('child', 1)">+</button>
-              </div>
-            </div>
-          </div>
+        <div class="info-item">
+          <strong>Time:</strong>
+          <span id="eventTime"></span>
         </div>
-        <button class="proceed-payment-btn" onclick="toggle()">Proceed to Payment</button>
+        <div class="info-item">
+          <strong>Location:</strong>
+          <span id="eventLocation"></span>
+        </div>
       </div>
+      <div class="ticket-section">
+        <h3>Tickets</h3>
+        <div class="ticket-types">
+          <div class="ticket-type">
+            <label>General Admission</label>
+            <div class="ticket-price" id="generalPrice"></div>
+            <div class="quantity-selector">
+              <button onclick="updateQuantity('general', -1)">-</button>
+              <input type="number" id="generalQuantity" value="0" min="0" readonly />
+              <button onclick="updateQuantity('general', 1)">+</button>
+            </div>
+          </div>
+          <div class="ticket-type" id="seniorTickets" style="display: none;">
+            <label>Senior</label>
+            <div class="ticket-price" id="seniorPrice"></div>
+            <div class="quantity-selector">
+              <button onclick="updateQuantity('senior', -1)">-</button>
+              <input type="number" id="seniorQuantity" value="0" min="0" readonly />
+              <button onclick="updateQuantity('senior', 1)">+</button>
+            </div>
+          </div>
+          <div class="ticket-type" id="childTickets" style="display: none;">
+            <label>Child</label>
+            <div class="ticket-price" id="childPrice"></div>
+            <div class="quantity-selector">
+              <button onclick="updateQuantity('child', -1)">-</button>
+              <input type="number" id="childQuantity" value="0" min="0" readonly />
+              <button onclick="updateQuantity('child', 1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="proceed-payment-btn" onclick="toggle()">Proceed to Payment</button>
     </div>
   </div>
+</div>
+
 
   <!-- Login Popup -->
   <div id="popup" class="hidden">
