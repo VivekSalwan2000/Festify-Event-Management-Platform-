@@ -157,7 +157,30 @@
           </div>
         </div>
       </div>
-      <button class="proceed-payment-btn" onclick="toggle()">Proceed to Payment</button>
+      <button class="proceed-payment-btn" onclick="proceedTologin2()">Proceed to Payment</button>
+      <script>
+        function proceedTologin2() {
+          // Close the event details popup first
+          const eventPopup = document.getElementById('eventPopup');
+          if (eventPopup) {
+            eventPopup.classList.add('hidden');
+          }
+          // Remove any active state from the main content if needed
+          const content = document.getElementById('content');
+          if (content) {
+            content.classList.remove('active');
+          }
+          // Show the login popup
+          const loginPopup = document.getElementById('popup');
+          if (loginPopup) {
+            loginPopup.classList.remove('hidden');
+          }
+          // Optionally add a class to the body for proper overlay styling
+          document.body.classList.add('popup-open');
+        }
+      </script>
+      
+
     </div>
   </div>
 </div>
