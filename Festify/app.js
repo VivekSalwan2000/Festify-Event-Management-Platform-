@@ -1,21 +1,17 @@
 // app.js
 import { fetchEvents } from './firebase.js';
 
-let eventsCache = []; // Cache to store fetched events
-
-// Global variables
-let currentImageIndex = 0;
 let currentEvent = null;
 
-// Function to format time from 24-hour to 12-hour format with AM/PM
+// Format time from 24-hour to 12-hour format with AM/PM
 function formatTime(time) {
   const [hour, minute] = time.split(':');
   const suffix = hour >= 12 ? 'PM' : 'AM';
-  const formattedHour = hour % 12 || 12; // Convert to 12-hour format
+  const formattedHour = hour % 12 || 12;
   return `${formattedHour}:${minute} ${suffix}`;
 }
 
-// Function to create event card HTML
+// Create HTML for an event card
 function createEventCard(event) {
   const eventData = encodeURIComponent(JSON.stringify(event));
   return `
@@ -54,24 +50,18 @@ function createEventCard(event) {
   `;
 }
 
+// Show event popup with event details
 window.showEventPopup = function(encodedEventData) {
   try {
-    console.log('Received encoded event data:', encodedEventData);
-    if (!encodedEventData) {
-      throw new Error("No event data provided");
-    }
+    if (!encodedEventData) throw new Error("No event data provided");
+    
     const eventData = decodeURIComponent(encodedEventData);
-    console.log('Decoded event data:', eventData);
     const event = JSON.parse(eventData);
-    console.log('Parsed event:', event);
     
     currentEvent = event;
-    currentImageIndex = 0;
     
-    // Populate popup details, with null checks for each element.
     const titleElem = document.getElementById('eventTitle');
     if (titleElem) titleElem.textContent = event.title || '';
-    else console.error("Element with id 'eventTitle' not found");
     
     const descElem = document.getElementById('eventDescription');
     if (descElem) descElem.textContent = event.description || '';
@@ -91,7 +81,7 @@ window.showEventPopup = function(encodedEventData) {
       generalPriceElem.textContent = event.generalPrice ? `$${event.generalPrice}` : 'N/A';
     }
     
-    // Show/hide senior and child ticket options
+    // Senior tickets
     const seniorTickets = document.getElementById('seniorTickets');
     if (seniorTickets) {
       if (event.seniorPrice) {
@@ -105,6 +95,7 @@ window.showEventPopup = function(encodedEventData) {
       }
     }
     
+    // Child tickets
     const childTickets = document.getElementById('childTickets');
     if (childTickets) {
       if (event.childPrice) {
@@ -118,7 +109,7 @@ window.showEventPopup = function(encodedEventData) {
       }
     }
     
-    // Reset quantities
+    // Reset ticket quantities
     const generalQty = document.getElementById('generalQuantity');
     if (generalQty) generalQty.value = '0';
     const seniorQty = document.getElementById('seniorQuantity');
@@ -134,7 +125,7 @@ window.showEventPopup = function(encodedEventData) {
     const eventImage3 = document.getElementById('eventImage3');
     if (eventImage3) eventImage3.src = event.imageUrl3 || '';
     
-    // Set up hover effect for images
+    // Setup hover effect for images
     const images = document.querySelectorAll('.event-images img');
     const hoveredImage = document.getElementById('hoveredImage');
     if (hoveredImage) {
@@ -149,13 +140,10 @@ window.showEventPopup = function(encodedEventData) {
       });
     }
     
-    // Show popup: check for existence of the 'content' and 'eventPopup' elements.
+    // Show popup (if available)
     const contentElem = document.getElementById('content');
-    if (contentElem) {
-      contentElem.classList.add('active');
-    } else {
-      console.warn("Element with id 'content' not found.");
-    }
+    if (contentElem) contentElem.classList.add('active');
+    else console.warn("Element with id 'content' not found.");
     
     const popupElem = document.getElementById('eventPopup');
     if (popupElem) {
@@ -165,35 +153,31 @@ window.showEventPopup = function(encodedEventData) {
       return;
     }
     document.body.classList.add('popup-open');
-    
-    console.log("Popup shown successfully.");
   } catch (error) {
     console.error('Error showing event popup:', error);
   }
 };
 
-// Function to close event popup
+// Close event popup
 window.closeEventPopup = function() {
   const contentElem = document.getElementById('content');
-  if (contentElem) {
-    contentElem.classList.remove('active');
-  }
+  if (contentElem) contentElem.classList.remove('active');
+  
   const popupElem = document.getElementById('eventPopup');
-  if (popupElem) {
-    popupElem.classList.add('hidden');
-  }
+  if (popupElem) popupElem.classList.add('hidden');
+  
   document.body.classList.remove('popup-open');
 };
 
-// Function to update ticket quantities
+// Update ticket quantities
 window.updateQuantity = function(type, change) {
   const input = document.getElementById(`${type}Quantity`);
-  const currentVal = parseInt(input ? input.value : '0', 10);
-  const newValue = Math.max(0, currentVal + change);
-  if (input) input.value = newValue;
+  if (!input) return;
+  const currentVal = parseInt(input.value, 10) || 0;
+  input.value = Math.max(0, currentVal + change);
 };
 
-// Function to render events
+// Render events in the grid
 function renderEvents(events) {
   const eventsGrid = document.getElementById('eventsGrid');
   if (eventsGrid) {
@@ -201,40 +185,28 @@ function renderEvents(events) {
   }
 }
 
-// Function to render events from database
+// Fetch and render events from the database
 async function renderEventsFromDB() {
   try {
-    console.log('Fetching events...');
     const events = await fetchEvents();
-    console.log('Fetched events:', events);
-    
     if (!events || events.length === 0) {
-      console.log('No events found');
       const eventsGrid = document.getElementById('eventsGrid');
-      if (eventsGrid) {
-        eventsGrid.innerHTML = '<p>No events found</p>';
-      }
+      if (eventsGrid) eventsGrid.innerHTML = '<p>No events found</p>';
       return;
     }
-    
-    console.log('Rendering events...');
     renderEvents(events);
-    console.log('Events rendered');
   } catch (error) {
     console.error("Error rendering events:", error);
     const eventsGrid = document.getElementById('eventsGrid');
-    if (eventsGrid) {
-      eventsGrid.innerHTML = '<p>Error loading events</p>';
-    }
+    if (eventsGrid) eventsGrid.innerHTML = '<p>Error loading events</p>';
   }
 }
 
-// Initialize when DOM loads
+// Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
-  // Load events
   renderEventsFromDB();
   
-  // Load footer
+  // Load footer if available
   fetch('pageFooter.html')
     .then(response => response.text())
     .then(data => { document.body.insertAdjacentHTML('beforeend', data); })
