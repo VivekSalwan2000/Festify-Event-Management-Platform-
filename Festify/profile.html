@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Festify - User Profile</title>
 
-  <!-- Link to your existing CSS -->
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="editprofile.css">
-  <link rel="stylesheet" href="footer.css">
-  <link rel="stylesheet" href="navbar.css"> <!-- Include navbar styles -->
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="editprofile.css" />
+  <link rel="stylesheet" href="footer.css" />
+  <link rel="stylesheet" href="navbar.css" />
+
   <!-- Import Firebase as a module -->
   <script type="module" src="firebase.js"></script>
 
   <style>
+    /* Dropdown Styles */
     .dropdown {
       position: relative;
       display: inline-block;
     }
-
     .dropbtn {
       color: rgb(224, 224, 224);
       background: rgba(255, 255, 255, 0.05);
@@ -29,16 +30,14 @@
       font-weight: 500;
       transition: all 0.3s ease;
     }
-
     .dropdown-content {
       display: none;
       position: absolute;
-      background-color: #0f172a; /* Match navbar background */
+      background-color: #0f172a;
       min-width: 160px;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       z-index: 1;
     }
-
     .dropdown-content a {
       color: rgb(224, 224, 224);
       padding: 12px 16px;
@@ -46,54 +45,49 @@
       display: block;
       transition: background 0.3s ease;
     }
-
     .dropdown-content a:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
-
     .dropdown:hover .dropdown-content {
       display: block;
     }
-
     .dropdown:hover .dropbtn {
       background: rgba(255, 255, 255, 0.1);
       color: white;
       box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
       transform: translateY(-2px);
     }
-
   </style>
 </head>
-
 <body>
-  <!-- Hard Coded Navigation Bar -->
+  <!-- Navigation Bar -->
   <nav class="top-nav">
     <div class="top-nav-container">
       <a href="javascript:location.reload();" class="logo">
-        <img src="images/festifyLogo.png" alt="Festify">
+        <img src="images/festifyLogo.png" alt="Festify" />
+      </a>
       <div class="nav-links" style="display: flex; justify-content: flex-end; flex-grow: 1;">
         <a href="#" class="nav-item" onclick="showSection('FindEvent')">Find an Event</a>
       </div>
       <div class="nav-actions" style="display: flex; justify-content: flex-end;">
         <a href="list-your-event.html" class="nav-item">List your Event</a>
         <div class="dropdown">
-          <button class="icon-button" onclick="toggle()">
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="20" 
-                height="20" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2" 
-                stroke-linecap="round" 
-                stroke-linejoin="round"
+          <button class="icon-button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
           </button>
-
           <div class="dropdown-content">
             <a href="#" onclick="showSection('editProfile')">Edit Profile</a>
             <a href="#" onclick="showSection('tickets')">Tickets</a>
@@ -104,169 +98,141 @@
     </div>
   </nav>
 
-  <!-- Profile Header -->
-
-  <!-- Optional Navigation Menu -->
-  <div id="editProfile" class="tab-content"></div>
-  <div id="FindEvent" class="tab-content" style="display:none;">
-<!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-container">
-      <h1>Discover Amazing Events</h1>
-      <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search events..." class="search-input" />
-        <script>
-          document.getElementById('searchInput').addEventListener('input', function() {
-            const query = this.value.toLowerCase();
-            const events = document.querySelectorAll('.event-card'); // Assuming event cards have this class
-            events.forEach(event => {
-              const title = event.querySelector('.event-title').textContent.toLowerCase(); // Assuming event title has this class
-              event.style.display = title.includes(query) ? '' : 'none';
-            });
-          });
-        </script>
-      </div>
-    </div>
-  </section>
-  <!-- Events Grid -->
-    <section class="events-section">
-      <div class="container2">
-         <div class="events-grid" id="eventsGrid">
-          <!-- Event cards will be injected here by app.js -->
-        </div>
-      </div>
-    </section>
-  </div>
-  <div id="tickets" class="tab-content" style="display:none;">
-      <h2>Tickets Section</h2>
-      <p>Content for tickets goes here.</p>
-  </div>
-
-  <script>
-    function showSection(section) {
-        const profileForm = document.getElementById('profileForm');
-        if (section !== 'editProfile') {
-            profileForm.style.display = 'none';
-        } else {
-            profileForm.style.display = 'block';
-        }
-  
-        const sections = document.querySelectorAll('.tab-content');
-        sections.forEach((sec) => {
-            sec.style.display = 'none';
-        });
-  
-        document.getElementById(section).style.display = 'block';
-  
-        const links = document.querySelectorAll('.nav-link');
-        links.forEach((link) => {
-            link.classList.remove('active');
-        });
-  
-        const activeLink = document.querySelector(`a[onclick="showSection('${section}')"]`);
-        if (activeLink) {
-            activeLink.classList.add('active');
-        }
-    }
-  
-    // Set the default section when the page loads
-    document.addEventListener("DOMContentLoaded", function () {
-      showSection('FindEvent');  // Default to "Find an Event"
-    });
-  
-    // Function to sign out the user
-    async function signOutUser() {
-        // Clear session data if applicable
-        window.location.href = 'index.html'; // Redirect to login page
-    }
-  </script>
-
-  <!-- Main container for the form -->
-  <div class="container">
+  <!-- Main Content Sections -->
+  <div id="editProfile" class="tab-content" style="display: none;">
+    <div class="container">
       <form id="profileForm">
         <!-- Personal Details -->
         <div class="form-section">
           <div class="form-row">
             <div class="form-group">
               <label for="firstName">First Name</label>
-<input type="text" id="firstName" placeholder="Enter first name" class="text-input">
-
+              <input type="text" id="firstName" placeholder="Enter first name" class="text-input" />
             </div>
             <div class="form-group">
               <label for="lastName">Last Name</label>
-<input type="text" id="lastName" placeholder="Enter last name" class="text-input">
-
+              <input type="text" id="lastName" placeholder="Enter last name" class="text-input" />
             </div>
           </div>
           <div class="form-group">
             <label for="phone">Phone Number</label>
-<input type="tel" id="phone" placeholder="Enter phone number" class="text-input">
-
+            <input type="tel" id="phone" placeholder="Enter phone number" class="text-input" />
           </div>
         </div>
 
         <!-- Delivery Details -->
         <div class="form-section">
-          <h2>Delivery details</h2>
+          <h2>Delivery Details</h2>
           <p class="section-subtitle">These details will be used for physical tickets</p>
-
           <div class="form-group">
             <label for="address1">Address 1*</label>
-<input type="text" id="address1" required class="text-input">
-
+            <input type="text" id="address1" required class="text-input" />
           </div>
           <div class="form-group">
             <label for="address2">Address 2*</label>
-<input type="text" id="address2" required class="text-input">
-
+            <input type="text" id="address2" required class="text-input" />
           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="landmark">Landmark</label>
-<input type="text" id="landmark" class="text-input">
-
+              <input type="text" id="landmark" class="text-input" />
             </div>
             <div class="form-group">
               <label for="city">City*</label>
-<input type="text" id="city" required class="text-input">
-
+              <input type="text" id="city" required class="text-input" />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="pincode">Pincode*</label>
-<input type="text" id="pincode" required class="text-input">
-
+              <input type="text" id="pincode" required class="text-input" />
             </div>
             <div class="form-group">
               <label for="state">State*</label>
-<input type="text" id="state" required class="text-input">
-
+              <input type="text" id="state" required class="text-input" />
             </div>
           </div>
         </div>
 
-        <!-- Billing Details (optional) -->
+        <!-- Billing Details (Optional) -->
         <div class="form-section">
           <h2>Billing Details</h2>
           <p class="section-subtitle">These details will appear on your invoice</p>
           <div class="form-row">
             <div class="form-group">
               <label for="billingPincode">Pincode*</label>
-<input type="text" id="billingPincode" class="text-input">
-
+              <input type="text" id="billingPincode" class="text-input" />
             </div>
             <div class="form-group">
               <label for="billingState">State*</label>
-<input type="text" id="billingState" class="text-input">
-
+              <input type="text" id="billingState" class="text-input" />
             </div>
           </div>
         </div>
-
         <button type="submit" class="submit-btn">UPDATE</button>
       </form>
     </div>
-    <script type="module" src="app.js"></script>
+  </div>
+
+  <div id="FindEvent" class="tab-content" style="display: none;">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-container">
+        <h1>Discover Amazing Events</h1>
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Search events..." class="search-input" />
+        </div>
+      </div>
+    </section>
+    <!-- Events Grid -->
+    <section class="events-section">
+      <div class="container2">
+        <div class="events-grid" id="eventsGrid">
+          <!-- Event cards will be injected here by app.js -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="tickets" class="tab-content" style="display: none;">
+    <h2>Tickets Section</h2>
+    <p>Content for tickets goes here.</p>
+  </div>
+
+  <script>
+    // Show the selected tab section
+    function showSection(section) {
+      const sections = document.querySelectorAll('.tab-content');
+      sections.forEach(sec => sec.style.display = 'none');
+      document.getElementById(section).style.display = 'block';
+
+      // Update active navigation link
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => item.classList.remove('active'));
+      const activeLink = document.querySelector(`a[onclick="showSection('${section}')"]`);
+      if (activeLink) activeLink.classList.add('active');
+    }
+
+    // Search functionality for events
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const query = this.value.toLowerCase();
+      const events = document.querySelectorAll('.event-card');
+      events.forEach(event => {
+        const title = event.querySelector('.event-title').textContent.toLowerCase();
+        event.style.display = title.includes(query) ? '' : 'none';
+      });
+    });
+
+    // Sign out function
+    function signOutUser() {
+      window.location.href = 'index.html';
+    }
+
+    // Set default section when the page loads
+    document.addEventListener("DOMContentLoaded", function () {
+      showSection('FindEvent');
+    });
+  </script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
