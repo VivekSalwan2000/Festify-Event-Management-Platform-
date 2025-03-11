@@ -19,6 +19,13 @@ body {
     padding: 0 1rem;
 }
 
+/* Container */
+.container2 {
+    max-width: 80em;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
 /* Hero Section */
 .hero {
     background-color: rgb(20, 35, 71);
