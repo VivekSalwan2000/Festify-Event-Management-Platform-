@@ -96,7 +96,7 @@
   <!-- Event Details Popup -->
 <div id="eventPopup" class="hidden">
   <button class="close-btn" onclick="closeEventPopup()">✖</button>
-  <div class="event-popup-content">
+  <div class="event-popup-content" id="eventPopupContent">
     <!-- Slider Container -->
     <div class="slider" id="slider">
       <button class="slider-btn prev" onclick="prevSlide()">❮</button>
@@ -160,6 +160,8 @@
       <button class="proceed-payment-btn" onclick="proceedTologin2()">Proceed to Payment</button>
       <script>
         function proceedTologin2() {
+
+          alert("You need to have an account to buy tickets");
           // Close the event details popup first
           const eventPopup = document.getElementById('eventPopup');
           if (eventPopup) {
