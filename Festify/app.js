@@ -1,4 +1,4 @@
-import { fetchEvents } from './firebase.js';
+import { fetchEvents, updateTickets } from './firebase.js';
 
 let currentEvent = null;
 let slideIndex = 0;
@@ -12,10 +12,10 @@ function formatTime(time) {
 }
 
 // Create HTML for an event card
-function createEventCard(event) {
+function createEventCard(event, eventId) {
   const eventData = encodeURIComponent(JSON.stringify(event));
   return `
-    <div class="event-card" onclick="showEventPopup('${eventData}')" style="cursor: pointer;">
+    <div class="event-card" onclick="showEventPopup('${eventData}', '${eventId}')" style="cursor: pointer;">
       <div class="event-image-container">
         <img src="${event.imageUrl}" alt="${event.title}" class="event-image">
         <div class="event-price">${event.generalPrice ? `$${event.generalPrice}` : 'N/A'}</div>
@@ -51,15 +51,19 @@ function createEventCard(event) {
 }
 
 // Show event popup with event details and initialize slider
-window.showEventPopup = function(encodedEventData) {
+window.showEventPopup = function(encodedEventData, eventId) {
+  console.log("working");
   try {
     if (!encodedEventData) throw new Error("No event data provided");
     
     const eventData = decodeURIComponent(encodedEventData);
     const event = JSON.parse(eventData);
+    console.log(event);
     
     currentEvent = event;
     
+    document.getElementById("eventID").value = eventId;
+    console.log(document.getElementById("eventID").value);
     const titleElem = document.getElementById('eventTitle');
     if (titleElem) titleElem.textContent = event.title || '';
     
@@ -145,6 +149,7 @@ window.showEventPopup = function(encodedEventData) {
   } catch (error) {
     console.error('Error showing event popup:', error);
   }
+
 };
 
 // Close event popup
@@ -198,7 +203,7 @@ window.prevSlide = function() {
 function renderEvents(events) {
   const eventsGrid = document.getElementById('eventsGrid');
   if (eventsGrid) {
-    eventsGrid.innerHTML = events.map(event => createEventCard(event)).join('');
+    eventsGrid.innerHTML = events.map(event => createEventCard(event,event.id)).join('');
   }
 }
 
@@ -211,6 +216,7 @@ async function renderEventsFromDB() {
       if (eventsGrid) eventsGrid.innerHTML = '<p>No events found</p>';
       return;
     }
+    console.log("hello", events);
     renderEvents(events);
   } catch (error) {
     console.error("Error rendering events:", error);
@@ -229,3 +235,59 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => { document.body.insertAdjacentHTML('beforeend', data); })
     .catch(error => console.error('Error loading footer:', error));
 });
+
+ export function checkout(){
+    const generalQuantity = parseInt(document.getElementById('generalQuantity').value);
+    const seniorQuantity = parseInt(document.getElementById('seniorQuantity').value);
+    const childQuantity = parseInt(document.getElementById('childQuantity').value);
+
+    if(generalQuantity === 0 && seniorQuantity === 0 && childQuantity === 0){
+      alert("zero tickets");
+      return;
+    }
+    const eventPopup = document.getElementById("eventPopup");
+    const paymentBtn = document.getElementById("paymentBtn");
+    paymentBtn.classList.add('hidden');
+      if (eventPopup) {
+          eventPopup.insertAdjacentHTML("beforeend", `
+            <div class="payment-container">
+              <h2>Card</h2>
+              <div class="card-icons">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="MasterCard">
+              </div>
+              <div class="input-group">
+                <label>Name on card</label>
+                <input type="text" placeholder="John Doe">
+              </div>
+              <div class="input-group">
+                <label>Card number</label>
+                <input type="text" placeholder="1234 5678 9012 3456">
+              </div>
+              <div class="flex-container">
+                <div class="input-group">
+                  <label>Expiry date</label>
+                  <input type="text" placeholder="MM/YY">
+                </div>
+                <div class="input-group">
+                  <label>Security code (CVV)</label>
+                  <input type="text" placeholder="123">
+                </div>
+              </div>
+              <button class="pay-btn" onclick="submitPayment()">Pay</button>
+            </div>
+          `);
+      } else {
+          console.error("eventPopup element not found!");
+      }
+      
+  }
+
+export function submitPayment(){
+    const eventID = document.getElementById("eventID").value;
+    const quantity = parseInt(document.getElementById('generalQuantity').value) + parseInt(document.getElementById('seniorQuantity').value) + parseInt(document.getElementById('childQuantity').value);
+    updateTickets(eventID,quantity);
+  }
+
+  window.checkout = checkout;
+  window.submitPayment = submitPayment;

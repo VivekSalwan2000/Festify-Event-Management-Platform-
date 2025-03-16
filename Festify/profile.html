@@ -820,19 +820,11 @@
   </script>
   
   <script type="module" src="app.js"></script>
-
-  <!-- A simple toggle function for the "Proceed to Payment" button -->
-  <script>
-    function toggle() {
-      // For now, simply log the action.
-      console.log("Proceed to Payment triggered");
-    }
-  </script>
-
 <!-- Event Details Popup -->
 <div id="eventPopup" class="hidden">
   <button class="close-btn" onclick="closeEventPopup()">✖</button>
   <div class="event-popup-content" id="eventPopUp">
+    <input type="hidden" id="eventID" value="">
     <!-- Slider Container -->
     <div class="slider" id="slider">
       <button class="slider-btn prev" onclick="prevSlide()">❮</button>
@@ -899,45 +891,12 @@
 </div>
 
 <script>
-  function checkout(){
-    const eventPopup = document.getElementById("eventPopup");
-    const paymentBtn = document.getElementById("paymentBtn");
-    paymentBtn.classList.add('hidden');
-      if (eventPopup) {
-          eventPopup.insertAdjacentHTML("beforeend", `
-            <div class="payment-container">
-              <h2>Card</h2>
-              <div class="card-icons">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="MasterCard">
-              </div>
-              <div class="input-group">
-                <label>Name on card</label>
-                <input type="text" placeholder="John Doe">
-              </div>
-              <div class="input-group">
-                <label>Card number</label>
-                <input type="text" placeholder="1234 5678 9012 3456">
-              </div>
-              <div class="flex-container">
-                <div class="input-group">
-                  <label>Expiry date</label>
-                  <input type="text" placeholder="MM/YY">
-                </div>
-                <div class="input-group">
-                  <label>Security code (CVV)</label>
-                  <input type="text" placeholder="123">
-                </div>
-              </div>
-              <button class="pay-btn">Pay</button>
-            </div>
-          `);
-      } else {
-          console.error("eventPopup element not found!");
-      }
-  }
-</script>
+  import { updateTickets } from './firebase.js';
 
+  import { checkout, submitPayment } from './app.js';
+
+
+</script>
 
   <!-- Event Popup Functionality Script -->
   <script type="module">

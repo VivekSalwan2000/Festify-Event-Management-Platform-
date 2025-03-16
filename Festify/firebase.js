@@ -19,7 +19,8 @@ import {
   query,
   where,
   updateDoc,
-  deleteDoc
+  deleteDoc,
+  increment
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
 
@@ -188,6 +189,15 @@ export async function uploadEventImage(file) {
   }
 }
 
+export async function updateTickets(eventId, amount) {
+  try {
+    const eventRef = doc(db, "events", eventId);
+    await updateDoc(eventRef, { tickets: increment(-amount) });
+    console.log(`Tickets decremented by ${amount} for event: ${eventId}`);
+  } catch (error) {
+    console.error(`Error decrementing tickets for event ${eventId}:`, error);
+  }
+}
 
 // Define an asynchronous function to update an event
 export async function updateEvent(eventId, eventData) {
