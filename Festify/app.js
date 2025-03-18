@@ -1,4 +1,4 @@
-import { fetchEvents, updateTickets } from './firebase.js';
+import { fetchEvents, updateTickets, saveUserTicket } from './firebase.js';
 
 let currentEvent = null;
 let slideIndex = 0;
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => console.error('Error loading footer:', error));
 });
 
- export function checkout(){
+export function checkout(){
     const generalQuantity = parseInt(document.getElementById('generalQuantity').value);
     const seniorQuantity = parseInt(document.getElementById('seniorQuantity').value);
     const childQuantity = parseInt(document.getElementById('childQuantity').value);
@@ -302,9 +302,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
 export function submitPayment(){
     const eventID = document.getElementById("eventID").value;
-    const quantity = parseInt(document.getElementById('generalQuantity').value) + parseInt(document.getElementById('seniorQuantity').value) + parseInt(document.getElementById('childQuantity').value);
-    updateTickets(eventID,quantity);
-  }
+    const generalQuantity = parseInt(document.getElementById('generalQuantity').value);
+    const seniorQuantity = parseInt(document.getElementById('seniorQuantity').value);
+    const childQuantity = parseInt(document.getElementById('childQuantity').value);
+    const totalQuantity = generalQuantity + seniorQuantity + childQuantity;
+    
+    // Calculate total price
+    let totalPrice = 0;
+    if (currentEvent) {
+      totalPrice += generalQuantity * (currentEvent.generalPrice || 0);
+      totalPrice += seniorQuantity * (currentEvent.seniorPrice || 0);
+      totalPrice += childQuantity * (currentEvent.childPrice || 0);
+    }
+    
+    // Get the current user (assuming firebase auth is used)
+    import('https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js').then((module) => {
+      const auth = module.getAuth();
+      const user = auth.currentUser;
+      
+      if (!user) {
+        alert('You need to be logged in to purchase tickets');
+        return;
+      }
+      
+      // Save ticket information
+      const ticketData = {
+        eventId: eventID,
+        eventDetails: {
+          title: currentEvent.title,
+          date: currentEvent.date,
+          time: `${formatTime(currentEvent.startTime)} - ${formatTime(currentEvent.endTime)}`,
+          location: currentEvent.location,
+          imageUrl: currentEvent.imageUrl
+        },
+        tickets: {
+          general: generalQuantity,
+          senior: seniorQuantity,
+          child: childQuantity
+        },
+        totalQuantity: totalQuantity,
+        totalPrice: totalPrice.toFixed(2)
+      };
+      
+      // Save ticket to user's account
+      saveUserTicket(user.uid, ticketData)
+        .then(() => {
+          // Update available tickets for the event
+          updateTickets(eventID, totalQuantity);
+          
+          // Show success message and close popup
+          alert('Tickets purchased successfully! View them in your tickets tab.');
+          closeEventPopup();
+        })
+        .catch(error => {
+          console.error('Error saving ticket:', error);
+          alert('There was an error processing your payment. Please try again.');
+        });
+    });
+}
 
-  window.checkout = checkout;
-  window.submitPayment = submitPayment;
+window.checkout = checkout;
+window.submitPayment = submitPayment;

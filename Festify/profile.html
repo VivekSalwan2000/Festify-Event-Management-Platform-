@@ -372,6 +372,147 @@
         margin-bottom: 1rem;
       }
     }
+
+    /* Add Tickets Styles */
+    .tickets-header {
+      max-width: 900px;
+      margin: 2rem auto 1rem;
+      padding: 1.5rem 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
+    
+    .tickets-header h2 {
+      color: #333;
+      font-size: 1.8rem;
+      margin: 0 0 0.5rem 0;
+      font-weight: 600;
+    }
+    
+    .tickets-header p {
+      color: #666;
+      margin: 0;
+      font-size: 1rem;
+    }
+    
+    .tickets-container {
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      padding: 1.5rem 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tickets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .ticket-card {
+      background: rgba(30, 41, 59, 0.9);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .ticket-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .ticket-image {
+      height: 160px;
+      width: 100%;
+      object-fit: cover;
+    }
+    
+    .ticket-content {
+      padding: 1.5rem;
+    }
+    
+    .ticket-title {
+      font-size: 1.25rem;
+      color: white;
+      margin: 0 0 0.75rem 0;
+      font-weight: 600;
+    }
+    
+    .ticket-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+    
+    .ticket-info svg {
+      margin-right: 0.5rem;
+      opacity: 0.8;
+      stroke-width: 2;
+      width: 16px;
+      height: 16px;
+    }
+    
+    .ticket-details {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .ticket-quantity {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 0.5rem;
+    }
+    
+    .ticket-price {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: white;
+      margin-top: 0.75rem;
+      text-align: right;
+    }
+    
+    .ticket-price::before {
+      content: 'Total: ';
+      font-weight: normal;
+      opacity: 0.8;
+    }
+    
+    .browse-events-btn {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+    
+    .browse-events-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+    }
+
+    /* Specific styling for the tickets tab */
+    #tickets {
+      background-color: white;
+    }
+    
+    body.tickets-view {
+      background-color: white;
+    }
   </style>
 </head>
 <body>
@@ -509,8 +650,31 @@
   </div>
 
   <div id="tickets" class="tab-content" style="display: none;">
-    <h2>Tickets Section</h2>
-    <p>Content for tickets goes here.</p>
+    <div class="tickets-header">
+      <h2>My Tickets</h2>
+      <p>View and manage your purchased tickets</p>
+    </div>
+    
+    <div class="tickets-container">
+      <div id="ticketsLoading" style="text-align: center; padding: 2rem;">
+        <div class="spinner" style="display: inline-block; width: 40px; height: 40px; border: 2px solid rgba(0, 0, 0, 0.1); border-top-color: #4facfe;"></div>
+        <p style="color: #555;">Loading your tickets...</p>
+      </div>
+      
+      <div id="noTicketsMessage" style="display: none; text-align: center; padding: 3rem;">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.7;">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <h3 style="color: #444;">No Tickets Found</h3>
+        <p style="color: #666;">You haven't purchased any tickets yet.</p>
+        <button class="browse-events-btn" onclick="showSection('FindEvent')">Browse Events</button>
+      </div>
+      
+      <div id="ticketsList" class="tickets-grid"></div>
+    </div>
   </div>
 
   <!-- Scripts -->
@@ -526,6 +690,13 @@
       navItems.forEach(item => item.classList.remove('active'));
       const activeLink = document.querySelector(`a[onclick="showSection('${section}')"]`);
       if (activeLink) activeLink.classList.add('active');
+      
+      // Update body class for background color control
+      if (section === 'tickets') {
+        document.body.classList.add('tickets-view');
+      } else {
+        document.body.classList.remove('tickets-view');
+      }
     }
 
     // Search functionality for events
@@ -915,5 +1086,130 @@
       document.body.classList.remove('popup-open');
     }
   </script>
+
+<!-- Tickets Tab Script -->
+<script type="module">
+  import { getUserTickets } from './firebase.js';
+  
+  // Listen for tab changes to load tickets
+  document.addEventListener('DOMContentLoaded', () => {
+    // Add click event to the tickets tab link
+    const ticketsLink = document.querySelector('a[onclick="showSection(\'tickets\')"]');
+    if (ticketsLink) {
+      ticketsLink.addEventListener('click', loadUserTickets);
+    }
+  });
+  
+  // Load user tickets
+  async function loadUserTickets() {
+    // Get current user
+    const auth = await import('https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js').then(m => m.getAuth());
+    const user = auth.currentUser;
+    
+    if (!user) {
+      console.error('User not logged in');
+      return;
+    }
+    
+    // Show loading indicator
+    document.getElementById('ticketsLoading').style.display = 'block';
+    document.getElementById('noTicketsMessage').style.display = 'none';
+    document.getElementById('ticketsList').innerHTML = '';
+    
+    try {
+      // Fetch tickets
+      const tickets = await getUserTickets(user.uid);
+      
+      // Hide loading indicator
+      document.getElementById('ticketsLoading').style.display = 'none';
+      
+      if (tickets.length === 0) {
+        // Show no tickets message
+        document.getElementById('noTicketsMessage').style.display = 'block';
+      } else {
+        // Render tickets
+        const ticketsListEl = document.getElementById('ticketsList');
+        tickets.forEach(ticket => {
+          ticketsListEl.appendChild(createTicketCard(ticket));
+        });
+      }
+    } catch (error) {
+      console.error('Error loading tickets:', error);
+      document.getElementById('ticketsLoading').style.display = 'none';
+      document.getElementById('noTicketsMessage').style.display = 'block';
+    }
+  }
+  
+  // Create HTML for a ticket card
+  function createTicketCard(ticket) {
+    // Format date for display
+    const purchaseDate = ticket.purchasedAt ? new Date(ticket.purchasedAt.seconds * 1000) : new Date();
+    const formattedPurchaseDate = purchaseDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+    
+    // Create ticket element
+    const ticketEl = document.createElement('div');
+    ticketEl.className = 'ticket-card';
+    
+    ticketEl.innerHTML = `
+      <img src="${ticket.eventDetails.imageUrl || 'images/event-placeholder.jpg'}" alt="${ticket.eventDetails.title}" class="ticket-image">
+      <div class="ticket-content">
+        <h3 class="ticket-title">${ticket.eventDetails.title}</h3>
+        <div class="ticket-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>${ticket.eventDetails.date}</span>
+        </div>
+        <div class="ticket-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>${ticket.eventDetails.time}</span>
+        </div>
+        <div class="ticket-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span>${ticket.eventDetails.location}</span>
+        </div>
+        <div class="ticket-details">
+          ${ticket.tickets.general > 0 ? 
+            `<div class="ticket-quantity">
+              <span>General Admission</span>
+              <span>x${ticket.tickets.general}</span>
+            </div>` : ''
+          }
+          ${ticket.tickets.senior > 0 ? 
+            `<div class="ticket-quantity">
+              <span>Senior</span>
+              <span>x${ticket.tickets.senior}</span>
+            </div>` : ''
+          }
+          ${ticket.tickets.child > 0 ? 
+            `<div class="ticket-quantity">
+              <span>Child</span>
+              <span>x${ticket.tickets.child}</span>
+            </div>` : ''
+          }
+          <div class="ticket-price">$${ticket.totalPrice}</div>
+        </div>
+      </div>
+    `;
+    
+    return ticketEl;
+  }
+  
+  // Make loadUserTickets available as a global function
+  window.loadUserTickets = loadUserTickets;
+</script>
 </body>
 </html>

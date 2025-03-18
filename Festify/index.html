@@ -159,7 +159,7 @@
           </div>
         </div>
       </div>
-      <button class="proceed-payment-btn" id="paymentBtn" onclick="alert('Need to have an account to buy tickets')">Proceed to Payment</button>
+      <button class="proceed-payment-btn" id="paymentBtn">Proceed to Payment</button>
     </div>
   </div>
 </div>
@@ -199,6 +199,8 @@
   <!-- Event Rendering & Popup Interaction -->
   <script type="module">
     import { showEventPopup } from './app.js';
+    import { onUserStateChanged } from './firebase.js';
+    
     window.showEventPopup = showEventPopup;
 
     window.closeEventPopup = function() {
@@ -208,6 +210,29 @@
       popup.classList.add('hidden');
       document.body.classList.remove('popup-open');
     }
+    
+    // Check if user is logged in to enable payment button
+    document.addEventListener('DOMContentLoaded', () => {
+      const paymentBtn = document.getElementById('paymentBtn');
+      
+      onUserStateChanged((user) => {
+        if (paymentBtn) {
+          if (user) {
+            // User is logged in, enable payment button
+            paymentBtn.onclick = checkout;
+            paymentBtn.textContent = 'Proceed to Payment';
+          } else {
+            // User is not logged in, disable payment button
+            paymentBtn.onclick = () => {
+              alert('You need to sign in to purchase tickets');
+              closeEventPopup();
+              toggle(); // Show login popup
+            };
+            paymentBtn.textContent = 'Sign in to Purchase';
+          }
+        }
+      });
+    });
   </script>
 
   <!-- Load App Logic -->

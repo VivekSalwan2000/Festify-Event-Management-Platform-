@@ -76,6 +76,49 @@ export async function saveUserProfile(uid, profileData) {
   await setDoc(docRef, profileData, { merge: true });
 }
 
+// Function to save a ticket purchase to a user's account
+export async function saveUserTicket(userId, ticketData) {
+  try {
+    // Create a reference to the tickets subcollection for this user
+    const ticketsCollectionRef = collection(db, "users", userId, "tickets");
+    
+    // Add the ticket data with a timestamp
+    const ticketWithTimestamp = {
+      ...ticketData,
+      purchasedAt: new Date(),
+    };
+    
+    // Add the document to the tickets subcollection
+    const docRef = await addDoc(ticketsCollectionRef, ticketWithTimestamp);
+    console.log("Ticket saved with ID:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error saving ticket:", error);
+    throw error;
+  }
+}
+
+// Function to fetch all tickets for a user
+export async function getUserTickets(userId) {
+  try {
+    // Get reference to the user's tickets subcollection
+    const ticketsCollectionRef = collection(db, "users", userId, "tickets");
+    
+    // Get all documents in the subcollection
+    const querySnapshot = await getDocs(ticketsCollectionRef);
+    
+    // Map the documents to an array of ticket objects with their IDs
+    const tickets = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    return tickets;
+  } catch (error) {
+    console.error("Error fetching user tickets:", error);
+    return [];
+  }
+}
 
 // Define an asynchronous function to get the profile of a user by their unique ID (uid)
 export async function getUserProfile(uid) {
