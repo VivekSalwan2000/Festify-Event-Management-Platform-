@@ -1142,71 +1142,77 @@
   
   // Create HTML for a ticket card
   function createTicketCard(ticket) {
-    // Format date for display
-    const purchaseDate = ticket.purchasedAt ? new Date(ticket.purchasedAt.seconds * 1000) : new Date();
-    const formattedPurchaseDate = purchaseDate.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-    
-    // Create ticket element
-    const ticketEl = document.createElement('div');
-    ticketEl.className = 'ticket-card';
-    
-    ticketEl.innerHTML = `
-      <img src="${ticket.eventDetails.imageUrl || 'images/event-placeholder.jpg'}" alt="${ticket.eventDetails.title}" class="ticket-image">
-      <div class="ticket-content">
-        <h3 class="ticket-title">${ticket.eventDetails.title}</h3>
-        <div class="ticket-info">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-          <span>${ticket.eventDetails.date}</span>
-        </div>
-        <div class="ticket-info">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          <span>${ticket.eventDetails.time}</span>
-        </div>
-        <div class="ticket-info">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
-          </svg>
-          <span>${ticket.eventDetails.location}</span>
-        </div>
-        <div class="ticket-details">
-          ${ticket.tickets.general > 0 ? 
-            `<div class="ticket-quantity">
-              <span>General Admission</span>
-              <span>x${ticket.tickets.general}</span>
-            </div>` : ''
-          }
-          ${ticket.tickets.senior > 0 ? 
-            `<div class="ticket-quantity">
-              <span>Senior</span>
-              <span>x${ticket.tickets.senior}</span>
-            </div>` : ''
-          }
-          ${ticket.tickets.child > 0 ? 
-            `<div class="ticket-quantity">
-              <span>Child</span>
-              <span>x${ticket.tickets.child}</span>
-            </div>` : ''
-          }
-          <div class="ticket-price">$${ticket.totalPrice}</div>
-        </div>
+  // Format date for display
+  const eventDate = new Date(ticket.eventDetails.date); // Event date
+  const today = new Date(); // Current date
+  
+  // Create ticket element
+  const ticketEl = document.createElement('div');
+  ticketEl.className = 'ticket-card';
+
+  ticketEl.innerHTML = `
+    <img src="${ticket.eventDetails.imageUrl || 'images/event-placeholder.jpg'}" alt="${ticket.eventDetails.title}" class="ticket-image">
+    <div class="ticket-content">
+      <h3 class="ticket-title">${ticket.eventDetails.title}</h3>
+      <div class="ticket-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span>${ticket.eventDetails.date}</span>
       </div>
-    `;
-    
-    return ticketEl;
+      <div class="ticket-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>${ticket.eventDetails.time}</span>
+      </div>
+      <div class="ticket-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span>${ticket.eventDetails.location}</span>
+      </div>
+      <div class="ticket-details">
+        ${ticket.tickets.general > 0 ? 
+          `<div class="ticket-quantity">
+            <span>General Admission</span>
+            <span>x${ticket.tickets.general}</span>
+          </div>` : ''
+        }
+        ${ticket.tickets.senior > 0 ? 
+          `<div class="ticket-quantity">
+            <span>Senior</span>
+            <span>x${ticket.tickets.senior}</span>
+          </div>` : ''
+        }
+        ${ticket.tickets.child > 0 ? 
+          `<div class="ticket-quantity">
+            <span>Child</span>
+            <span>x${ticket.tickets.child}</span>
+          </div>` : ''
+        }
+        <div class="ticket-price">$${ticket.totalPrice}</div>
+      </div>
+    </div>
+  `;
+
+  // Only add the feedback button if the event date has passed
+  if (eventDate < today) {
+    const feedbackButton = document.createElement('button');
+    feedbackButton.className = 'feedback-button';
+    feedbackButton.innerText = 'Send Feedback';
+    feedbackButton.addEventListener('click', () => sendFeedback(ticket));
+    ticketEl.querySelector('.ticket-content').appendChild(feedbackButton);
   }
+
+  return ticketEl;
+}
+
   
   // Make loadUserTickets available as a global function
   window.loadUserTickets = loadUserTickets;
