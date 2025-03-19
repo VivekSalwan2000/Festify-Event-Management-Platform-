@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Festify - Discover Amazing Events</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="styles.css" />
@@ -40,7 +41,7 @@
             window.location.href = 'profile.html';
           } catch (error) {
             console.error('Sign In Error:', error);
-            alert('Sign In Error: ' + error.message);
+            showIncorrectCredentials('Sign In Error: ' + error.message);
           }
         });
 
@@ -54,7 +55,7 @@
             window.location.href = 'profile.html';
           } catch (error) {
             console.error('Sign Up Error:', error);
-            alert('Sign Up Error: ' + error.message);
+            showAccountExists('Sign Up Error: ' + error.message);
           }
         });
       }
@@ -159,7 +160,8 @@
           </div>
         </div>
       </div>
-      <button class="proceed-payment-btn" id="paymentBtn" onclick="alert('Need to have an account to buy tickets')">Proceed to Payment</button>
+      <button class="proceed-payment-btn" id="paymentBtn" onclick="showAccessDeniedforTickets('Need to have an account to buy tickets');closeEventPopup();
+              toggle();">Proceed to Payment</button>
     </div>
   </div>
 </div>
@@ -199,6 +201,8 @@
   <!-- Event Rendering & Popup Interaction -->
   <script type="module">
     import { showEventPopup } from './app.js';
+    import { onUserStateChanged } from './firebase.js';
+    
     window.showEventPopup = showEventPopup;
 
     window.closeEventPopup = function() {
@@ -208,6 +212,29 @@
       popup.classList.add('hidden');
       document.body.classList.remove('popup-open');
     }
+    
+    // Check if user is logged in to enable payment button
+    document.addEventListener('DOMContentLoaded', () => {
+      const paymentBtn = document.getElementById('paymentBtn');
+      
+      onUserStateChanged((user) => {
+        if (paymentBtn) {
+          if (user) {
+            // User is logged in, enable payment button
+            paymentBtn.onclick = checkout;
+            paymentBtn.textContent = 'Proceed to Payment';
+          } else {
+            // User is not logged in, disable payment button
+            paymentBtn.onclick = () => {
+              alert('You need to sign in to purchase tickets');
+              closeEventPopup();
+              toggle(); // Show login popup
+            };
+            paymentBtn.textContent = 'Sign in to Purchase';
+          }
+        }
+      });
+    });
   </script>
 
   <!-- Load App Logic -->
@@ -224,5 +251,35 @@
       });
     });
   </script>
+<script>
+  // Function to show error for incorrect credentials
+  function showIncorrectCredentials() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Incorrect Credentials',
+      text: 'The username or password you entered is incorrect. Please try again.',
+      confirmButtonText: 'Try Again'
+    });
+  }
+
+  // Function to show error when account already exists
+  function showAccountExists() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Account Already Exists',
+      text: 'An account with this email already exists. Please log in or reset your password.',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function showAccessDeniedforTickets() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Access Denied',
+      text: 'You need to have an account to buy tickets.',
+      confirmButtonText: 'OK'
+    });
+  }
+</script>
 </body>
 </html>

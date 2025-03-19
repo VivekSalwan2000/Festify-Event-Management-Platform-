@@ -242,9 +242,9 @@ body {
 }
 
 .ticket-price {
-    font-weight: bold;
-    color: #007bff;
-    font-size: 1.1em;
+    font-weight: 600;
+    color: #0066ff;
+    font-size: 1.1rem;
 }
 
 .quantity-selector {
@@ -516,4 +516,12 @@ p {
 h3 {
     margin-top: 5px;
     margin-bottom: 10px;
+}
+
+/* Add a highly specific rule to maintain ticket price color */
+.event-popup-content .ticket-type .ticket-price,
+.event-popup-content #generalPrice,
+.event-popup-content #seniorPrice, 
+.event-popup-content #childPrice {
+    color: #0066ff !important;
 }

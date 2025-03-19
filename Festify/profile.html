@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <title>Festify - User Profile</title>
 
   <!-- External CSS -->
@@ -372,6 +373,147 @@
         margin-bottom: 1rem;
       }
     }
+
+    /* Add Tickets Styles */
+    .tickets-header {
+      max-width: 900px;
+      margin: 2rem auto 1rem;
+      padding: 1.5rem 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
+    
+    .tickets-header h2 {
+      color: #333;
+      font-size: 1.8rem;
+      margin: 0 0 0.5rem 0;
+      font-weight: 600;
+    }
+    
+    .tickets-header p {
+      color: #666;
+      margin: 0;
+      font-size: 1rem;
+    }
+    
+    .tickets-container {
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      padding: 1.5rem 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tickets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .ticket-card {
+      background: rgba(30, 41, 59, 0.9);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .ticket-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .ticket-image {
+      height: 160px;
+      width: 100%;
+      object-fit: cover;
+    }
+    
+    .ticket-content {
+      padding: 1.5rem;
+    }
+    
+    .ticket-title {
+      font-size: 1.25rem;
+      color: white;
+      margin: 0 0 0.75rem 0;
+      font-weight: 600;
+    }
+    
+    .ticket-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+    
+    .ticket-info svg {
+      margin-right: 0.5rem;
+      opacity: 0.8;
+      stroke-width: 2;
+      width: 16px;
+      height: 16px;
+    }
+    
+    .ticket-details {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .ticket-quantity {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 0.5rem;
+    }
+    
+    .ticket-price {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: white;
+      margin-top: 0.75rem;
+      text-align: right;
+    }
+    
+    .ticket-price::before {
+      content: 'Each: ';
+      font-weight: normal;
+      opacity: 0.8;
+    }
+    
+    .browse-events-btn {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+    
+    .browse-events-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+    }
+
+    /* Specific styling for the tickets tab */
+    #tickets {
+      background-color: white;
+    }
+    
+    body.tickets-view {
+      background-color: white;
+    }
   </style>
 </head>
 <body>
@@ -509,8 +651,31 @@
   </div>
 
   <div id="tickets" class="tab-content" style="display: none;">
-    <h2>Tickets Section</h2>
-    <p>Content for tickets goes here.</p>
+    <div class="tickets-header">
+      <h2>My Tickets</h2>
+      <p>View and manage your purchased tickets</p>
+    </div>
+    
+    <div class="tickets-container">
+      <div id="ticketsLoading" style="text-align: center; padding: 2rem;">
+        <div class="spinner" style="display: inline-block; width: 40px; height: 40px; border: 2px solid rgba(0, 0, 0, 0.1); border-top-color: #4facfe;"></div>
+        <p style="color: #555;">Loading your tickets...</p>
+      </div>
+      
+      <div id="noTicketsMessage" style="display: none; text-align: center; padding: 3rem;">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.7;">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <h3 style="color: #444;">No Tickets Found</h3>
+        <p style="color: #666;">You haven't purchased any tickets yet.</p>
+        <button class="browse-events-btn" onclick="showSection('FindEvent')">Browse Events</button>
+      </div>
+      
+      <div id="ticketsList" class="tickets-grid"></div>
+    </div>
   </div>
 
   <!-- Scripts -->
@@ -526,6 +691,13 @@
       navItems.forEach(item => item.classList.remove('active'));
       const activeLink = document.querySelector(`a[onclick="showSection('${section}')"]`);
       if (activeLink) activeLink.classList.add('active');
+      
+      // Update body class for background color control
+      if (section === 'tickets') {
+        document.body.classList.add('tickets-view');
+      } else {
+        document.body.classList.remove('tickets-view');
+      }
     }
 
     // Search functionality for events
@@ -726,7 +898,8 @@
       signOutUser
     } from './firebase.js';
     
-    let currentUser = null;
+    // Make currentUser a global variable attached to window
+    window.currentUser = null;
     
     // Function to handle user state changes
     onUserStateChanged(async (user) => {
@@ -736,7 +909,7 @@
         return;
       }
       
-      currentUser = user;
+      window.currentUser = user;
       console.log('User logged in:', user.email);
       
       // Get user profile data
@@ -777,7 +950,7 @@
         profileForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           
-          if (!currentUser) return;
+          if (!window.currentUser) return;
           
           try {
             // Gather form data
@@ -795,11 +968,11 @@
             };
             
             // Save to Firestore
-            await saveUserProfile(currentUser.uid, profileData);
-            alert('Profile updated successfully!');
+            await saveUserProfile(window.currentUser.uid, profileData);
+            showProfileUpdate('Profile updated successfully!');
           } catch (error) {
             console.error('Error updating profile:', error);
-            alert('Error updating profile. Please try again.');
+            showProfileNotUpdated('Error updating profile. Please try again.');
           }
         });
       }
@@ -890,6 +1063,52 @@
   </div>
 </div>
 
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal">
+  <div class="modal-content">
+    <h2>Event Feedback</h2>
+    <p id="eventTitle"></p>
+    <form id="feedbackForm">
+      <label>Was the event well-organized?</label>
+      <div>
+        <input type="radio" name="organized" value="Yes" required> Yes
+        <input type="radio" name="organized" value="No"> No
+      </div>
+
+      <label>Was the venue comfortable?</label>
+      <div>
+        <input type="radio" name="venue" value="Yes" required> Yes
+        <input type="radio" name="venue" value="No"> No
+      </div>
+
+      <label>Was the event on schedule?</label>
+      <div>
+        <input type="radio" name="schedule" value="Yes" required> Yes
+        <input type="radio" name="schedule" value="No"> No
+      </div>
+
+      <label>Would you attend a similar event again?</label>
+      <div>
+        <input type="radio" name="attendAgain" value="Yes" required> Yes
+        <input type="radio" name="attendAgain" value="No"> No
+      </div>
+
+      <label>Overall Rating:</label>
+      <div id="starRating">
+        <span class="star" data-value="1">&#9733;</span>
+        <span class="star" data-value="2">&#9733;</span>
+        <span class="star" data-value="3">&#9733;</span>
+        <span class="star" data-value="4">&#9733;</span>
+        <span class="star" data-value="5">&#9733;</span>
+      </div>
+      <input type="hidden" name="rating" id="ratingInput" required>
+
+      <button type="submit" class="feed2btn">Submit Feedback</button>
+    </form>
+  </div>
+</div>
+
+
 <script>
   import { updateTickets } from './firebase.js';
 
@@ -915,5 +1134,280 @@
       document.body.classList.remove('popup-open');
     }
   </script>
+
+<!-- Tickets Tab Script -->
+<script type="module">
+  import { getUserTickets, saveFeedback } from './firebase.js';
+  import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+  
+  // Show Feedback Modal
+  function sendFeedback(ticket) {
+    document.getElementById('feedbackModal').style.display = 'flex';
+    document.getElementById('eventTitle').innerText = `Feedback for ${ticket.eventDetails.title}`;
+
+    // Clear previous selection
+    document.querySelectorAll('input[name="organized"], input[name="venue"], input[name="schedule"], input[name="attendAgain"]').forEach(input => input.checked = false);
+    document.getElementById('ratingInput').value = '';
+    document.querySelectorAll('.star').forEach(star => star.classList.remove('selected'));
+
+    // Handle star rating
+    document.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('click', function() {
+        let value = this.getAttribute('data-value');
+        document.getElementById('ratingInput').value = value;
+        document.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
+        for (let i = 0; i < value; i++) {
+          document.querySelectorAll('.star')[i].classList.add('selected');
+        }
+      });
+    });
+
+    // Submit Feedback
+    document.getElementById('feedbackForm').onsubmit = async function(event) {
+      event.preventDefault();
+
+      // Check if user is logged in
+      if (!window.currentUser) {
+        showProfileNotUpdated("Please log in to submit feedback.");
+        return;
+      }
+
+      let feedbackData = {
+        eventTitle: ticket.eventDetails.title,
+        organized: document.querySelector('input[name="organized"]:checked').value,
+        venue: document.querySelector('input[name="venue"]:checked').value,
+        schedule: document.querySelector('input[name="schedule"]:checked').value,
+        attendAgain: document.querySelector('input[name="attendAgain"]:checked').value,
+        rating: document.getElementById('ratingInput').value,
+        userId: window.currentUser.uid,
+      };
+      
+      // Only add eventId if it exists in the ticket data
+      if (ticket.eventDetails && ticket.eventDetails.id) {
+        feedbackData.eventId = ticket.eventDetails.id;
+      } else if (ticket.eventId) {
+        // Try alternate location
+        feedbackData.eventId = ticket.eventId;
+      }
+      
+      // Add debugging logs
+      console.log("Ticket data:", JSON.stringify(ticket, null, 2));
+      console.log("Feedback data to save:", feedbackData);
+
+      try {
+        // Save feedback to Firestore
+        await saveFeedback(feedbackData);
+        showSendFeedback("Thank you for your feedback!");
+      } catch (error) {
+        console.error("Error submitting feedback:", error);
+        showProfileNotUpdated("Error submitting feedback. Please try again.");
+      }
+
+      closeFeedbackModal();
+    };
+  }
+
+  function closeFeedbackModal() {
+    document.getElementById('feedbackModal').style.display = 'none';
+  }  
+  
+  // Close the modal when clicking outside of it
+  window.onclick = function(event) {
+    const modal = document.getElementById('feedbackModal');
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  };
+
+  // Improved ticket loading function - more efficient and with better feedback
+  async function loadUserTickets() {
+    console.log('Loading tickets...');
+    
+    // Use the global currentUser instead of reimporting auth
+    if (!window.currentUser) {
+      console.error('User not logged in');
+      document.getElementById('ticketsLoading').style.display = 'none';
+      document.getElementById('noTicketsMessage').style.display = 'block';
+      return;
+    }
+    
+    // Show loading indicator
+    document.getElementById('ticketsLoading').style.display = 'block';
+    document.getElementById('noTicketsMessage').style.display = 'none';
+    document.getElementById('ticketsList').innerHTML = '';
+    
+    try {
+      console.time('Ticket loading time');
+      // Fetch tickets with the current user ID
+      const tickets = await getUserTickets(window.currentUser.uid);
+      console.timeEnd('Ticket loading time');
+      console.log(`Loaded ${tickets.length} tickets`);
+      
+      // Hide loading indicator
+      document.getElementById('ticketsLoading').style.display = 'none';
+      
+      if (tickets.length === 0) {
+        // Show no tickets message
+        document.getElementById('noTicketsMessage').style.display = 'block';
+      } else {
+        // Render tickets in batches for better performance
+        const ticketsListEl = document.getElementById('ticketsList');
+        
+        // Process in batches of 5 for smoother rendering
+        const batchSize = 5;
+        for (let i = 0; i < tickets.length; i += batchSize) {
+          const batch = tickets.slice(i, i + batchSize);
+          
+          // Use setTimeout to allow UI to update between batches
+          setTimeout(() => {
+            batch.forEach(ticket => {
+              ticketsListEl.appendChild(createTicketCard(ticket));
+            });
+          }, 0);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading tickets:', error);
+      document.getElementById('ticketsLoading').style.display = 'none';
+      document.getElementById('noTicketsMessage').style.display = 'block';
+      document.getElementById('noTicketsMessage').innerHTML = `
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.7;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <h3 style="color: #444;">Error Loading Tickets</h3>
+        <p style="color: #666;">Please try again later.</p>
+        <button class="browse-events-btn" onclick="showSection('FindEvent')">Browse Events</button>
+      `;
+    }
+  }
+  
+  // Expose the function to global scope
+  window.loadUserTickets = loadUserTickets;
+  window.sendFeedback = sendFeedback;
+  
+  // Automatically load tickets when the section is shown
+  document.addEventListener('DOMContentLoaded', () => {
+    // Add click event to the tickets tab link
+    const ticketsLink = document.querySelector('a[onclick="showSection(\'tickets\')"]');
+    if (ticketsLink) {
+      ticketsLink.addEventListener('click', () => {
+        console.log('Tickets tab clicked, loading tickets...');
+        loadUserTickets();
+      });
+    }
+    
+    // Modify the showSection function to auto-load tickets when that section is shown
+    const originalShowSection = window.showSection;
+    window.showSection = function(section) {
+      originalShowSection(section);
+      if (section === 'tickets') {
+        console.log('Tickets section shown, loading tickets...');
+        loadUserTickets();
+      }
+    };
+  });
+
+  // Create HTML for a ticket card
+  function createTicketCard(ticket) {
+    // Format date for display
+    const eventDate = new Date(ticket.eventDetails.date); // Event date
+    const today = new Date(); // Current date
+    
+    // Create ticket element
+    const ticketEl = document.createElement('div');
+    ticketEl.className = 'ticket-card';
+
+    ticketEl.innerHTML = `
+      <img src="${ticket.eventDetails.imageUrl || 'images/event-placeholder.jpg'}" alt="${ticket.eventDetails.title}" class="ticket-image">
+      <div class="ticket-content">
+        <h3 class="ticket-title">${ticket.eventDetails.title}</h3>
+        <div class="ticket-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>${ticket.eventDetails.date}</span>
+        </div>
+        <div class="ticket-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>${ticket.eventDetails.time}</span>
+        </div>
+        <div class="ticket-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span>${ticket.eventDetails.location}</span>
+        </div>
+        <div class="ticket-details">
+          ${ticket.tickets.general > 0 ? 
+            `<div class="ticket-quantity">
+              <span>General Admission</span>
+              <span>x${ticket.tickets.general}</span>
+            </div>` : ''
+          }
+          ${ticket.tickets.senior > 0 ? 
+            `<div class="ticket-quantity">
+              <span>Senior</span>
+              <span>x${ticket.tickets.senior}</span>
+            </div>` : ''
+          }
+          ${ticket.tickets.child > 0 ? 
+            `<div class="ticket-quantity">
+              <span>Child</span>
+              <span>x${ticket.tickets.child}</span>
+            </div>` : ''
+          }
+          <div class="ticket-price">$${ticket.totalPrice}</div>
+        </div>
+      </div>
+    `;
+
+    // Only add the feedback button if the event date has passed
+    if (eventDate < today) {
+      const feedbackButton = document.createElement('button');
+      feedbackButton.className = 'feedback-button';
+      feedbackButton.innerText = 'Send Feedback';
+      feedbackButton.addEventListener('click', () => sendFeedback(ticket));
+      ticketEl.querySelector('.ticket-content').appendChild(feedbackButton);
+    }
+
+    return ticketEl;
+  }
+  
+  // Add helper functions for alerts
+  function showSendFeedback(message) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Feedback Sent',
+      text: message || 'Thank you for sending feedback.',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function showProfileUpdate(message) {
+    Swal.fire({
+      title: 'Profile Updated',
+      text: message || 'Your profile has been updated.',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function showProfileNotUpdated(message) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: message || 'Please make sure all fields are filled out correctly.',
+      confirmButtonText: 'OK'
+    });
+  }
+</script>
 </body>
 </html>
