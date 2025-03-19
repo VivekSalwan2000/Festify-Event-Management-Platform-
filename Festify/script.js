@@ -57,6 +57,8 @@ async function renderEventsFromDB() {
     const events = await fetchUserEvents(currentUser.uid);
     const eventsGrid = document.getElementById('eventsGrid');
     if (eventsGrid) {
+      const eventCount = events.length;
+      document.getElementById("totalEvents").textContent = eventCount;
       eventsGrid.innerHTML = events.map((event, index) => `
         <div class="event-card" style="animation-delay: ${index * 0.1}s" data-event-id="${event.id}">
           <div class="event-card-content">
