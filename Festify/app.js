@@ -349,14 +349,23 @@ export function submitPayment(){
         .then(() => {
           // Update available tickets for the event
           updateTickets(eventID, totalQuantity);
-          
-          // Show success message and close popup
-          alert('Tickets purchased successfully! View them in your tickets tab.');
+           
+          // Sweet alert for success
+        Swal.fire({
+          icon: 'payment success alert',
+          title: 'Tickets purchased',
+          text: 'Tickets purchased successfully! View them in your tickets tab.',
+        });
           closeEventPopup();
         })
         .catch(error => {
           console.error('Error saving ticket:', error);
-          alert('There was an error processing your payment. Please try again.');
+             // Sweet alert for ticket failure
+        Swal.fire({
+          icon: 'payment failure alert',
+          title: 'ticket failure alert',
+          text: 'Payment failure alert, try again',
+        });
         });
     });
 }
