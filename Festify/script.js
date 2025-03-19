@@ -55,6 +55,12 @@ async function renderEventsFromDB() {
   if (!currentUser) return;
   try {
     const events = await fetchUserEvents(currentUser.uid);
+    let organizerRevenue = 0;
+    events.forEach((event) => {
+      console.log(event.totalRevenue);
+      organizerRevenue += event.totalRevenue;
+    });
+    document.getElementById("totalRevenue").textContent = organizerRevenue;
     const eventsGrid = document.getElementById('eventsGrid');
     if (eventsGrid) {
       const eventCount = events.length;
@@ -275,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
           startTime: document.getElementById('start-time').value,
           endTime: document.getElementById('end-time').value,
           location: document.getElementById('location').value,
+          totalRevenue: parseInt(0),
           tickets: parseInt(document.getElementById('ticketInput').value),
           generalPrice: parseFloat(document.getElementById('generalPrice').value),
           childPrice: document.getElementById('enableChildPrice').checked ? parseFloat(document.getElementById('childPrice').value) : null,

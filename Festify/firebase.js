@@ -242,6 +242,24 @@ export async function updateTickets(eventId, amount) {
   }
 }
 
+export async function updateRevenue(eventId, payment){
+  try {
+    const docRef = doc(db, "events", eventId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const currentRevenue = docSnap.data().totalRevenue || 0; // Get existing revenue, default to 0
+      const newRevenue = currentRevenue + payment; // Add new payment
+
+      await updateDoc(docRef, {
+        totalRevenue: newRevenue
+      });
+    }
+  } catch (error) {
+    console.error("Error updating revenue:", error);
+  }
+}
+
 // Define an asynchronous function to update an event
 export async function updateEvent(eventId, eventData) {
   try {

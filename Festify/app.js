@@ -1,4 +1,4 @@
-import { fetchEvents, updateTickets, saveUserTicket } from './firebase.js';
+import { fetchEvents, updateTickets, saveUserTicket, updateRevenue } from './firebase.js';
 
 let currentEvent = null;
 let slideIndex = 0;
@@ -368,6 +368,8 @@ export function submitPayment(){
         });
         });
     });
+
+    updateRevenue(eventID, totalPrice);
 }
 
 window.checkout = checkout;
