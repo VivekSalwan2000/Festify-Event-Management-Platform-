@@ -483,7 +483,7 @@
     }
     
     .ticket-price::before {
-      content: 'Total: ';
+      content: 'Each: ';
       font-weight: normal;
       opacity: 0.8;
     }
@@ -898,7 +898,8 @@
       signOutUser
     } from './firebase.js';
     
-    let currentUser = null;
+    // Make currentUser a global variable attached to window
+    window.currentUser = null;
     
     // Function to handle user state changes
     onUserStateChanged(async (user) => {
@@ -908,7 +909,7 @@
         return;
       }
       
-      currentUser = user;
+      window.currentUser = user;
       console.log('User logged in:', user.email);
       
       // Get user profile data
@@ -949,7 +950,7 @@
         profileForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           
-          if (!currentUser) return;
+          if (!window.currentUser) return;
           
           try {
             // Gather form data
@@ -967,7 +968,7 @@
             };
             
             // Save to Firestore
-            await saveUserProfile(currentUser.uid, profileData);
+            await saveUserProfile(window.currentUser.uid, profileData);
             showProfileUpdate('Profile updated successfully!');
           } catch (error) {
             console.error('Error updating profile:', error);
@@ -1136,6 +1137,9 @@
 
 <!-- Tickets Tab Script -->
 <script type="module">
+  import { getUserTickets, saveFeedback } from './firebase.js';
+  import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+  
   // Show Feedback Modal
   function sendFeedback(ticket) {
     document.getElementById('feedbackModal').style.display = 'flex';
@@ -1159,8 +1163,14 @@
     });
 
     // Submit Feedback
-    document.getElementById('feedbackForm').onsubmit = function(event) {
+    document.getElementById('feedbackForm').onsubmit = async function(event) {
       event.preventDefault();
+
+      // Check if user is logged in
+      if (!window.currentUser) {
+        showProfileNotUpdated("Please log in to submit feedback.");
+        return;
+      }
 
       let feedbackData = {
         eventTitle: ticket.eventDetails.title,
@@ -1168,47 +1178,56 @@
         venue: document.querySelector('input[name="venue"]:checked').value,
         schedule: document.querySelector('input[name="schedule"]:checked').value,
         attendAgain: document.querySelector('input[name="attendAgain"]:checked').value,
-        rating: document.getElementById('ratingInput').value
+        rating: document.getElementById('ratingInput').value,
+        userId: window.currentUser.uid,
       };
+      
+      // Only add eventId if it exists in the ticket data
+      if (ticket.eventDetails && ticket.eventDetails.id) {
+        feedbackData.eventId = ticket.eventDetails.id;
+      } else if (ticket.eventId) {
+        // Try alternate location
+        feedbackData.eventId = ticket.eventId;
+      }
+      
+      // Add debugging logs
+      console.log("Ticket data:", JSON.stringify(ticket, null, 2));
+      console.log("Feedback data to save:", feedbackData);
 
-      console.log("Feedback Submitted:", feedbackData); // Replace with backend submission
+      try {
+        // Save feedback to Firestore
+        await saveFeedback(feedbackData);
+        showSendFeedback("Thank you for your feedback!");
+      } catch (error) {
+        console.error("Error submitting feedback:", error);
+        showProfileNotUpdated("Error submitting feedback. Please try again.");
+      }
 
-      showSendFeedback("Thank you for your feedback!");
       closeFeedbackModal();
     };
   }
 
-function closeFeedbackModal() {
-  document.getElementById('feedbackModal').style.display = 'none';
-}  
-// Close the modal when clicking outside of it
-window.onclick = function(event) {
-  const modal = document.getElementById('feedbackModal');
-  if (event.target === modal) {
-    modal.style.display = 'none';
-  }
-};
-
-
-  import { getUserTickets } from './firebase.js';
+  function closeFeedbackModal() {
+    document.getElementById('feedbackModal').style.display = 'none';
+  }  
   
-  // Listen for tab changes to load tickets
-  document.addEventListener('DOMContentLoaded', () => {
-    // Add click event to the tickets tab link
-    const ticketsLink = document.querySelector('a[onclick="showSection(\'tickets\')"]');
-    if (ticketsLink) {
-      ticketsLink.addEventListener('click', loadUserTickets);
+  // Close the modal when clicking outside of it
+  window.onclick = function(event) {
+    const modal = document.getElementById('feedbackModal');
+    if (event.target === modal) {
+      modal.style.display = 'none';
     }
-  });
-  
-  // Load user tickets
+  };
+
+  // Improved ticket loading function - more efficient and with better feedback
   async function loadUserTickets() {
-    // Get current user
-    const auth = await import('https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js').then(m => m.getAuth());
-    const user = auth.currentUser;
+    console.log('Loading tickets...');
     
-    if (!user) {
+    // Use the global currentUser instead of reimporting auth
+    if (!window.currentUser) {
       console.error('User not logged in');
+      document.getElementById('ticketsLoading').style.display = 'none';
+      document.getElementById('noTicketsMessage').style.display = 'block';
       return;
     }
     
@@ -1218,8 +1237,11 @@ window.onclick = function(event) {
     document.getElementById('ticketsList').innerHTML = '';
     
     try {
-      // Fetch tickets
-      const tickets = await getUserTickets(user.uid);
+      console.time('Ticket loading time');
+      // Fetch tickets with the current user ID
+      const tickets = await getUserTickets(window.currentUser.uid);
+      console.timeEnd('Ticket loading time');
+      console.log(`Loaded ${tickets.length} tickets`);
       
       // Hide loading indicator
       document.getElementById('ticketsLoading').style.display = 'none';
@@ -1228,121 +1250,164 @@ window.onclick = function(event) {
         // Show no tickets message
         document.getElementById('noTicketsMessage').style.display = 'block';
       } else {
-        // Render tickets
+        // Render tickets in batches for better performance
         const ticketsListEl = document.getElementById('ticketsList');
-        tickets.forEach(ticket => {
-          ticketsListEl.appendChild(createTicketCard(ticket));
-        });
+        
+        // Process in batches of 5 for smoother rendering
+        const batchSize = 5;
+        for (let i = 0; i < tickets.length; i += batchSize) {
+          const batch = tickets.slice(i, i + batchSize);
+          
+          // Use setTimeout to allow UI to update between batches
+          setTimeout(() => {
+            batch.forEach(ticket => {
+              ticketsListEl.appendChild(createTicketCard(ticket));
+            });
+          }, 0);
+        }
       }
     } catch (error) {
       console.error('Error loading tickets:', error);
       document.getElementById('ticketsLoading').style.display = 'none';
       document.getElementById('noTicketsMessage').style.display = 'block';
+      document.getElementById('noTicketsMessage').innerHTML = `
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.7;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <h3 style="color: #444;">Error Loading Tickets</h3>
+        <p style="color: #666;">Please try again later.</p>
+        <button class="browse-events-btn" onclick="showSection('FindEvent')">Browse Events</button>
+      `;
     }
   }
   
+  // Expose the function to global scope
+  window.loadUserTickets = loadUserTickets;
+  window.sendFeedback = sendFeedback;
+  
+  // Automatically load tickets when the section is shown
+  document.addEventListener('DOMContentLoaded', () => {
+    // Add click event to the tickets tab link
+    const ticketsLink = document.querySelector('a[onclick="showSection(\'tickets\')"]');
+    if (ticketsLink) {
+      ticketsLink.addEventListener('click', () => {
+        console.log('Tickets tab clicked, loading tickets...');
+        loadUserTickets();
+      });
+    }
+    
+    // Modify the showSection function to auto-load tickets when that section is shown
+    const originalShowSection = window.showSection;
+    window.showSection = function(section) {
+      originalShowSection(section);
+      if (section === 'tickets') {
+        console.log('Tickets section shown, loading tickets...');
+        loadUserTickets();
+      }
+    };
+  });
+
   // Create HTML for a ticket card
   function createTicketCard(ticket) {
-  // Format date for display
-  const eventDate = new Date(ticket.eventDetails.date); // Event date
-  const today = new Date(); // Current date
+    // Format date for display
+    const eventDate = new Date(ticket.eventDetails.date); // Event date
+    const today = new Date(); // Current date
+    
+    // Create ticket element
+    const ticketEl = document.createElement('div');
+    ticketEl.className = 'ticket-card';
+
+    ticketEl.innerHTML = `
+      <img src="${ticket.eventDetails.imageUrl || 'images/event-placeholder.jpg'}" alt="${ticket.eventDetails.title}" class="ticket-image">
+      <div class="ticket-content">
+        <h3 class="ticket-title">${ticket.eventDetails.title}</h3>
+        <div class="ticket-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>${ticket.eventDetails.date}</span>
+        </div>
+        <div class="ticket-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>${ticket.eventDetails.time}</span>
+        </div>
+        <div class="ticket-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span>${ticket.eventDetails.location}</span>
+        </div>
+        <div class="ticket-details">
+          ${ticket.tickets.general > 0 ? 
+            `<div class="ticket-quantity">
+              <span>General Admission</span>
+              <span>x${ticket.tickets.general}</span>
+            </div>` : ''
+          }
+          ${ticket.tickets.senior > 0 ? 
+            `<div class="ticket-quantity">
+              <span>Senior</span>
+              <span>x${ticket.tickets.senior}</span>
+            </div>` : ''
+          }
+          ${ticket.tickets.child > 0 ? 
+            `<div class="ticket-quantity">
+              <span>Child</span>
+              <span>x${ticket.tickets.child}</span>
+            </div>` : ''
+          }
+          <div class="ticket-price">$${ticket.totalPrice}</div>
+        </div>
+      </div>
+    `;
+
+    // Only add the feedback button if the event date has passed
+    if (eventDate < today) {
+      const feedbackButton = document.createElement('button');
+      feedbackButton.className = 'feedback-button';
+      feedbackButton.innerText = 'Send Feedback';
+      feedbackButton.addEventListener('click', () => sendFeedback(ticket));
+      ticketEl.querySelector('.ticket-content').appendChild(feedbackButton);
+    }
+
+    return ticketEl;
+  }
   
-  // Create ticket element
-  const ticketEl = document.createElement('div');
-  ticketEl.className = 'ticket-card';
-
-  ticketEl.innerHTML = `
-    <img src="${ticket.eventDetails.imageUrl || 'images/event-placeholder.jpg'}" alt="${ticket.eventDetails.title}" class="ticket-image">
-    <div class="ticket-content">
-      <h3 class="ticket-title">${ticket.eventDetails.title}</h3>
-      <div class="ticket-info">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        <span>${ticket.eventDetails.date}</span>
-      </div>
-      <div class="ticket-info">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <circle cx="12" cy="12" r="10"></circle>
-          <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        <span>${ticket.eventDetails.time}</span>
-      </div>
-      <div class="ticket-info">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg>
-        <span>${ticket.eventDetails.location}</span>
-      </div>
-      <div class="ticket-details">
-        ${ticket.tickets.general > 0 ? 
-          `<div class="ticket-quantity">
-            <span>General Admission</span>
-            <span>x${ticket.tickets.general}</span>
-          </div>` : ''
-        }
-        ${ticket.tickets.senior > 0 ? 
-          `<div class="ticket-quantity">
-            <span>Senior</span>
-            <span>x${ticket.tickets.senior}</span>
-          </div>` : ''
-        }
-        ${ticket.tickets.child > 0 ? 
-          `<div class="ticket-quantity">
-            <span>Child</span>
-            <span>x${ticket.tickets.child}</span>
-          </div>` : ''
-        }
-        <div class="ticket-price">$${ticket.totalPrice}</div>
-      </div>
-    </div>
-  `;
-
-  // Only add the feedback button if the event date has passed
-  if (eventDate < today) {
-    const feedbackButton = document.createElement('button');
-    feedbackButton.className = 'feedback-button';
-    feedbackButton.innerText = 'Send Feedback';
-    feedbackButton.addEventListener('click', () => sendFeedback(ticket));
-    ticketEl.querySelector('.ticket-content').appendChild(feedbackButton);
+  // Add helper functions for alerts
+  function showSendFeedback(message) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Feedback Sent',
+      text: message || 'Thank you for sending feedback.',
+      confirmButtonText: 'OK'
+    });
   }
 
-  return ticketEl;
-}
+  function showProfileUpdate(message) {
+    Swal.fire({
+      title: 'Profile Updated',
+      text: message || 'Your profile has been updated.',
+      confirmButtonText: 'OK'
+    });
+  }
 
-  
-  // Make loadUserTickets available as a global function
-  window.loadUserTickets = loadUserTickets;
-
-  function showSendFeedback() {
-  Swal.fire({
-    icon: 'success',
-    title: 'Feedback has been sent',
-    text: 'Thank you for sending feedback.',
-    confirmButtonText: 'OK'
-  });
-}
-
-function showProfileUpdate() {
-  Swal.fire({
-    title: 'Profile Updated',
-    text: 'Your profile has been updated.',
-    confirmButtonText: 'OK'
-  });
-}
-
-function showProfileNotUpdated() {
-  Swal.fire({
-    icon: 'error',
-    title: 'Profile Not Updated',
-    text: 'Please make sure all fields are filled out correctly.',
-    confirmButtonText: 'OK'
-  });
-}
+  function showProfileNotUpdated(message) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: message || 'Please make sure all fields are filled out correctly.',
+      confirmButtonText: 'OK'
+    });
+  }
 </script>
 </body>
 </html>

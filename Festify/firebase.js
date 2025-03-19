@@ -284,3 +284,25 @@ export async function deleteEvent(eventId) {
   }
 }
 
+// Function to save feedback to the 'feedback' collection
+export async function saveFeedback(feedbackData) {
+  try {
+    // Create a reference to the 'feedback' collection
+    const feedbackCollectionRef = collection(db, "feedback");
+    
+    // Add the feedback data with a timestamp
+    const feedbackWithTimestamp = {
+      ...feedbackData,
+      createdAt: new Date(),
+    };
+    
+    // Add the document to the 'feedback' collection
+    const docRef = await addDoc(feedbackCollectionRef, feedbackWithTimestamp);
+    console.log("Feedback saved with ID:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error saving feedback:", error);
+    throw error;
+  }
+}
+

@@ -12,6 +12,198 @@
   />
   <!-- Include dashboard logic -->
   <script type="module" src="script.js"></script>
+  
+  <!-- Google Places API with better error handling -->
+  <script>
+    // Define a global callback that will be called when the API loads
+    window.initGoogleMapsAPI = function() {
+      console.log('Google Maps API loaded successfully');
+      initializeAutocomplete('address');
+    };
+    
+    // Function to load the Google Maps API
+    function loadGoogleMapsAPI() {
+      // Check if API is already loaded
+      if (window.google && window.google.maps) {
+        console.log('Google Maps API already loaded');
+        initializeAutocomplete('address');
+        return;
+      }
+      
+      // Create the script element
+      const script = document.createElement('script');
+      script.src = 'https://maps.googleapis.com/maps/api/js?key=' + 
+                  (window.GOOGLE_MAPS_API_KEY || 'API_HERE') + 
+                  '&libraries=places&callback=initGoogleMapsAPI';
+      script.async = true;
+      script.defer = true;
+      
+      // Add error handling
+      script.onerror = function() {
+        console.error('Failed to load Google Maps API');
+        document.getElementById('address').placeholder = 'Enter your address manually (API failed to load)';
+      };
+      
+      // Append to document
+      document.head.appendChild(script);
+    }
+    
+    // Load the API when the document is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      loadGoogleMapsAPI();
+      
+      // Add a focus event listener to ensure API is loaded when the field is focused
+      const addressField = document.getElementById('address');
+      if (addressField) {
+        addressField.addEventListener('focus', function() {
+          if (!window.google || !window.google.maps) {
+            console.log('Google Maps API not loaded yet, trying to load on focus');
+            loadGoogleMapsAPI();
+          }
+        });
+      }
+    });
+    
+    // Initialize autocomplete for address input field
+    function initializeAutocomplete(id) {
+      try {
+        var element = document.getElementById(id);
+        if (!element) {
+          console.error('Element with ID ' + id + ' not found');
+          return;
+        }
+        
+        if (!window.google || !window.google.maps || !window.google.maps.places) {
+          console.error('Google Maps Places API not available');
+          element.placeholder = 'Enter your address manually';
+          return;
+        }
+        
+        console.log('Initializing autocomplete for ' + id);
+        
+        var autocomplete = new google.maps.places.Autocomplete(element, { 
+          types: ['geocode'],
+          componentRestrictions: { country: ['us', 'ca'] } // Restrict to US, Canada - modify as needed
+        });
+        
+        // Add a loading indicator
+        if (!document.getElementById('address-loading')) {
+          element.insertAdjacentHTML('afterend', '<div id="address-loading" style="display:none; position:absolute; right:10px; top:50%; transform:translateY(-50%);"><div class="spinner"></div></div>');
+        }
+        const loadingIndicator = document.getElementById('address-loading');
+        
+        // Show loading indicator when typing
+        element.addEventListener('input', function() {
+          if (this.value.length > 2) {
+            loadingIndicator.style.display = 'block';
+            // Hide after 1 second (typical API response time)
+            setTimeout(() => {
+              loadingIndicator.style.display = 'none';
+            }, 1000);
+          }
+        });
+        
+        // Prevent form submission when pressing enter in the address field
+        element.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && document.querySelector('.pac-container:visible')) {
+            e.preventDefault();
+          }
+        });
+        
+        // Store the autocomplete instance on the element for future reference
+        element.autocomplete = autocomplete;
+        
+        // Add place_changed listener
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+          var place = autocomplete.getPlace();
+          
+          if (!place || !place.address_components) {
+            console.log('No valid place selected or missing address components');
+            return;
+          }
+          
+          console.log('Place selected:', place.formatted_address);
+          
+          // Trigger a custom event that other scripts can listen for
+          const event = new CustomEvent('addressSelected', { 
+            detail: { 
+              address: place.formatted_address,
+              components: place.address_components
+            } 
+          });
+          document.dispatchEvent(event);
+        });
+        
+        console.log('Autocomplete initialized successfully for ' + id);
+        return autocomplete;
+      } catch (error) {
+        console.error('Error initializing autocomplete:', error);
+        // Fallback to manual input
+        element.placeholder = 'Enter your address manually';
+      }
+    }
+    
+    // Add this to the document's CSS
+    document.addEventListener('DOMContentLoaded', function() {
+      const style = document.createElement('style');
+      style.textContent = `
+        /* Google Places Autocomplete Styles */
+        .pac-container {
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+          margin-top: 5px;
+          font-family: inherit;
+          border: 1px solid #ddd;
+          z-index: 9999;
+        }
+        
+        .pac-item {
+          padding: 10px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+        
+        .pac-item:hover {
+          background-color: #f5f5f5;
+        }
+        
+        .pac-item-selected {
+          background-color: #f0f0f0;
+        }
+        
+        .pac-icon {
+          margin-right: 10px;
+        }
+        
+        .pac-item-query {
+          font-size: 14px;
+          color: #333;
+        }
+        
+        /* Style the input field when focused */
+        #address:focus {
+          border-color: #4285f4;
+          box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+          outline: none;
+        }
+        
+        /* Spinner for loading indicator */
+        .spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid rgba(0, 0, 0, 0.1);
+          border-top-color: #4285f4;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  </script>
 </head>
 <body>
   <header>
@@ -304,7 +496,7 @@
               </div>
             </div>
             <label for="address">Address</label>
-            <input type="text" id="address" placeholder="Organization Address" required />
+            <input type="text" id="address" placeholder="Start typing your address to search..." required autocomplete="off" />
             <label for="website">Website</label>
             <input type="url" id="website" placeholder="Website URL" />
             <div class="form-actions">
