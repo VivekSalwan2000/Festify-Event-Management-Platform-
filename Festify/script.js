@@ -284,7 +284,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         await createNewEvent(eventData);
-        
+        // Sweet alert for success
+        Swal.fire({
+          icon: 'success',
+          title: 'Event Created!',
+          text: 'Your event has been created successfully.',
+        });
+
         // Reset form and hide it
         e.target.reset();
         document.getElementById('preview-selected-image1').style.display = 'none';
@@ -297,7 +303,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
       } catch (error) {
         console.error("Error creating event:", error);
-        alert("Failed to create event. Please try again.");
+        // SweetAlert for error
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to create event. Please try again.',
+    });
       }
     });
   }
@@ -355,12 +366,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update the event in Firebase
         await updateEvent(eventId, updatedEventData);
-        alert('Event updated successfully!');
+        // SweetAlert for success
+    Swal.fire({
+      icon: 'success',
+      title: 'Event Updated!',
+      text: 'Your event has been updated successfully.',
+    });
         hideEditForm();
         renderEventsFromDB(); // Refresh the events list
       } catch (error) {
         console.error('Error updating event:', error);
-        alert('Error updating event: ' + error.message);
+        // SweetAlert for error
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to update event. Error: ' + error.message,
+    });
       }
     });
   }
@@ -464,7 +485,11 @@ document.addEventListener('DOMContentLoaded', () => {
     profileForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!currentUser) {
-        alert("No user is logged in. Please log in again.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No user is logged in. Please log in again.',
+        });
         return;
       }
       const orgName = document.getElementById('orgName').value;
@@ -480,10 +505,20 @@ document.addEventListener('DOMContentLoaded', () => {
           address,
           website
         });
-        alert('Profile updated successfully!');
+        // SweetAlert for success
+    Swal.fire({
+      icon: 'success',
+      title: 'Profile Updated!',
+      text: 'Your profile has been updated successfully.',
+    });
         hideProfileForm();
       } catch (error) {
-        alert('Error updating profile: ' + error.message);
+        // SweetAlert for error
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to update profile. Error: ' + error.message,
+    });
       }
     });
   }
@@ -544,13 +579,27 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
         if (!eventId) {
           throw new Error('Could not find event ID');
         }
-        
+// SweetAlert confirmation dialog
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action cannot be undone!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    });
         const confirmed = confirm("Are you sure you want to delete this event? This action cannot be undone.");
         
         if (confirmed) {
           const success = await deleteEvent(eventId);
           if (success) {
-            alert("Event deleted successfully!");
+            // SweetAlert for success
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'Your event has been deleted.',
+        });
             hideEditForm();
             await renderEventsFromDB();
           } else {
@@ -559,7 +608,12 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
         }
       } catch (error) {
         console.error("Error deleting event:", error);
-        alert("Failed to delete event. Error: " + error.message);
+        // SweetAlert for error
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to delete event. Error: ' + error.message,
+    });
       }
     });
   }
