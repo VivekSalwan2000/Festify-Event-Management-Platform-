@@ -56,11 +56,13 @@ async function renderEventsFromDB() {
   try {
     const events = await fetchUserEvents(currentUser.uid);
     let organizerRevenue = 0;
+    let attendees = 0;
     events.forEach((event) => {
-      console.log(event.totalRevenue);
       organizerRevenue += event.totalRevenue;
+      attendees += event.totalTickets-event.tickets;
     });
-    document.getElementById("totalRevenue").textContent = organizerRevenue;
+    document.getElementById("totalRevenue").textContent = organizerRevenue.toFixed(2);
+    document.getElementById("attendees").textContent = attendees;
     const eventsGrid = document.getElementById('eventsGrid');
     if (eventsGrid) {
       const eventCount = events.length;
@@ -87,7 +89,7 @@ async function renderEventsFromDB() {
                   <i class="fas fa-users"></i>
                   Attendees
                 </p>
-                <p class="stat-value">${event.attendees || 0}</p>
+                <p class="stat-value">${event.totalTickets-event.tickets || 0}</p>
               </div>
               <div>
                 <p class="stat-label">
@@ -282,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
           endTime: document.getElementById('end-time').value,
           location: document.getElementById('location').value,
           totalRevenue: parseInt(0),
+          totalTickets: parseInt(document.getElementById('ticketInput').value),
           tickets: parseInt(document.getElementById('ticketInput').value),
           generalPrice: parseFloat(document.getElementById('generalPrice').value),
           childPrice: document.getElementById('enableChildPrice').checked ? parseFloat(document.getElementById('childPrice').value) : null,
