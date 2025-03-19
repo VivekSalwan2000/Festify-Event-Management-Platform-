@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <title>Event Publishing Platform</title>
 
   <!-- Google Fonts -->
@@ -218,7 +219,7 @@
       color: #000;
       padding: 2rem;
       border-radius: 8px;
-      z-index: 9999;
+      z-index: 1000;
     }
     .close-btn {
       background: none;
@@ -255,6 +256,56 @@
 
   <!-- Load your organizer.js to handle sign in/up -->
   <script type="module" src="organizer.js"></script>
+<!-- Authentication Logic -->
+<script type="module">
+  import { signInUser, signUpUser, onUserStateChanged } from './firebase.js';
+
+  // Listen for authentication state changes
+  onUserStateChanged((user) => {
+    if (user) {
+      console.log('User is logged in:', user.email);
+    } else {
+      console.log('No user is logged in.');
+    }
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const authForm = document.getElementById('authForm');
+    const signInBtn = document.getElementById('signInBtn');
+    const signUpBtn = document.getElementById('signUpBtn');
+
+    if (authForm && signInBtn && signUpBtn) {
+      // Handle Sign In
+      signInBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        try {
+          await signInUser(email, password);
+          window.location.href = 'organization-dashboard.html';
+        } catch (error) {
+          console.error('Sign In Error:', error);
+          showIncorrectCredentials('Sign In Error: ' + error.message);
+        }
+      });
+
+      // Handle Sign Up
+      signUpBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        try {
+          await signUpUser(email, password);
+          window.location.href = 'organization-dashboard.html';
+        } catch (error) {
+          console.error('Sign Up Error:', error);
+          showAccountExists('Sign Up Error: ' + error.message);
+        }
+      });
+    }
+  });
+</script>
+
 </head>
 <body>
   <div id="content">
@@ -433,5 +484,26 @@
 
   <!-- Optionally load app.js if you want to load events or footers on this page -->
   <script type="module" src="app.js"></script>
+  <script>
+    // Function to show error for incorrect credentials
+    function showIncorrectCredentials() {
+      Swal.fire({
+        icon: 'error',
+        title: 'Incorrect Credentials',
+        text: 'The username or password you entered is incorrect. Please try again.',
+        confirmButtonText: 'Try Again'
+      });
+    }
+
+    // Function to show error when account already exists
+    function showAccountExists() {
+      Swal.fire({
+        icon: 'error',
+        title: 'Account Already Exists',
+        text: 'An account with this email already exists. Please log in or reset your password.',
+        confirmButtonText: 'OK'
+      });
+    }
+  </script>
 </body>
 </html>
