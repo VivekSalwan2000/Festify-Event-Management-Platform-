@@ -1061,6 +1061,52 @@
   </div>
 </div>
 
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal">
+  <div class="modal-content">
+    <h2>Event Feedback</h2>
+    <p id="eventTitle"></p>
+    <form id="feedbackForm">
+      <label>Was the event well-organized?</label>
+      <div>
+        <input type="radio" name="organized" value="Yes" required> Yes
+        <input type="radio" name="organized" value="No"> No
+      </div>
+
+      <label>Was the venue comfortable?</label>
+      <div>
+        <input type="radio" name="venue" value="Yes" required> Yes
+        <input type="radio" name="venue" value="No"> No
+      </div>
+
+      <label>Was the event on schedule?</label>
+      <div>
+        <input type="radio" name="schedule" value="Yes" required> Yes
+        <input type="radio" name="schedule" value="No"> No
+      </div>
+
+      <label>Would you attend a similar event again?</label>
+      <div>
+        <input type="radio" name="attendAgain" value="Yes" required> Yes
+        <input type="radio" name="attendAgain" value="No"> No
+      </div>
+
+      <label>Overall Rating:</label>
+      <div id="starRating">
+        <span class="star" data-value="1">&#9733;</span>
+        <span class="star" data-value="2">&#9733;</span>
+        <span class="star" data-value="3">&#9733;</span>
+        <span class="star" data-value="4">&#9733;</span>
+        <span class="star" data-value="5">&#9733;</span>
+      </div>
+      <input type="hidden" name="rating" id="ratingInput" required>
+
+      <button type="submit" class="feed2btn">Submit Feedback</button>
+    </form>
+  </div>
+</div>
+
+
 <script>
   import { updateTickets } from './firebase.js';
 
@@ -1089,6 +1135,57 @@
 
 <!-- Tickets Tab Script -->
 <script type="module">
+  // Show Feedback Modal
+  function sendFeedback(ticket) {
+    document.getElementById('feedbackModal').style.display = 'flex';
+    document.getElementById('eventTitle').innerText = `Feedback for ${ticket.eventDetails.title}`;
+
+    // Clear previous selection
+    document.querySelectorAll('input[name="organized"], input[name="venue"], input[name="schedule"], input[name="attendAgain"]').forEach(input => input.checked = false);
+    document.getElementById('ratingInput').value = '';
+    document.querySelectorAll('.star').forEach(star => star.classList.remove('selected'));
+
+    // Handle star rating
+    document.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('click', function() {
+        let value = this.getAttribute('data-value');
+        document.getElementById('ratingInput').value = value;
+        document.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
+        for (let i = 0; i < value; i++) {
+          document.querySelectorAll('.star')[i].classList.add('selected');
+        }
+      });
+    });
+
+    // Submit Feedback
+    document.getElementById('feedbackForm').onsubmit = function(event) {
+      event.preventDefault();
+
+      let feedbackData = {
+        eventTitle: ticket.eventDetails.title,
+        organized: document.querySelector('input[name="organized"]:checked').value,
+        venue: document.querySelector('input[name="venue"]:checked').value,
+        schedule: document.querySelector('input[name="schedule"]:checked').value,
+        attendAgain: document.querySelector('input[name="attendAgain"]:checked').value,
+        rating: document.getElementById('ratingInput').value
+      };
+
+      console.log("Feedback Submitted:", feedbackData); // Replace with backend submission
+
+      alert("Thank you for your feedback!");
+      closeFeedbackModal();
+    };
+  }
+
+// Close the modal when clicking outside of it
+window.onclick = function(event) {
+  const modal = document.getElementById('feedbackModal');
+  if (event.target === modal) {
+    modal.style.display = 'none';
+  }
+};
+
+
   import { getUserTickets } from './firebase.js';
   
   // Listen for tab changes to load tickets
@@ -1217,5 +1314,6 @@
   // Make loadUserTickets available as a global function
   window.loadUserTickets = loadUserTickets;
 </script>
+
 </body>
 </html>
