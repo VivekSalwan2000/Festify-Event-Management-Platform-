@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <title>Festify - User Profile</title>
 
   <!-- External CSS -->
@@ -967,10 +968,10 @@
             
             // Save to Firestore
             await saveUserProfile(currentUser.uid, profileData);
-            alert('Profile updated successfully!');
+            showProfileUpdate('Profile updated successfully!');
           } catch (error) {
             console.error('Error updating profile:', error);
-            alert('Error updating profile. Please try again.');
+            showProfileNotUpdated('Error updating profile. Please try again.');
           }
         });
       }
@@ -1172,7 +1173,7 @@
 
       console.log("Feedback Submitted:", feedbackData); // Replace with backend submission
 
-      alert("Thank you for your feedback!");
+      showSendFeedback("Thank you for your feedback!");
       closeFeedbackModal();
     };
   }
@@ -1316,7 +1317,32 @@ window.onclick = function(event) {
   
   // Make loadUserTickets available as a global function
   window.loadUserTickets = loadUserTickets;
-</script>
 
+  function showSendFeedback() {
+  Swal.fire({
+    icon: 'success',
+    title: 'Feedback has been sent',
+    text: 'Thank you for sending feedback.',
+    confirmButtonText: 'OK'
+  });
+}
+
+function showProfileUpdate() {
+  Swal.fire({
+    title: 'Profile Updated',
+    text: 'Your profile has been updated.',
+    confirmButtonText: 'OK'
+  });
+}
+
+function showProfileNotUpdated() {
+  Swal.fire({
+    icon: 'error',
+    title: 'Profile Not Updated',
+    text: 'Please make sure all fields are filled out correctly.',
+    confirmButtonText: 'OK'
+  });
+}
+</script>
 </body>
 </html>
