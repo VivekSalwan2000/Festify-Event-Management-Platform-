@@ -518,6 +518,11 @@ h3 {
     margin-bottom: 10px;
 }
 
+h4 {
+    margin-top: 10px;
+    margin-left: 5px;
+    color: #2c76c5
+}
 /* Add a highly specific rule to maintain ticket price color */
 .event-popup-content .ticket-type .ticket-price,
 .event-popup-content #generalPrice,

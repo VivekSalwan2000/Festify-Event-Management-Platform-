@@ -113,13 +113,31 @@ window.showEventPopup = function(encodedEventData, eventId) {
       }
     }
     
-    // Reset ticket quantities
+    // Reset ticket quantities and total price
     const generalQty = document.getElementById('generalQuantity');
     if (generalQty) generalQty.value = '0';
     const seniorQty = document.getElementById('seniorQuantity');
     if (seniorQty) seniorQty.value = '0';
     const childQty = document.getElementById('childQuantity');
     if (childQty) childQty.value = '0';
+    
+    // Reset total price display
+    const totalPriceElement = document.getElementById('totalPrice');
+    if (totalPriceElement) {
+      totalPriceElement.textContent = '$0.00';
+    }
+    
+    // Remove any existing payment container
+    const existingPaymentContainer = document.querySelector('.payment-container');
+    if (existingPaymentContainer) {
+      existingPaymentContainer.remove();
+    }
+    
+    // Show the payment button
+    const paymentBtn = document.getElementById('paymentBtn');
+    if (paymentBtn) {
+      paymentBtn.classList.remove('hidden');
+    }
     
     // Set images for slider
     const eventImage1 = document.getElementById('eventImage1');
@@ -149,7 +167,6 @@ window.showEventPopup = function(encodedEventData, eventId) {
   } catch (error) {
     console.error('Error showing event popup:', error);
   }
-
 };
 
 // Close event popup
@@ -160,6 +177,24 @@ window.closeEventPopup = function() {
   const popupElem = document.getElementById('eventPopup');
   if (popupElem) popupElem.classList.add('hidden');
   
+  // Reset total price display
+  const totalPriceElement = document.getElementById('totalPrice');
+  if (totalPriceElement) {
+    totalPriceElement.textContent = '$0.00';
+  }
+  
+  // Reset payment section visibility
+  const paymentContainer = document.querySelector('.payment-container');
+  if (paymentContainer) {
+    paymentContainer.remove();
+  }
+  
+  // Show the payment button again
+  const paymentBtn = document.getElementById('paymentBtn');
+  if (paymentBtn) {
+    paymentBtn.classList.remove('hidden');
+  }
+  
   document.body.classList.remove('popup-open');
 };
 
@@ -169,7 +204,32 @@ window.updateQuantity = function(type, change) {
   if (!input) return;
   const currentVal = parseInt(input.value, 10) || 0;
   input.value = Math.max(0, currentVal + change);
+  
+  // Calculate and update total price after quantity change
+  updateTotalPrice();
 };
+
+// Calculate and display total price
+function updateTotalPrice() {
+  if (!currentEvent) return;
+  
+  // Get quantities
+  const generalQty = parseInt(document.getElementById('generalQuantity').value) || 0;
+  const seniorQty = parseInt(document.getElementById('seniorQuantity').value) || 0;
+  const childQty = parseInt(document.getElementById('childQuantity').value) || 0;
+  
+  // Calculate total
+  let total = 0;
+  total += generalQty * (currentEvent.generalPrice || 0);
+  total += seniorQty * (currentEvent.seniorPrice || 0);
+  total += childQty * (currentEvent.childPrice || 0);
+  
+  // Update total price display
+  const totalPriceElement = document.getElementById('totalPrice');
+  if (totalPriceElement) {
+    totalPriceElement.textContent = `$${total.toFixed(2)}`;
+  }
+}
 
 // Slider functionality
 function showSlide(n) {
