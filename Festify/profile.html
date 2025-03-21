@@ -1293,10 +1293,8 @@
     // Add click event to the tickets tab link
     const ticketsLink = document.querySelector('a[onclick="showSection(\'tickets\')"]');
     if (ticketsLink) {
-      ticketsLink.addEventListener('click', () => {
-        console.log('Tickets tab clicked, loading tickets...');
-        loadUserTickets();
-      });
+      // Remove the click event listener since showSection will handle loading
+      ticketsLink.removeEventListener('click', loadUserTickets);
     }
     
     // Modify the showSection function to auto-load tickets when that section is shown
@@ -1304,6 +1302,8 @@
     window.showSection = function(section) {
       originalShowSection(section);
       if (section === 'tickets') {
+        // Clear existing tickets before loading new ones
+        document.getElementById('ticketsList').innerHTML = '';
         console.log('Tickets section shown, loading tickets...');
         loadUserTickets();
       }
