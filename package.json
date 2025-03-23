@@ -17,25 +17,28 @@
     "jest-junit": "^13.0.0"
   },
   "jest": {
-    "testEnvironment": "jest-environment-jsdom",
+    "testEnvironment": "jsdom",
     "transform": {
-      "^.+\\.js$": "babel-jest"
+      "^.+\\.jsx?$": "babel-jest"
     },
     "moduleNameMapper": {
       "^https://www\\.gstatic\\.com/firebasejs/11\\.2\\.0/firebase-app\\.js$": "<rootDir>/__mocks__/firebase-app.js",
       "^https://www\\.gstatic\\.com/firebasejs/11\\.2\\.0/firebase-auth\\.js$": "<rootDir>/__mocks__/firebase-auth.js",
       "^https://www\\.gstatic\\.com/firebasejs/11\\.2\\.0/firebase-firestore\\.js$": "<rootDir>/__mocks__/firebase-firestore.js",
-      "^https://www\\.gstatic\\.com/firebasejs/11\\.2\\.0/firebase-analytics\\.js$": "<rootDir>/__mocks__/firebase-analytics.js"
+      "^https://www\\.gstatic\\.com/firebasejs/11\\.2\\.0/firebase-analytics\\.js$": "<rootDir>/__mocks__/firebase-analytics.js",
+      "^https://www\\.gstatic\\.com/firebasejs/11\\.2\\.0/firebase-storage\\.js$": "<rootDir>/__mocks__/firebase-storage.js"
     },
-    "reporters": [
-      "default",
-      [
-        "jest-junit",
-        {
-          "outputDirectory": "./Tests/test-results",
-          "outputName": "junit.xml"
-        }
-      ]
+    "collectCoverage": true,
+    "coverageProvider": "v8",
+    "collectCoverageFrom": [
+      "Festify/*.js",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "coverageReporters": ["text", "lcov"],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/__mocks__/"
     ]
   }
 }

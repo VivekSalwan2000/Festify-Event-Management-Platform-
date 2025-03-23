@@ -36,13 +36,13 @@ onUserStateChanged(async (user) => {
 });
 
 // Helper: Format date
-function formatDate(dateString) {
+export function formatDate(dateString) {
   const options = { day: 'numeric', month: 'long', year: 'numeric' };
   return new Date(dateString).toLocaleDateString('en-US', options);
 }
 
 // Helper: Format currency
-function formatCurrency(amount) {
+export function formatCurrency(amount) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
