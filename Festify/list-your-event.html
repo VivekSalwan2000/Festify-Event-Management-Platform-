@@ -252,6 +252,10 @@
       pointer-events: none;
       user-select: none;
     }
+    
+    html {
+      scroll-behavior: smooth;
+    }
   </style>
 
   <!-- Load your organizer.js to handle sign in/up -->
@@ -315,10 +319,9 @@
         <img src="./images/festifyLogo.png" alt="Logo">
       </div>
       <div class="nav-links">
-        <a href="#">Pricing</a>
-        <a href="#">Features</a>
-        <a href="#">Clients</a>
-        <a href="#">Feedback</a>
+        <a href="#features">Features</a>
+        <a href="#clients">Clients</a>
+        <a href="index.html">Find an Event</a>
       </div>
     </div>
 
@@ -333,6 +336,7 @@
 
 
     <!-- Features Section -->
+  <section id="features">
     <div class="features-section">
         <h2>Features</h2>
         <div class="features-grid">
@@ -341,7 +345,6 @@
                 <p class="feature-title">Flexibility</p>
                 <p class="feature-desc">List and manage on-ground and digital experiences through a single dashboard.</p>
             </div>
-
 
         <div class="feature-item">
           <img src="./images/list-your-event-landing-page/customer-data.png" class="feature-icon" alt="Customer Data">
@@ -384,6 +387,7 @@
         </div>
       </div>
     </div>
+  </section>
 
     <!-- Suitable For Everyone Section -->
     <div class="target-section">
@@ -418,6 +422,7 @@
     </div>
 
     <!-- Clients Section -->
+  <section id="clients">
     <div class="clients-section">
 
         <h2>Our Clients</h2>
@@ -432,6 +437,7 @@
         </div>
 
     </div>
+  </section>
 
   </div> <!-- End #content -->
 
