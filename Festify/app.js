@@ -296,140 +296,250 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => console.error('Error loading footer:', error));
 });
 
-export function checkout(){
-    const generalQuantity = parseInt(document.getElementById('generalQuantity').value);
-    const seniorQuantity = parseInt(document.getElementById('seniorQuantity').value);
-    const childQuantity = parseInt(document.getElementById('childQuantity').value);
+export function checkout() {
+  const generalQuantity = parseInt(document.getElementById('generalQuantity').value);
+  const seniorQuantity = parseInt(document.getElementById('seniorQuantity').value);
+  const childQuantity = parseInt(document.getElementById('childQuantity').value);
 
-    if(generalQuantity === 0 && seniorQuantity === 0 && childQuantity === 0){
+  if (generalQuantity === 0 && seniorQuantity === 0 && childQuantity === 0) {
       alert("Please Select Ticket(s)");
       return;
-    }
-    const eventPopup = document.getElementById("eventPopup");
-    const paymentBtn = document.getElementById("paymentBtn");
-    paymentBtn.classList.add('hidden');
+  }
+  const eventPopup = document.getElementById("eventPopup");
+  const paymentBtn = document.getElementById("paymentBtn");
+  paymentBtn.classList.add('hidden');
 
-      if (eventPopup) {
-          eventPopup.insertAdjacentHTML("beforeend", `
-            <div class="payment-container">
+  if (eventPopup) {
+      eventPopup.insertAdjacentHTML("beforeend", `
+          <div class="payment-container">
+            <h2>Payment</h2>
 
-              <h2>Payment</h2>
-
-              <h3>Billing Information</h3>
+            <h3>Billing Information</h3>
+            <div class="input-group">
+            <div class="flex-container">
               <div class="input-group">
-              <div class="flex-container">
-                <div class="input-group">
-                  <label>First Name</label>
-                  <input type="text" placeholder="John" required>
-                </div>
-                <div class="input-group">
-                  <label>Last Name</label>
-                  <input type="text" placeholder="Doe" required>
-                </div>
+                <label>First Name <span>*</span></label>
+                <input type="text" id="firstName" placeholder="John" required>
               </div>
               <div class="input-group">
-                <label>Email</label>
-                <input type="text" placeholder="johndoe@gmail.com" required>
+                <label>Last Name <span>*</span></label>
+                <input type="text" id="lastName" placeholder="Doe" required>
               </div>
-              
-              <h3>Pay with</h3>
-              <div class="card-icons">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="MasterCard">
-              </div>
-              <div class="input-group">
-                <label>Card number</label>
-                <input type="text" placeholder="1234 5678 9012 3456" required>
-              </div>
-              <div class="flex-container">
-                <div class="input-group">
-                  <label>Expiry date</label>
-                  <input type="text" placeholder="MM/YY" required>
-                </div>
-                <div class="input-group">
-                  <label>Security code (CVV)</label>
-                  <input type="text" placeholder="123" required>
-                </div>
-              </div>
-              <button class="pay-btn" onclick="submitPayment()">Pay</button>
             </div>
-          `);
-      } else {
-          console.error("eventPopup element not found!");
-      }
-      
+            <div class="input-group">
+              <label>Email <span>*</span></label>
+              <input type="email" id="email" placeholder="johndoe@gmail.com" required>
+            </div>
+            
+            <h3>Pay with</h3>
+            <div class="card-icons">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="MasterCard">
+            </div>
+            <div class="input-group">
+              <label>Card number <span>*</span></label>
+              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+            <div class="flex-container">
+              <div class="input-group">
+                <label>Expiry date <span>*</span></label>
+                <input type="text" id="expiryDate" placeholder="MM/YY" required maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="input-group">
+                <label>Security code (CVV) <span>*</span></label>
+                <input type="text" id="cvv" placeholder="123" required maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g, '')" pattern="[0-9]{3}">
+              </div>
+            </div>
+            <div id="errorMessage" class="error-message">Please fill in all payment details</div>
+            <button class="pay-btn" onclick="submitPayment()">Pay</button>
+          </div>
+      `);
+
+      // Add the CSS for validation styling
+      const styleElement = document.createElement('style');
+      styleElement.textContent = `
+          .error-message {
+              color: red;
+              margin-top: 10px;
+              display: none;
+              text-align: center;
+              font-weight: bold;
+          }
+          
+          input.error {
+              border: 1px solid red;
+          }
+
+          label span {
+              color: red;
+          }
+      `;
+      document.head.appendChild(styleElement);
+  } else {
+      console.error("eventPopup element not found!");
+  }
+}
+
+export function submitPayment() {
+  // Validate form fields first
+  const firstName = document.getElementById('firstName');
+  const lastName = document.getElementById('lastName');
+  const email = document.getElementById('email');
+  const cardNumber = document.getElementById('cardNumber');
+  const expiryDate = document.getElementById('expiryDate');
+  const cvv = document.getElementById('cvv');
+  
+  // Reset previous error states
+  const inputs = [firstName, lastName, email, cardNumber, expiryDate, cvv];
+  const errorMessage = document.getElementById('errorMessage');
+  errorMessage.style.display = 'none';
+  
+  inputs.forEach(input => {
+      input.classList.remove('error');
+  });
+  
+  // Check if any field is empty
+  let hasError = false;
+
+  // Validate first name
+  if (!firstName.value.trim()) {
+      firstName.classList.add('error');
+      errorMessage.textContent = "First name is required";
+      errorMessage.style.display = 'block';
+      hasError = true;
   }
 
-export function submitPayment(){
-    const eventID = document.getElementById("eventID").value;
-    const generalQuantity = parseInt(document.getElementById('generalQuantity').value);
-    const seniorQuantity = parseInt(document.getElementById('seniorQuantity').value);
-    const childQuantity = parseInt(document.getElementById('childQuantity').value);
-    const totalQuantity = generalQuantity + seniorQuantity + childQuantity;
-    
-    // Calculate total price
-    let totalPrice = 0;
-    if (currentEvent) {
+  // Validate last name
+  if (!lastName.value.trim()) {
+      lastName.classList.add('error');
+      errorMessage.textContent = "Last name is required";
+      errorMessage.style.display = 'block';
+      hasError = true;
+  }
+
+  inputs.forEach(input => {
+      if (!input.value.trim(  )) {
+          input.classList.add('error');
+          hasError = true;
+      }
+  });
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (email.value.trim() && !emailRegex.test(email.value.trim())) {
+      email.classList.add('error');
+      errorMessage.textContent = "Please enter a valid email address";
+      errorMessage.style.display = 'block';
+      hasError = true;
+  }
+  
+  // Validate card number length (15-16 digits)
+  const cardNumberValue = cardNumber.value.replace(/\s/g, '');
+  if (cardNumberValue.length < 15 || cardNumberValue.length > 16) {
+      cardNumber.classList.add('error');
+      errorMessage.textContent = cardNumberValue.length === 0 ? 
+          "Please fill in all payment details" : 
+          "Card number must be 15 or 16 digits";
+      errorMessage.style.display = 'block';
+      hasError = true;
+  }
+
+  // Validate expiry date format and validity
+  const expiryDateValue = expiryDate.value.replace(/\s/g, '');
+  if (expiryDateValue.length < 4 || expiryDateValue.length > 4) {
+      expiryDate.classList.add('error');
+      errorMessage.textContent = expiryDateValue.length === 0 ? 
+          "Please fill in all payment details" : 
+          "Expiry date must be 4 digits";
+  }
+
+  const cvvValue = cvv.value.replace(/\s/g, '');
+  if (cvvValue.length !== 3) {
+      cvv.classList.add('error');
+      errorMessage.textContent = cvvValue.length === 0 ? 
+          "Please fill in all payment details" : 
+          "CVV must be 3 digits";
+      errorMessage.style.display = 'block';
+      hasError = true;
+  }
+  
+  // If any validation error, show message and prevent submission
+  if (hasError) {
+      if (errorMessage.textContent === "Please fill in all payment details") {
+          errorMessage.style.display = 'block';
+      }
+      return;
+  }
+  
+  // Continue with the original payment processing if validation passes
+  const eventID = document.getElementById("eventID").value;
+  const generalQuantity = parseInt(document.getElementById('generalQuantity').value);
+  const seniorQuantity = parseInt(document.getElementById('seniorQuantity').value);
+  const childQuantity = parseInt(document.getElementById('childQuantity').value);
+  const totalQuantity = generalQuantity + seniorQuantity + childQuantity;
+  
+  // Calculate total price
+  let totalPrice = 0;
+  if (currentEvent) {
       totalPrice += generalQuantity * (currentEvent.generalPrice || 0);
       totalPrice += seniorQuantity * (currentEvent.seniorPrice || 0);
       totalPrice += childQuantity * (currentEvent.childPrice || 0);
-    }
-    
-    // Get the current user (assuming firebase auth is used)
-    import('https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js').then((module) => {
+  }
+  
+  // Get the current user (assuming firebase auth is used)
+  import('https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js').then((module) => {
       const auth = module.getAuth();
       const user = auth.currentUser;
       
       if (!user) {
-        alert('You need to be logged in to purchase tickets');
-        return;
+          alert('You need to be logged in to purchase tickets');
+          return;
       }
       
       // Save ticket information
       const ticketData = {
-        eventId: eventID,
-        eventDetails: {
-          title: currentEvent.title,
-          date: currentEvent.date,
-          time: `${formatTime(currentEvent.startTime)} - ${formatTime(currentEvent.endTime)}`,
-          location: currentEvent.location,
-          imageUrl: currentEvent.imageUrl
-        },
-        tickets: {
-          general: generalQuantity,
-          senior: seniorQuantity,
-          child: childQuantity
-        },
-        totalQuantity: totalQuantity,
-        totalPrice: totalPrice.toFixed(2)
+          eventId: eventID,
+          eventDetails: {
+              title: currentEvent.title,
+              date: currentEvent.date,
+              time: `${formatTime(currentEvent.startTime)} - ${formatTime(currentEvent.endTime)}`,
+              location: currentEvent.location,
+              imageUrl: currentEvent.imageUrl
+          },
+          tickets: {
+              general: generalQuantity,
+              senior: seniorQuantity,
+              child: childQuantity
+          },
+          totalQuantity: totalQuantity,
+          totalPrice: totalPrice.toFixed(2)
       };
       
       // Save ticket to user's account
       saveUserTicket(user.uid, ticketData)
-        .then(() => {
-          // Update available tickets for the event
-          updateTickets(eventID, totalQuantity);
-           
-          // Sweet alert for success
-        Swal.fire({
-          icon: 'payment success alert',
-          title: 'Tickets purchased',
-          text: 'Tickets purchased successfully! View them in your tickets tab.',
-        });
-          closeEventPopup();
-        })
-        .catch(error => {
-          console.error('Error saving ticket:', error);
-             // Sweet alert for ticket failure
-        Swal.fire({
-          icon: 'payment failure alert',
-          title: 'ticket failure alert',
-          text: 'Payment failure alert, try again',
-        });
-        });
-    });
+          .then(() => {
+              // Update available tickets for the event
+              updateTickets(eventID, totalQuantity);
+              
+              // Sweet alert for success
+              Swal.fire({
+                  icon: 'success',
+                  title: 'Tickets purchased',
+                  text: 'Tickets purchased successfully! View them in your tickets tab.',
+              });
+              closeEventPopup();
+          })
+          .catch(error => {
+              console.error('Error saving ticket:', error);
+              // Sweet alert for ticket failure
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Payment failed',
+                  text: 'Payment failure alert, try again',
+              });
+          });
+  });
 
-    updateRevenue(eventID, totalPrice);
+  updateRevenue(eventID, totalPrice);
 }
 
 window.checkout = checkout;
