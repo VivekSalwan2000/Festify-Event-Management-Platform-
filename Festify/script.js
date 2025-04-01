@@ -10,6 +10,7 @@ import {
   getEventById,
   deleteEvent
 } from './firebase.js';
+import { generateEventPoster } from './dalle-api.js';
 
 let currentUser = null;
 
@@ -627,6 +628,73 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
       text: 'Failed to delete event. Error: ' + error.message,
     });
       }
+    });
+  }
+
+  // Poster Generation Functionality
+  const generatePosterBtn = document.getElementById('generatePosterBtn');
+  const posterGenerationStatus = document.getElementById('posterGenerationStatus');
+  const generatedPosterPreview = document.getElementById('generatedPosterPreview');
+  const generatedPosterImage = document.getElementById('generatedPosterImage');
+  const useGeneratedPosterBtn = document.getElementById('useGeneratedPoster');
+  const regeneratePosterBtn = document.getElementById('regeneratePoster');
+
+  if (generatePosterBtn) {
+    generatePosterBtn.addEventListener('click', async () => {
+      const eventTitle = document.getElementById('title').value;
+      const eventDescription = document.getElementById('description').value;
+
+      if (!eventTitle || !eventDescription) {
+        alert('Please fill in both the event title and description before generating a poster.');
+        return;
+      }
+
+      try {
+        // Show loading state
+        posterGenerationStatus.style.display = 'flex';
+        generatedPosterPreview.style.display = 'none';
+
+        // Generate poster
+        const posterUrl = await generateEventPoster(eventTitle, eventDescription);
+
+        // Display the generated poster
+        generatedPosterImage.src = posterUrl;
+        generatedPosterPreview.style.display = 'block';
+        posterGenerationStatus.style.display = 'none';
+      } catch (error) {
+        console.error('Error generating poster:', error);
+        alert('Failed to generate poster. Please try again.');
+        posterGenerationStatus.style.display = 'none';
+      }
+    });
+  }
+
+  if (useGeneratedPosterBtn) {
+    useGeneratedPosterBtn.addEventListener('click', () => {
+      // Create a File object from the generated image URL
+      fetch(generatedPosterImage.src)
+        .then(response => response.blob())
+        .then(blob => {
+          const file = new File([blob], 'generated-poster.png', { type: 'image/png' });
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          document.getElementById('fileInput1').files = dataTransfer.files;
+          
+          // Update the preview
+          const preview = document.getElementById('preview-selected-image1');
+          preview.src = generatedPosterImage.src;
+          preview.style.display = 'block';
+        })
+        .catch(error => {
+          console.error('Error using generated poster:', error);
+          alert('Failed to use the generated poster. Please try again.');
+        });
+    });
+  }
+
+  if (regeneratePosterBtn) {
+    regeneratePosterBtn.addEventListener('click', () => {
+      generatePosterBtn.click();
     });
   }
 });
