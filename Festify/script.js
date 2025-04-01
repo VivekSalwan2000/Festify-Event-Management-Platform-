@@ -258,7 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       
       try {
-        // Get the image file
+        // Get the image file or use generated poster URL
+        const generatedPosterUrl = document.getElementById('upload-box1').dataset.generatedPosterUrl;
         const imageFile1 = document.getElementById('fileInput1').files[0];
         const imageFile2 = document.getElementById('fileInput2').files[0];
         const imageFile3 = document.getElementById('fileInput3').files[0];
@@ -266,9 +267,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let imageUrl2 = null;
         let imageUrl3 = null;
         
-        if (imageFile1) {
+        if (generatedPosterUrl) {
+          // Use the generated poster URL directly
+          imageUrl = generatedPosterUrl;
+        } else if (imageFile1) {
+          // Upload the selected image file
           imageUrl = await uploadEventImage(imageFile1);
         }
+        
         if (imageFile2) {
           imageUrl2 = await uploadEventImage(imageFile2);
         }
@@ -309,6 +315,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('preview-selected-image1').style.display = 'none';
         document.getElementById('preview-selected-image2').style.display = 'none';
         document.getElementById('preview-selected-image3').style.display = 'none';
+        document.getElementById('upload-box1').removeAttribute('data-generated-poster-url');
+        document.getElementById('generatedPosterPreview').style.display = 'none';
         
         // Refresh events display if needed
         renderEventsFromDB();
@@ -671,24 +679,20 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
 
   if (useGeneratedPosterBtn) {
     useGeneratedPosterBtn.addEventListener('click', () => {
-      // Create a File object from the generated image URL
-      fetch(generatedPosterImage.src)
-        .then(response => response.blob())
-        .then(blob => {
-          const file = new File([blob], 'generated-poster.png', { type: 'image/png' });
-          const dataTransfer = new DataTransfer();
-          dataTransfer.items.add(file);
-          document.getElementById('fileInput1').files = dataTransfer.files;
-          
-          // Update the preview
-          const preview = document.getElementById('preview-selected-image1');
-          preview.src = generatedPosterImage.src;
-          preview.style.display = 'block';
-        })
-        .catch(error => {
-          console.error('Error using generated poster:', error);
-          alert('Failed to use the generated poster. Please try again.');
-        });
+      // Update the preview directly
+      const preview = document.getElementById('preview-selected-image1');
+      preview.src = generatedPosterImage.src;
+      preview.style.display = 'block';
+      
+      // Store the image URL to be used when creating the event
+      // We'll use this URL directly instead of creating a file
+      document.getElementById('upload-box1').dataset.generatedPosterUrl = generatedPosterImage.src;
+      
+      // Hide the generation preview
+      generatedPosterPreview.style.display = 'none';
+      
+      // Show success message
+      alert('Poster set as your event image!');
     });
   }
 
