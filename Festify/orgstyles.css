@@ -954,12 +954,13 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
 
 .description-container {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
   margin-bottom: 1rem;
 }
 
 .description-container textarea {
-  flex: 1;
+  width: 100%;
 }
 
 .generation-status {
@@ -1105,4 +1106,34 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
   .attendee-details-popup {
     width: 95% !important;
   }
+}
+
+#generatePosterBtn {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+  margin: 0 auto;
+  width: 75%;
+  max-width: 350px;
+  align-self: flex-start;
+}
+
+#generatePosterBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.3);
+}
+
+#generatePosterBtn i {
+  font-size: 0.9rem;
 }
