@@ -8,7 +8,8 @@ import {
   uploadEventImage,
   updateEvent,
   getEventById,
-  deleteEvent
+  deleteEvent,
+  getEventAttendees
 } from './firebase.js';
 import { generateEventPoster } from './dalle-api.js';
 
@@ -104,6 +105,11 @@ async function renderEventsFromDB() {
                 </div>
               </div>
             </div>
+            <div class="event-actions">
+              <button class="btn btn-secondary attendee-details-btn" data-event-id="${event.id}">
+                <i class="fas fa-users"></i> Attendee Details
+              </button>
+            </div>
           </div>
         </div>
       `).join('');
@@ -111,7 +117,12 @@ async function renderEventsFromDB() {
       // Add click event listeners to all event cards
       const eventCards = eventsGrid.querySelectorAll('.event-card');
       eventCards.forEach(card => {
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (e) => {
+          // Skip if clicking on the attendee details button
+          if (e.target.closest('.attendee-details-btn')) {
+            return;
+          }
+          
           const eventId = card.getAttribute('data-event-id');
           const event = events.find(e => e.id === eventId);
           if (event) {
@@ -120,9 +131,100 @@ async function renderEventsFromDB() {
           }
         });
       });
+
+      // Add event listeners for attendee details buttons
+      const attendeeButtons = eventsGrid.querySelectorAll('.attendee-details-btn');
+      attendeeButtons.forEach(button => {
+        button.addEventListener('click', async (e) => {
+          e.stopPropagation(); // Prevent event card click
+          const eventId = button.getAttribute('data-event-id');
+          await showAttendeeDetails(eventId);
+        });
+      });
     }
   } catch (error) {
     console.error("Error rendering events:", error);
+  }
+}
+
+// Function to show attendee details popup
+async function showAttendeeDetails(eventId) {
+  try {
+    // Get the current event
+    const event = await getEventById(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    // Fetch attendees for this event
+    const attendees = await getEventAttendees(eventId);
+    
+    // Create HTML for attendee list
+    let attendeeListHTML = '';
+    if (attendees.length === 0) {
+      attendeeListHTML = '<p>No attendees have purchased tickets yet.</p>';
+    } else {
+      attendeeListHTML = `
+        <table class="attendee-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Tickets Purchased</th>
+              <th>Total Paid</th>
+              <th>Purchase Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${attendees.map(attendee => {
+              // Format ticket details
+              const ticketDetails = attendee.tickets.map(ticket => 
+                `${ticket.quantity} ${ticket.ticketType}${ticket.quantity > 1 ? 's' : ''}`
+              ).join(', ');
+              
+              // Format purchase date
+              const purchaseDate = attendee.purchasedAt
+                ? (attendee.purchasedAt.toDate 
+                  ? attendee.purchasedAt.toDate().toLocaleString()
+                  : new Date(attendee.purchasedAt).toLocaleString())
+                : 'N/A';
+              
+              return `
+                <tr>
+                  <td>${attendee.name || 'N/A'}</td>
+                  <td>${attendee.email || 'N/A'}</td>
+                  <td>${ticketDetails}</td>
+                  <td>${formatCurrency(attendee.totalPaid)}</td>
+                  <td>${purchaseDate}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Show SweetAlert with attendee details
+    Swal.fire({
+      title: `Attendees for ${event.title}`,
+      html: `
+        <div class="attendee-details-container">
+          ${attendeeListHTML}
+        </div>
+      `,
+      width: '80%',
+      confirmButtonText: 'Close',
+      customClass: {
+        htmlContainer: 'attendee-details-popup'
+      }
+    });
+  } catch (error) {
+    console.error('Error showing attendee details:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to load attendee details. Please try again.'
+    });
   }
 }
 
