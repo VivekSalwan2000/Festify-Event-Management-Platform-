@@ -256,6 +256,36 @@
     html {
       scroll-behavior: smooth;
     }
+
+    #generatePosterBtn {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.25rem; /* Increased padding for a more substantial feel */
+      border-radius: 0.75rem; /* Softer corners */
+      font-weight: 600; /* Slightly bolder text */
+      font-size: 0.9rem; /* Adjusted font size for better readability */
+      cursor: pointer;
+      transition: all 0.3s ease; /* Smooth transition for hover effects */
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); /* Enhanced shadow for depth */
+      margin: 1rem auto; /* Centered with margin for spacing */
+      width: 80%; /* Wider button for better visibility */
+      max-width: 400px; /* Increased max-width for a more balanced look */
+      margin-bottom: 1.5rem; /* Added space below the button */
+    }
+
+    #generatePosterBtn:hover {
+      transform: translateY(-2px); /* Slight lift on hover */
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4); /* Deeper shadow on hover */
+    }
+
+    #generatePosterBtn i {
+      font-size: 1rem; /* Adjusted icon size for better proportion */
+    }
   </style>
 
   <!-- Load your organizer.js to handle sign in/up -->
