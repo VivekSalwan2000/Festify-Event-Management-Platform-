@@ -1028,6 +1028,21 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
   gap: 8px;
 }
 
+.feedback-analytics-btn {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
 .attendee-details-btn:hover {
   background-color: #e9ecef;
 }

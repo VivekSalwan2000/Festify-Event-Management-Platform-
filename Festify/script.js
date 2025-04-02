@@ -107,10 +107,10 @@ async function renderEventsFromDB() {
               </div>
             </div>
             <div class="event-actions">
-              <button class="btn btn-secondary attendee-details-btn" data-event-id="${event.id}">
+              <button class="btn attendee-details-btn" data-event-id="${event.id}" style="margin-bottom: 10px;">
                 <i class="fas fa-users"></i> Attendee Details
               </button>
-              <button class="btn btn-secondary feedback-analytics-btn" data-event-id="${event.id}">
+              <button class="btn feedback-analytics-btn" data-event-id="${event.id}">
                 <i class="fas fa-chart-bar"></i> Feedback Analytics
               </button>
             </div>
