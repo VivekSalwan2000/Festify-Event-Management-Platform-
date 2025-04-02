@@ -354,21 +354,35 @@ async function showFeedbackAnalytics(eventId) {
               datasets: [{
                 data: distributionData,
                 backgroundColor: '#ffc107',
-                borderRadius: 8,
+                borderRadius: 6,
+                barThickness: 12
               }]
             },
             options: {
               indexAxis: 'y',
+              maintainAspectRatio: false,
+              responsive: false,
               plugins: {
                 legend: { display: false },
+                tooltip: { enabled: false }
               },
               scales: {
                 x: {
                   grid: { display: false },
-                  ticks: { precision: 0 }
+                  ticks: { 
+                    precision: 0,
+                    font: {
+                      size: 10
+                    }
+                  }
                 },
                 y: {
-                  grid: { display: false }
+                  grid: { display: false },
+                  ticks: {
+                    font: {
+                      size: 11
+                    }
+                  }
                 }
               }
             }
@@ -383,16 +397,32 @@ async function showFeedbackAnalytics(eventId) {
                 datasets: [{
                   data: data,
                   backgroundColor: ['#4CAF50', '#ff4444'],
-                  borderWidth: 0
+                  borderWidth: 0,
+                  hoverOffset: 0,
+                  hoverBorderWidth: 0
                 }]
               },
               options: {
+                maintainAspectRatio: true,
+                responsive: false,
                 plugins: {
                   legend: {
-                    position: 'bottom'
-                  }
+                    position: 'bottom',
+                    labels: {
+                      boxWidth: 12,
+                      padding: 8,
+                      font: {
+                        size: 11
+                      }
+                    }
+                  },
+                  tooltip: { enabled: false }
                 },
-                cutout: '60%'
+                cutout: '65%',
+                events: [],
+                layout: {
+                  padding: 10
+                }
               }
             });
           };
