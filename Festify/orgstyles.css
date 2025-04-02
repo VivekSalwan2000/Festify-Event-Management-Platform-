@@ -1006,3 +1006,88 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
   gap: 1rem;
   justify-content: center;
 }
+
+/* Attendee Details Button */
+.event-actions {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.attendee-details-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.attendee-details-btn:hover {
+  background-color: #e9ecef;
+}
+
+.attendee-details-btn i {
+  font-size: 14px;
+}
+
+/* Attendee Details Popup */
+.attendee-details-popup {
+  max-width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.attendee-details-container {
+  width: 100%;
+  padding: 0 15px;
+}
+
+/* Attendee Table Styles */
+.attendee-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.attendee-table th,
+.attendee-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.attendee-table th {
+  background-color: #f4f6f8;
+  color: #333;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.attendee-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.attendee-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .attendee-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .attendee-details-popup {
+    width: 95% !important;
+  }
+}
