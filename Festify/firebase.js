@@ -91,9 +91,60 @@ export async function saveUserTicket(userId, ticketData) {
     // Add the document to the tickets subcollection
     const docRef = await addDoc(ticketsCollectionRef, ticketWithTimestamp);
     console.log("Ticket saved with ID:", docRef.id);
+    
+    // Explicitly preserve name and email fields when saving to global tickets collection
+    await saveTicketPurchase({
+      ...ticketWithTimestamp,
+      userId: userId,
+      // Ensure these fields are explicitly included
+      name: ticketData.name || 'Anonymous',
+      email: ticketData.email || 'No email provided'
+    });
+    
     return docRef.id;
   } catch (error) {
     console.error("Error saving ticket:", error);
+    throw error;
+  }
+}
+
+// Function to save ticket purchase to global tickets collection
+export async function saveTicketPurchase(ticketData) {
+  try {
+    // Create a reference to the global tickets collection
+    const ticketsCollectionRef = collection(db, "tickets");
+    
+    // Log the incoming ticket data to verify name and email are present
+    console.log("Saving ticket with user info:", {
+      name: ticketData.name,
+      email: ticketData.email
+    });
+    
+    // Ensure all relevant ticket details are included, removing phone field
+    const enhancedTicketData = {
+      ...ticketData,
+      // Make sure these fields exist (with defaults if not provided)
+      // Prioritize the existing name and email
+      name: ticketData.name || 'Anonymous',
+      email: ticketData.email || 'No email provided',
+      // Remove phone field as requested
+      eventId: ticketData.eventId || '',
+      tickets: ticketData.tickets || { general: 0, child: 0, senior: 0 },
+      totalPrice: ticketData.totalPrice || '0.00',
+      totalQuantity: ticketData.totalQuantity || 0,
+      ticketType: ticketData.ticketType || 'General',
+      quantity: ticketData.quantity || 1,
+      pricePaid: ticketData.pricePaid || 0,
+      eventDetails: ticketData.eventDetails || {},
+      purchasedAt: ticketData.purchasedAt || new Date()
+    };
+    
+    // Add the ticket data to the global tickets collection
+    const docRef = await addDoc(ticketsCollectionRef, enhancedTicketData);
+    console.log("Ticket purchase saved to global collection with ID:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error saving ticket to global collection:", error);
     throw error;
   }
 }
@@ -303,6 +354,117 @@ export async function saveFeedback(feedbackData) {
   } catch (error) {
     console.error("Error saving feedback:", error);
     throw error;
+  }
+}
+
+// Function to get all attendees for a specific event
+export async function getEventAttendees(eventId) {
+  try {
+    // Reference to the "tickets" collection
+    const ticketsCollectionRef = collection(db, "tickets");
+    
+    // Create a query to get tickets for this specific event
+    const q = query(ticketsCollectionRef, where("eventId", "==", eventId));
+    
+    // Execute the query
+    const querySnapshot = await getDocs(q);
+    
+    // First, get all ticket purchases
+    const allTickets = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    // Log the raw tickets data to debug
+    console.log("Retrieved tickets for event:", eventId, allTickets);
+    
+    // Group tickets by email to consolidate purchases by the same person
+    const attendeesByEmail = {};
+    
+    allTickets.forEach(ticket => {
+      const email = ticket.email || 'No email provided';
+      
+      // If this is the first ticket for this email, initialize the entry
+      if (!attendeesByEmail[email]) {
+        attendeesByEmail[email] = {
+          // Ensure we're using the name from the ticket data
+          name: ticket.name || 'Anonymous',
+          email: email,
+          tickets: [],
+          totalPaid: 0,
+          purchasedAt: ticket.purchasedAt
+        };
+        
+        // Log the name we're using
+        console.log(`Setting attendee name for ${email}: "${ticket.name}"`);
+      }
+      
+      // Handle different ticket structures
+      if (ticket.tickets && typeof ticket.tickets === 'object') {
+        // New structure with general, child, senior counts
+        const { general, child, senior } = ticket.tickets;
+        
+        if (general && general > 0) {
+          attendeesByEmail[email].tickets.push({
+            ticketType: 'General',
+            quantity: general,
+            pricePaid: parseFloat(ticket.totalPrice) || 0
+          });
+        }
+        
+        if (child && child > 0) {
+          attendeesByEmail[email].tickets.push({
+            ticketType: 'Child',
+            quantity: child,
+            pricePaid: 0 // Price is included in totalPrice
+          });
+        }
+        
+        if (senior && senior > 0) {
+          attendeesByEmail[email].tickets.push({
+            ticketType: 'Senior',
+            quantity: senior,
+            pricePaid: 0 // Price is included in totalPrice
+          });
+        }
+        
+        // Update total paid using the ticket's totalPrice
+        attendeesByEmail[email].totalPaid += parseFloat(ticket.totalPrice || 0);
+      } else {
+        // Legacy structure with ticketType and quantity
+        attendeesByEmail[email].tickets.push({
+          ticketType: ticket.ticketType || 'General',
+          quantity: ticket.quantity || 1,
+          pricePaid: ticket.pricePaid || 0
+        });
+        
+        // Update total paid
+        attendeesByEmail[email].totalPaid += (ticket.pricePaid || 0);
+      }
+      
+      // Keep the earliest purchase date
+      if (ticket.purchasedAt && attendeesByEmail[email].purchasedAt) {
+        const currentDate = ticket.purchasedAt.toDate ? ticket.purchasedAt.toDate() : new Date(ticket.purchasedAt);
+        const existingDate = attendeesByEmail[email].purchasedAt.toDate 
+          ? attendeesByEmail[email].purchasedAt.toDate() 
+          : new Date(attendeesByEmail[email].purchasedAt);
+          
+        if (currentDate < existingDate) {
+          attendeesByEmail[email].purchasedAt = ticket.purchasedAt;
+        }
+      }
+    });
+    
+    // Convert the attendees object to an array
+    const attendees = Object.values(attendeesByEmail);
+    
+    // Log the final attendees data
+    console.log("Final processed attendees:", attendees);
+    
+    return attendees;
+  } catch (error) {
+    console.error("Error fetching event attendees:", error);
+    return [];
   }
 }
 
