@@ -511,7 +511,10 @@ export function submitPayment() {
               child: childQuantity
           },
           totalQuantity: totalQuantity,
-          totalPrice: totalPrice.toFixed(2)
+          totalPrice: totalPrice.toFixed(2),
+          // Add user's name and email to ticket data
+          name: `${firstName.value.trim()} ${lastName.value.trim()}`,
+          email: email.value.trim()
       };
       
       // Save ticket to user's account
