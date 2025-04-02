@@ -9,7 +9,8 @@ import {
   updateEvent,
   getEventById,
   deleteEvent,
-  getEventAttendees
+  getEventAttendees,
+  getEventFeedback
 } from './firebase.js';
 import { generateEventPoster } from './dalle-api.js';
 
@@ -109,6 +110,9 @@ async function renderEventsFromDB() {
               <button class="btn btn-secondary attendee-details-btn" data-event-id="${event.id}">
                 <i class="fas fa-users"></i> Attendee Details
               </button>
+              <button class="btn btn-secondary feedback-analytics-btn" data-event-id="${event.id}">
+                <i class="fas fa-chart-bar"></i> Feedback Analytics
+              </button>
             </div>
           </div>
         </div>
@@ -139,6 +143,16 @@ async function renderEventsFromDB() {
           e.stopPropagation(); // Prevent event card click
           const eventId = button.getAttribute('data-event-id');
           await showAttendeeDetails(eventId);
+        });
+      });
+
+      // Add event listeners for feedback analytics buttons
+      const feedbackButtons = eventsGrid.querySelectorAll('.feedback-analytics-btn');
+      feedbackButtons.forEach(button => {
+        button.addEventListener('click', async (e) => {
+          e.stopPropagation(); // Prevent event card click
+          const eventId = button.getAttribute('data-event-id');
+          await showFeedbackAnalytics(eventId);
         });
       });
     }
@@ -226,6 +240,205 @@ async function showAttendeeDetails(eventId) {
       text: 'Failed to load attendee details. Please try again.'
     });
   }
+}
+
+// Function to show feedback analytics popup
+async function showFeedbackAnalytics(eventId) {
+  try {
+    // Get the current event
+    const event = await getEventById(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    // Fetch feedback data for this event
+    const feedbackData = await getEventFeedback(eventId);
+    
+    // Create HTML for feedback analytics
+    let feedbackHTML = '';
+    if (!feedbackData || feedbackData.length === 0) {
+      feedbackHTML = '<p>No feedback data available for this event yet.</p>';
+    } else {
+      // Calculate percentages for Yes/No questions
+      const calculateResponses = (question) => {
+        const total = feedbackData.length;
+        const yesCount = feedbackData.filter(f => f[question] === "Yes").length;
+        const noCount = total - yesCount;
+        return { yes: yesCount, no: noCount };
+      };
+
+      // Calculate rating distribution
+      const ratings = feedbackData.map(f => parseInt(f.rating));
+      const avgRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+      
+      // Count ratings
+      const ratingDistribution = ratings.reduce((acc, rating) => {
+        acc[rating] = (acc[rating] || 0) + 1;
+        return acc;
+      }, {});
+
+      // Create rating distribution data
+      const distributionData = [5,4,3,2,1].map(rating => ratingDistribution[rating] || 0);
+
+      feedbackHTML = `
+        <div class="feedback-analytics-modern">
+          <div class="analytics-header">
+            <div class="rating-summary">
+              <div class="average-rating">
+                <span class="rating-number">${avgRating.toFixed(1)}</span>
+                <div class="rating-details">
+                  <div class="rating-stars">${'★'.repeat(Math.round(avgRating))}${'☆'.repeat(5-Math.round(avgRating))}</div>
+                  <span class="rating-count">${feedbackData.length} ratings</span>
+                </div>
+              </div>
+            </div>
+            <div class="rating-distribution">
+              <canvas id="ratingChart"></canvas>
+            </div>
+          </div>
+
+          <div class="analytics-charts">
+            <div class="chart-row">
+              <div class="chart-container">
+                <h3>Organization</h3>
+                <canvas id="organizedChart"></canvas>
+              </div>
+              <div class="chart-container">
+                <h3>Venue Comfort</h3>
+                <canvas id="venueChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-row">
+              <div class="chart-container">
+                <h3>Schedule Adherence</h3>
+                <canvas id="scheduleChart"></canvas>
+              </div>
+              <div class="chart-container">
+                <h3>Would Attend Again</h3>
+                <canvas id="attendChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="recent-feedback">
+            <h3>Recent Feedback</h3>
+            <div class="feedback-list">
+              ${feedbackData.slice(0, 5).map(feedback => `
+                <div class="feedback-item">
+                  <div class="feedback-header">
+                    <span class="feedback-rating">${'★'.repeat(parseInt(feedback.rating))}${'☆'.repeat(5-parseInt(feedback.rating))}</span>
+                    <span class="feedback-date">${new Date(feedback.createdAt.seconds * 1000).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Show SweetAlert with feedback analytics
+      Swal.fire({
+        title: `Feedback Analytics for ${event.title}`,
+        html: feedbackHTML,
+        width: '90%',
+        confirmButtonText: 'Close',
+        customClass: {
+          htmlContainer: 'feedback-analytics-popup'
+        },
+        didRender: () => {
+          // Create rating distribution chart
+          new Chart(document.getElementById('ratingChart'), {
+            type: 'bar',
+            data: {
+              labels: ['5 ★', '4 ★', '3 ★', '2 ★', '1 ★'],
+              datasets: [{
+                data: distributionData,
+                backgroundColor: '#ffc107',
+                borderRadius: 8,
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              plugins: {
+                legend: { display: false },
+              },
+              scales: {
+                x: {
+                  grid: { display: false },
+                  ticks: { precision: 0 }
+                },
+                y: {
+                  grid: { display: false }
+                }
+              }
+            }
+          });
+
+          // Function to create pie charts
+          const createPieChart = (canvasId, data, labels) => {
+            new Chart(document.getElementById(canvasId), {
+              type: 'doughnut',
+              data: {
+                labels: labels,
+                datasets: [{
+                  data: data,
+                  backgroundColor: ['#4CAF50', '#ff4444'],
+                  borderWidth: 0
+                }]
+              },
+              options: {
+                plugins: {
+                  legend: {
+                    position: 'bottom'
+                  }
+                },
+                cutout: '60%'
+              }
+            });
+          };
+
+          // Create pie charts for each metric
+          const organized = calculateResponses('organized');
+          createPieChart('organizedChart', [organized.yes, organized.no], ['Well Organized', 'Needs Improvement']);
+
+          const venue = calculateResponses('venue');
+          createPieChart('venueChart', [venue.yes, venue.no], ['Comfortable', 'Not Comfortable']);
+
+          const schedule = calculateResponses('schedule');
+          createPieChart('scheduleChart', [schedule.yes, schedule.no], ['On Schedule', 'Delayed']);
+
+          const attend = calculateResponses('attendAgain');
+          createPieChart('attendChart', [attend.yes, attend.no], ['Would Attend', 'Would Not Attend']);
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error showing feedback analytics:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to load feedback analytics. Please try again.'
+    });
+  }
+}
+
+// Helper function to analyze feedback themes
+function analyzeFeedbackThemes(feedbackData) {
+  // Simple theme analysis based on common words in comments
+  const commonWords = feedbackData
+    .flatMap(feedback => feedback.comment.toLowerCase().split(/\s+/))
+    .filter(word => word.length > 3) // Filter out short words
+    .reduce((acc, word) => {
+      acc[word] = (acc[word] || 0) + 1;
+      return acc;
+    }, {});
+
+  // Get top themes (words that appear multiple times)
+  return Object.entries(commonWords)
+    .filter(([_, count]) => count > 1)
+    .sort(([_, a], [__, b]) => b - a)
+    .slice(0, 5)
+    .map(([word]) => word.charAt(0).toUpperCase() + word.slice(1));
 }
 
 // Toggling form functions

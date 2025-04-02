@@ -468,3 +468,28 @@ export async function getEventAttendees(eventId) {
   }
 }
 
+// Function to get feedback for a specific event
+export async function getEventFeedback(eventId) {
+  try {
+    // Reference to the "feedback" collection
+    const feedbackCollectionRef = collection(db, "feedback");
+    
+    // Create a query to get feedback for this specific event
+    const q = query(feedbackCollectionRef, where("eventId", "==", eventId));
+    
+    // Execute the query
+    const querySnapshot = await getDocs(q);
+    
+    // Map the feedback data
+    const feedbackData = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    return feedbackData;
+  } catch (error) {
+    console.error("Error fetching event feedback:", error);
+    throw error;
+  }
+}
+
