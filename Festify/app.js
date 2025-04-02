@@ -317,14 +317,6 @@ export function checkout() {
             <h3>Billing Information</h3>
             <div class="input-group">
             <div class="flex-container">
-              <div class="input-group">
-                <label>First Name <span>*</span></label>
-                <input type="text" id="firstName" placeholder="John" required>
-              </div>
-              <div class="input-group">
-                <label>Last Name <span>*</span></label>
-                <input type="text" id="lastName" placeholder="Doe" required>
-              </div>
             </div>
             <div class="input-group">
               <label>Email <span>*</span></label>
