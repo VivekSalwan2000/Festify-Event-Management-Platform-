@@ -755,7 +755,18 @@ import {
     // Create New Event button
     const createNewEventBtn = document.getElementById('createNewEventBtn');
     if (createNewEventBtn) {
-      createNewEventBtn.addEventListener('click', showEventForm);
+      createNewEventBtn.addEventListener('click', () => {
+        const totalEvents = parseInt(document.getElementById("totalEvents").textContent);
+        if (totalEvents > 1) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Event Limit Reached',
+            text: 'You can only create 1 event at a time. Please delete an existing event to create a new one or upgrade to a PRO plan to create unlimited events.',
+          });
+        } else {
+          showEventForm();
+        }
+      });
     }
   
     // Logo click handler
