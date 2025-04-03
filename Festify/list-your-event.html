@@ -316,7 +316,7 @@
         const password = document.getElementById('loginPassword').value;
         try {
           await signInUser(email, password);
-          window.location.href = 'organization-dashboard.html';
+          window.location.href = 'basic-org-dash.html';
         } catch (error) {
           console.error('Sign In Error:', error);
           showIncorrectCredentials('Sign In Error: ' + error.message);
@@ -330,7 +330,7 @@
         const password = document.getElementById('loginPassword').value;
         try {
           await signUpUser(email, password);
-          window.location.href = 'organization-dashboard.html';
+          window.location.href = 'basic-org-dash.html';
         } catch (error) {
           console.error('Sign Up Error:', error);
           showAccountExists('Sign Up Error: ' + error.message);
