@@ -1033,7 +1033,7 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
     width: 100%;
     padding: 8px 12px;
     background-color: #f8f9fa;
-    color: #333;
+    color: #0f0f0f;
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
@@ -1494,24 +1494,7 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
     border-radius: 50%;
 }
 
-/* Premium Feature Styles */
-.premium-feature {
-    background: rgba(30, 41, 59, 0.8) !important;
-    border: 1px solid rgba(255, 215, 0, 0.3) !important;
-    position: relative;
-    overflow: visible !important;
-}
 
-.premium-feature:hover {
-    border-color: rgba(255, 215, 0, 0.5) !important;
-    background: rgba(30, 41, 59, 0.9) !important;
-    transform: translateY(-2px);
-}
-
-.premium-feature i {
-    color: #FFD700;
-    margin-right: 8px;
-}
 
 .premium-badge {
     background: linear-gradient(135deg, #FFD700, #FFA500);
