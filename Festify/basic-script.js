@@ -770,7 +770,7 @@ import {
     if (createNewEventBtn) {
       createNewEventBtn.addEventListener('click', () => {
         const totalEvents = parseInt(document.getElementById("totalEvents").textContent);
-        if (totalEvents > 1) {
+        if (totalEvents == 1) {
           Swal.fire({
             icon: 'error',
             title: 'Event Limit Reached',
