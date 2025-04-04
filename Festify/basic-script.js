@@ -152,32 +152,13 @@ import {
           button.addEventListener('click', async (e) => {
             e.stopPropagation(); // Prevent event card click
             
-            // Show premium feature alert
-            Swal.fire({
-              title: 'Premium Feature',
-              html: `
-                <div class="premium-alert">
-                  <i class="fas fa-crown" style="color: #FFD700; font-size: 2rem; margin-bottom: 1rem;"></i>
-                  <p>Feedback Analytics is a premium feature available only to Pro users.</p>
-                  <p style="margin-top: 0.5rem;">Upgrade to Pro to unlock:</p>
-                  <ul style="text-align: left; margin-top: 0.5rem;">
-                    <li>✓ Detailed feedback analytics</li>
-                    <li>✓ Sentiment analysis</li>
-                    <li>✓ Attendee satisfaction metrics</li>
-                    <li>✓ Custom reports and insights</li>
-                  </ul>
-                </div>
-              `,
-              showCancelButton: true,
-              confirmButtonText: 'Upgrade to Pro',
-              cancelButtonText: 'Maybe Later',
-              confirmButtonColor: '#3b82f6',
-              cancelButtonColor: '#6b7280',
-            }).then((result) => {
-              if (result.isConfirmed) {
-                showPaymentModal();
-              }
-            });
+            Swal.fire ({
+              icon: 'error',
+              title: 'Upgrade to PRO',
+              text: 'Please upgrade to PRO to use this feature',
+              cancelButtonText: 'No, stay on FREE',
+              reverseButtons: true
+            })
           });
         });
       }
