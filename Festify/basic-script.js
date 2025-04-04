@@ -974,9 +974,8 @@ import {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!',
       });
-          const confirmed = confirm("Are you sure you want to delete this event? This action cannot be undone.");
-          
-          if (confirmed) {
+                
+          if (result) {
             const success = await deleteEvent(eventId);
             if (success) {
               // SweetAlert for success
