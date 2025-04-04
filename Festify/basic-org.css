@@ -1137,3 +1137,409 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
 #generatePosterBtn i {
   font-size: 0.9rem;
 }
+
+
+/* Upgrade to Pro Button */
+.btn-pro {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    padding: 0.85rem 1.75rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.01em;
+}
+
+.btn-pro:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(45deg, #FFA500, #FFD700);
+}
+
+/* Plans Section */
+.plans-section {
+  margin: 2rem 0;
+}
+
+.plans-container {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.plan-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 300px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.plan-card.pro {
+  border: 2px solid #FFD700;
+  transform: scale(1.05);
+  position: relative;
+}
+
+.plan-card.pro::before {
+  content: "RECOMMENDED";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FFD700;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.plan-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.plan-header h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.plan-price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.plan-price span {
+  font-size: 1rem;
+  color: #666;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.plan-features li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  color: #555;
+}
+
+.plan-features i {
+  margin-right: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.plan-features .fa-check {
+  color: #4CAF50;
+}
+
+.plan-features .fa-times {
+  color: #f44336;
+}
+
+.plan-card button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.plan-card button:disabled {
+  background: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .plans-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .plan-card {
+    width: 100%;
+    max-width: 350px;
+  }
+  
+  .plan-card.pro {
+    transform: none;
+  }
+}
+
+/* Custom Payment Modal */
+.payment-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+
+.payment-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.payment-modal {
+    background: linear-gradient(145deg, #2a3444, #1e293b);
+    border-radius: 24px;
+    width: 90%;
+    max-width: 450px;
+    padding: 2.5rem;
+    position: relative;
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.payment-modal.active {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.payment-modal-title {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.payment-modal-subtitle {
+    color: #94a3b8;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.payment-form-group {
+    margin-bottom: 1.75rem;
+    position: relative;
+}
+
+.payment-label {
+    display: block;
+    color: #e2e8f0;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.payment-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: rgba(30, 41, 59, 0.5);
+    border: 2px solid rgba(148, 163, 184, 0.2);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+}
+
+.payment-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    background: rgba(30, 41, 59, 0.8);
+}
+
+.payment-input::placeholder {
+    color: #64748b;
+}
+
+.payment-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.25rem;
+}
+
+.payment-actions {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 3rem;
+    justify-content: center;
+}
+
+.upgrade-now-btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.upgrade-now-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -2px rgba(37, 99, 235, 0.3);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.cancel-btn {
+    background: rgba(75, 85, 99, 0.5);
+    color: #e2e8f0;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: rgba(75, 85, 99, 0.7);
+    transform: translateY(-2px);
+}
+
+/* Card number input specific styling */
+.payment-input.card-number {
+    letter-spacing: 2px;
+    font-family: monospace;
+    font-size: 1.2rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+    .payment-modal {
+        width: 95%;
+        padding: 2rem;
+    }
+
+    .payment-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .payment-actions {
+        flex-direction: column;
+    }
+
+    .upgrade-now-btn,
+    .cancel-btn {
+        width: 100%;
+        padding: 1rem;
+    }
+}
+
+/* Add card brand icon */
+.payment-form-group.card-number-group {
+    position: relative;
+}
+
+.payment-form-group.card-number-group::after {
+    content: '\f09d';
+    font-family: 'Font Awesome 5 Free';
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #60a5fa;
+    font-size: 1.2rem;
+    pointer-events: none;
+}
+
+/* Add secure badge */
+.payment-modal::after {
+    content: '\f023';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #10b981;
+    font-size: 1.2rem;
+    background: rgba(249, 250, 250, 0.1);
+    padding: 0.5rem;
+    border-radius: 50%;
+}
+
+/* Premium Feature Styles */
+.premium-feature {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(255, 215, 0, 0.3) !important;
+    position: relative;
+    overflow: visible !important;
+}
+
+.premium-feature:hover {
+    border-color: rgba(255, 215, 0, 0.5) !important;
+    background: rgba(30, 41, 59, 0.9) !important;
+    transform: translateY(-2px);
+}
+
+.premium-feature i {
+    color: #FFD700;
+    margin-right: 8px;
+}
+
+.premium-badge {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #1a1a1a;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.premium-alert {
+    padding: 1rem;
+}
+
+.premium-alert ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.premium-alert ul li {
+    margin: 0.5rem 0;
+    color: #4a5568;
+}
+
+.premium-alert i {
+    margin-right: 8px;
+}
