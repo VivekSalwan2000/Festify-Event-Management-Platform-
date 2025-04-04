@@ -110,8 +110,8 @@ import {
                 <button class="btn attendee-details-btn" data-event-id="${event.id}" style="margin-bottom: 10px;">
                   <i class="fas fa-users"></i> Attendee Details
                 </button>
-                <button class="btn feedback-analytics-btn" data-event-id="${event.id}">
-                  <i class="fas fa-chart-bar"></i> Feedback Analytics
+                <button class="btn feedback-analytics-btn premium-feature" data-event-id="${event.id}">
+                  <i class="fas fa-lock"></i> Feedback Analytics <span class="premium-badge">PRO</span>
                 </button>
               </div>
             </div>
@@ -151,8 +151,33 @@ import {
         feedbackButtons.forEach(button => {
           button.addEventListener('click', async (e) => {
             e.stopPropagation(); // Prevent event card click
-            const eventId = button.getAttribute('data-event-id');
-            await showFeedbackAnalytics(eventId);
+            
+            // Show premium feature alert
+            Swal.fire({
+              title: 'Premium Feature',
+              html: `
+                <div class="premium-alert">
+                  <i class="fas fa-crown" style="color: #FFD700; font-size: 2rem; margin-bottom: 1rem;"></i>
+                  <p>Feedback Analytics is a premium feature available only to Pro users.</p>
+                  <p style="margin-top: 0.5rem;">Upgrade to Pro to unlock:</p>
+                  <ul style="text-align: left; margin-top: 0.5rem;">
+                    <li>✓ Detailed feedback analytics</li>
+                    <li>✓ Sentiment analysis</li>
+                    <li>✓ Attendee satisfaction metrics</li>
+                    <li>✓ Custom reports and insights</li>
+                  </ul>
+                </div>
+              `,
+              showCancelButton: true,
+              confirmButtonText: 'Upgrade to Pro',
+              cancelButtonText: 'Maybe Later',
+              confirmButtonColor: '#3b82f6',
+              cancelButtonColor: '#6b7280',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                showPaymentModal();
+              }
+            });
           });
         });
       }
@@ -477,6 +502,8 @@ import {
     document.getElementById('profileFormSection').style.display = 'none';
     document.querySelector('.metrics-section').style.display = 'none';
     document.querySelector('.events-section').style.display = 'none';
+    document.getElementById('plansSection').style.display = 'none';
+    document.getElementById('editEventFormSection').style.display = 'none';
   }
   
   function hideEventForm() {
@@ -491,6 +518,7 @@ import {
     document.querySelector('.metrics-section').style.display = 'none';
     document.querySelector('.events-section').style.display = 'none';
     document.getElementById('eventFormSection').style.display = 'none';
+    document.getElementById('plansSection').style.display = 'none';
   }
   
   function hideProfileForm() {
@@ -502,6 +530,10 @@ import {
   function resetDashboard() {
     hideEventForm();
     hideProfileForm();
+    hidePlansSection();
+    hideEditForm();
+    document.querySelector('.metrics-section').style.display = 'block';
+    document.querySelector('.events-section').style.display = 'block';
     renderEventsFromDB();
   }
   
@@ -1057,4 +1089,137 @@ import {
         generatePosterBtn.click();
       });
     }
+  
+    // Function to show plans section
+    function showPlansSection() {
+      document.getElementById('plansSection').style.display = 'block';
+      document.querySelector('.metrics-section').style.display = 'none';
+      document.querySelector('.events-section').style.display = 'none';
+      document.getElementById('eventFormSection').style.display = 'none';
+      document.getElementById('profileFormSection').style.display = 'none';
+      document.getElementById('editEventFormSection').style.display = 'none';
+    }
+  
+    // Function to hide plans section
+    function hidePlansSection() {
+      document.getElementById('plansSection').style.display = 'none';
+      document.querySelector('.metrics-section').style.display = 'block';
+      document.querySelector('.events-section').style.display = 'block';
+    }
+  
+    // Upgrade to Pro button
+    const upgradeToProBtn = document.getElementById('upgradeToProBtn');
+    if (upgradeToProBtn) {
+      upgradeToProBtn.addEventListener('click', () => {
+        showPlansSection();
+        // Scroll to plans section
+        document.getElementById('plansSection').scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+  
+    // Upgrade Now button in plans section
+    const upgradeNowBtn = document.getElementById('upgradeNowBtn');
+    if (upgradeNowBtn) {
+      upgradeNowBtn.addEventListener('click', () => {
+        showPaymentModal();
+      });
+    }
+  
+    // Function to format card number with spaces
+    function formatCardNumber(e) {
+        let input = e.target;
+        let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || '';
+        input.value = formattedValue;
+    }
+  
+    // Function to format expiry date
+    function formatExpiryDate(e) {
+        let input = e.target;
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2);
+        }
+        input.value = value;
+    }
+  
+    // Function to show payment modal
+    function showPaymentModal() {
+        document.querySelector('.payment-modal-overlay').classList.add('active');
+        document.querySelector('.payment-modal').classList.add('active');
+    }
+  
+    // Function to hide payment modal
+    function hidePaymentModal() {
+        document.querySelector('.payment-modal-overlay').classList.remove('active');
+        document.querySelector('.payment-modal').classList.remove('active');
+    }
+  
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        // Replace your current upgrade to pro button click handler with this:
+        document.querySelector('.btn-pro').addEventListener('click', showPaymentModal);
+        
+        // Cancel button
+        document.getElementById('cancel-payment').addEventListener('click', hidePaymentModal);
+        
+        // Format card number
+        document.getElementById('card-number').addEventListener('input', formatCardNumber);
+        
+        // Format expiry date
+        document.getElementById('expiry-date').addEventListener('input', formatExpiryDate);
+        
+        // Handle form submission
+        document.getElementById('payment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('.upgrade-now-btn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled = true;
+
+            try {
+                // Simulate payment processing (replace with actual payment processing)
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Hide the modal
+                hidePaymentModal();
+
+                // Show success message
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Payment Successful!',
+                    text: 'Welcome to Festify Pro! Redirecting to your new dashboard...',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+
+                // Redirect to pro dashboard
+                // window.location.href = 'organization-dashboard.html';
+            } catch (error) {
+                // Show error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Payment Failed',
+                    text: 'There was an error processing your payment. Please try again.'
+                });
+
+                // Reset button state
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+    });
+  
+    // Close modal when clicking outside
+    document.querySelector('.payment-modal-overlay').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+            hidePaymentModal();
+        }
+    });
+  
+    // Hide plans section by default
+    document.getElementById('plansSection').style.display = 'none';
   });
