@@ -1144,48 +1144,7 @@ import {
         // Format expiry date
         document.getElementById('expiry-date').addEventListener('input', formatExpiryDate);
         
-        // Handle form submission
-        document.getElementById('payment-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Show loading state
-            const submitBtn = e.target.querySelector('.upgrade-now-btn');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            submitBtn.disabled = true;
-
-            try {
-                // Simulate payment processing (replace with actual payment processing)
-                await new Promise(resolve => setTimeout(resolve, 1500));
-
-                // Hide the modal
-                hidePaymentModal();
-
-                // Show success message
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'Payment Successful!',
-                    text: 'Welcome to Festify Pro! Redirecting to your new dashboard...',
-                    timer: 2000,
-                    timerProgressBar: true,
-                    showConfirmButton: false
-                });
-
-                // Redirect to pro dashboard
-                // window.location.href = 'organization-dashboard.html';
-            } catch (error) {
-                // Show error message
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Payment Failed',
-                    text: 'There was an error processing your payment. Please try again.'
-                });
-
-                // Reset button state
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
-            }
-        });
+        
     });
   
     // Close modal when clicking outside
