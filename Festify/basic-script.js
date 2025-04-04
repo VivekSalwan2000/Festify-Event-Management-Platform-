@@ -681,13 +681,8 @@ import {
           hideEventForm();
           
         } catch (error) {
-          console.error("Error creating event:", error);
-          // SweetAlert for error
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to create event. Please try again.',
-      });
+          renderEventsFromDB();
+          hideEventForm();
         }
       });
     }
