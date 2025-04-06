@@ -23,6 +23,7 @@ import {
   increment
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
+import { sendWelcomeEmail } from "./email.js";
 
 // TODO: Replace with your Firebase project configuration
 const firebaseConfig = {
@@ -51,6 +52,17 @@ const storage = getStorage(app);
 ------------------------------ */
 export async function signUpUser(email, password) {
   const userCred = await createUserWithEmailAndPassword(auth, email, password);
+  
+  // Create a basic profile for the user
+  await saveUserProfile(userCred.user.uid, {
+    email: email,
+    createdAt: new Date(),
+    // Add any additional default fields you want for new users
+  });
+  
+  // Send welcome email to the user
+  await sendWelcomeEmail(email);
+  
   return userCred;
 }
 

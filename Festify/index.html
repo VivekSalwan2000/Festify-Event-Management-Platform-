@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Festify - Discover Amazing Events</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- EmailJS Library -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      emailjs.init({
+        publicKey: "ADD_PUBLIC_KEY_HERE",
+      });
+    })();
+  </script>
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="styles.css" />
