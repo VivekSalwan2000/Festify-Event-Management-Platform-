@@ -1128,6 +1128,71 @@ import {
   
     // Hide plans section by default
     document.getElementById('plansSection').style.display = 'none';
+  
+    // Add red asterisks to required payment fields
+    const paymentLabels = document.querySelectorAll('.payment-label');
+    paymentLabels.forEach(label => {
+      // Add a red asterisk to each payment field label
+      label.innerHTML += ' <span style="color: red;">*</span>';
+    });
+    
+    // Payment form validation for Upgrade Now button
+    const paymentForm = document.querySelector('.payment-modal-overlay');
+    if (paymentForm) {
+      const upgradeNowBtn = paymentForm.querySelector('.upgrade-now-btn');
+      if (upgradeNowBtn) {
+        upgradeNowBtn.addEventListener('click', function(e) {
+          // Prevent default action
+          e.preventDefault();
+          
+          // Get the form fields
+          const cardNumber = document.getElementById('card-number');
+          const expiryDate = document.getElementById('expiry-date');
+          const cvv = document.getElementById('cvv');
+          
+          // Validate card number (must be 16 digits, spaces allowed)
+          const cardDigits = cardNumber.value.replace(/\s+/g, '');
+          if (!cardDigits || cardDigits.length !== 16 || !/^\d+$/.test(cardDigits)) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Invalid Card Number',
+              text: 'Please enter a valid 16-digit card number',
+              confirmButtonColor: '#3b82f6'
+            });
+            cardNumber.focus();
+            return false;
+          }
+          
+          // Validate expiry date (must be MM/YY format)
+          const expFormat = /^(0[1-9]|1[0-2])\/\d{2}$/;
+          if (!expiryDate.value || !expFormat.test(expiryDate.value)) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Invalid Expiry Date',
+              text: 'Please enter a valid expiry date in MM/YY format',
+              confirmButtonColor: '#3b82f6'
+            });
+            expiryDate.focus();
+            return false;
+          }
+          
+          // Validate CVV (must be 3 digits)
+          if (!cvv.value || cvv.value.length !== 3 || !/^\d{3}$/.test(cvv.value)) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Invalid CVV',
+              text: 'Please enter a valid 3-digit CVV code',
+              confirmButtonColor: '#3b82f6'
+            });
+            cvv.focus();
+            return false;
+          }
+          
+          // If validation passes, navigate to the next page
+          window.location.href = 'list-your-event.html';
+        });
+      }
+    }
   });
 
   // Function to format card number with spaces
