@@ -1082,7 +1082,7 @@ import {
       document.querySelector('.events-section').style.display = 'block';
     }
   
-    // Upgrade to Pro button
+    // Upgrade to Pro button (Header button)
     const upgradeToProBtn = document.getElementById('upgradeToProBtn');
     if (upgradeToProBtn) {
       upgradeToProBtn.addEventListener('click', () => {
@@ -1095,65 +1095,67 @@ import {
     // Upgrade Now button in plans section
     const upgradeNowBtn = document.getElementById('upgradeNowBtn');
     if (upgradeNowBtn) {
-      upgradeNowBtn.addEventListener('click', () => {
-        showPaymentModal();
-      });
+      upgradeNowBtn.addEventListener('click', showPaymentModal);
     }
   
-    // Function to format card number with spaces
-    function formatCardNumber(e) {
-        let input = e.target;
-        let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || '';
-        input.value = formattedValue;
+    // Cancel button in payment modal
+    const cancelPaymentBtn = document.getElementById('cancel-payment');
+    if (cancelPaymentBtn) {
+        cancelPaymentBtn.addEventListener('click', hidePaymentModal);
     }
   
-    // Function to format expiry date
-    function formatExpiryDate(e) {
-        let input = e.target;
-        let value = input.value.replace(/\D/g, '');
-        if (value.length > 2) {
-            value = value.slice(0, 2) + '/' + value.slice(2);
-        }
-        input.value = value;
+    // Format card number in payment modal
+    const cardNumberInput = document.getElementById('card-number');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', formatCardNumber);
     }
   
-    // Function to show payment modal
-    function showPaymentModal() {
-        document.querySelector('.payment-modal-overlay').classList.add('active');
-        document.querySelector('.payment-modal').classList.add('active');
+    // Format expiry date in payment modal
+    const expiryDateInput = document.getElementById('expiry-date');
+    if (expiryDateInput) {
+        expiryDateInput.addEventListener('input', formatExpiryDate);
     }
-  
-    // Function to hide payment modal
-    function hidePaymentModal() {
-        document.querySelector('.payment-modal-overlay').classList.remove('active');
-        document.querySelector('.payment-modal').classList.remove('active');
-    }
-  
-    // Event Listeners
-    document.addEventListener('DOMContentLoaded', () => {
-        // Replace your current upgrade to pro button click handler with this:
-        document.querySelector('.btn-pro').addEventListener('click', showPaymentModal);
-        
-        // Cancel button
-        document.getElementById('cancel-payment').addEventListener('click', hidePaymentModal);
-        
-        // Format card number
-        document.getElementById('card-number').addEventListener('input', formatCardNumber);
-        
-        // Format expiry date
-        document.getElementById('expiry-date').addEventListener('input', formatExpiryDate);
-        
-        
-    });
   
     // Close modal when clicking outside
-    document.querySelector('.payment-modal-overlay').addEventListener('click', (e) => {
-        if (e.target === e.currentTarget) {
-            hidePaymentModal();
-        }
-    });
+    const paymentModalOverlay = document.querySelector('.payment-modal-overlay');
+    if (paymentModalOverlay) {
+        paymentModalOverlay.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                hidePaymentModal();
+            }
+        });
+    }
   
     // Hide plans section by default
     document.getElementById('plansSection').style.display = 'none';
   });
+
+  // Function to format card number with spaces
+  function formatCardNumber(e) {
+    let input = e.target;
+    let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || '';
+    input.value = formattedValue;
+  }
+
+  // Function to format expiry date
+  function formatExpiryDate(e) {
+    let input = e.target;
+    let value = input.value.replace(/\D/g, '');
+    if (value.length > 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    input.value = value;
+  }
+
+  // Function to show payment modal
+  function showPaymentModal() {
+    document.querySelector('.payment-modal-overlay').classList.add('active');
+    document.querySelector('.payment-modal').classList.add('active');
+  }
+
+  // Function to hide payment modal
+  function hidePaymentModal() {
+    document.querySelector('.payment-modal-overlay').classList.remove('active');
+    document.querySelector('.payment-modal').classList.remove('active');
+  }
