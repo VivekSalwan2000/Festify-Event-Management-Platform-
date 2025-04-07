@@ -1193,6 +1193,18 @@ import {
         });
       }
     }
+  
+    // Make the "Current Plan" button in the basic plan card go back to dashboard
+    const backToDashboardBtn = document.getElementById('backToDashboard');
+    if (backToDashboardBtn) {
+      backToDashboardBtn.addEventListener('click', () => {
+        // Hide plans section
+        hidePlansSection();
+        // Show the dashboard sections
+        document.querySelector('.metrics-section').style.display = 'block';
+        document.querySelector('.events-section').style.display = 'block';
+      });
+    }
   });
 
   // Function to format card number with spaces
