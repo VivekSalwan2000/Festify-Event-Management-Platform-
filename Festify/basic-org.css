@@ -1462,37 +1462,15 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover {
     }
 }
 
-/* Add card brand icon */
+/* Add card brand icon - REMOVED */
 .payment-form-group.card-number-group {
     position: relative;
 }
 
-.payment-form-group.card-number-group::after {
-    content: '\f09d';
-    font-family: 'Font Awesome 5 Free';
-    position: absolute;
-    right: 1.25rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #60a5fa;
-    font-size: 1.2rem;
-    pointer-events: none;
-}
+/* Removed the ::after pseudo-element that was adding the credit card icon */
 
-/* Add secure badge */
-.payment-modal::after {
-    content: '\f023';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    color: #10b981;
-    font-size: 1.2rem;
-    background: rgba(249, 250, 250, 0.1);
-    padding: 0.5rem;
-    border-radius: 50%;
-}
+/* Add secure badge - REMOVED */
+/* Removed the ::after pseudo-element that was adding the lock icon */
 
 
 
