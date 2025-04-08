@@ -2,6 +2,45 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 
 /**
+ * Generate QR code as a data URL
+ * @param {Object} ticketData - The ticket data to encode in the QR code
+ * @returns {Promise<string>} - Promise resolving to data URL of the QR code
+ */
+export async function generateQRCode(ticketData) {
+  try {
+    // Create a JSON string with essential ticket details
+    const ticketInfo = JSON.stringify({
+      ticketId: ticketData.id,
+      eventId: ticketData.eventId,
+      event: ticketData.eventDetails.title,
+      date: ticketData.eventDetails.date,
+      attendee: ticketData.name,
+      tickets: ticketData.tickets,
+      totalQuantity: ticketData.totalQuantity
+    });
+    
+    // Generate QR code as data URL using the QRCode library loaded in the HTML
+    return new Promise((resolve, reject) => {
+      window.QRCode.toDataURL(ticketInfo, { 
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        }
+      }, (err, url) => {
+        if (err) reject(err);
+        else resolve(url);
+      });
+    });
+  } catch (error) {
+    console.error("Error generating QR code:", error);
+    // Return placeholder image if QR generation fails
+    return 'https://via.placeholder.com/300?text=Ticket';
+  }
+}
+
+/**
  * Send a welcome email to a newly registered user
  * @param {string} userEmail - The email address of the new user
  * @param {string} userName - The name of the new user (optional)
@@ -117,4 +156,4 @@ export async function sendTicketConfirmationEmail(ticketData) {
  */
 export async function sendTicketConfirmationEmailNoQR(ticketData) {
   return sendTicketConfirmationEmail(ticketData);
-} 
+}

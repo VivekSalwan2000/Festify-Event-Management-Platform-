@@ -23,6 +23,9 @@
   <link rel="stylesheet" href="footer.css" />
   <link rel="stylesheet" href="navbar.css" />
 
+  <!-- QR Code Generator Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
+
   <!-- Import Firebase as a module -->
   <script type="module" src="firebase.js"></script>
   
@@ -524,6 +527,49 @@
     
     body.tickets-view {
       background-color: white;
+    }
+
+    /* QR Code Styles */
+    .ticket-qr-code {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    .ticket-qr-code h4 {
+      font-size: 1rem;
+      color: white;
+      margin-bottom: 0.75rem;
+    }
+
+    .qr-code-image {
+      max-width: 150px;
+      background: white;
+      padding: 8px;
+      border-radius: 8px;
+      margin: 0 auto;
+      display: block;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .qr-instructions {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+
+    /* Improved ticket card styles */
+    .ticket-card {
+      background: rgba(30, 41, 59, 0.9);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
     }
   </style>
 </head>
@@ -1151,6 +1197,7 @@
 <script type="module">
   import { getUserTickets, saveFeedback } from './firebase.js';
   import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+  import { generateQRCode } from './email.js';
   
   // Show Feedback Modal
   function sendFeedback(ticket) {
@@ -1272,8 +1319,9 @@
           
           // Use setTimeout to allow UI to update between batches
           setTimeout(() => {
-            batch.forEach(ticket => {
-              ticketsListEl.appendChild(createTicketCard(ticket));
+            batch.forEach(async (ticket) => {
+              const ticketCard = await createTicketCard(ticket);
+              ticketsListEl.appendChild(ticketCard);
             });
           }, 0);
         }
@@ -1322,7 +1370,7 @@
   });
 
   // Create HTML for a ticket card
-  function createTicketCard(ticket) {
+  async function createTicketCard(ticket) {
     // Format date for display
     const eventDate = new Date(ticket.eventDetails.date); // Event date
     const today = new Date(); // Current date
@@ -1330,6 +1378,15 @@
     // Create ticket element
     const ticketEl = document.createElement('div');
     ticketEl.className = 'ticket-card';
+
+    // Generate QR code for this ticket
+    let qrCodeDataURL;
+    try {
+      qrCodeDataURL = await generateQRCode(ticket);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      qrCodeDataURL = 'https://via.placeholder.com/150?text=Ticket';
+    }
 
     ticketEl.innerHTML = `
       <img src="${ticket.eventDetails.imageUrl || 'images/event-placeholder.jpg'}" alt="${ticket.eventDetails.title}" class="ticket-image">
@@ -1378,6 +1435,11 @@
             </div>` : ''
           }
           <div class="ticket-price">$${ticket.totalPrice}</div>
+        </div>
+        <div class="ticket-qr-code">
+          <h4>Your Ticket QR Code</h4>
+          <img src="${qrCodeDataURL}" alt="Ticket QR Code" class="qr-code-image">
+          <p class="qr-instructions">Present this QR code at the event entrance</p>
         </div>
       </div>
     `;
