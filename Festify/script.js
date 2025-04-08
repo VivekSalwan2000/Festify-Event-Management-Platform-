@@ -20,8 +20,17 @@ let currentUser = null;
 onUserStateChanged(async (user) => {
   if (user) {
     currentUser = user;
+    
     // Load user's profile from Firestore and populate profile form fields
     const profileData = await getUserProfile(user.uid);
+    
+    // Check if the user is a basic user (not PRO) and redirect if needed
+    if (!profileData || profileData.subscriptionStatus !== 'PRO') {
+      console.log('Basic user detected in organization dashboard - redirecting to basic dashboard');
+      window.location.href = 'basic-org-dash.html';
+      return;
+    }
+    
     if (profileData) {
       document.getElementById('orgName').value = profileData.orgName || '';
       document.getElementById('phone').value = profileData.phone || '';
@@ -29,12 +38,13 @@ onUserStateChanged(async (user) => {
       document.getElementById('address').value = profileData.address || '';
       document.getElementById('website').value = profileData.website || '';
     }
+    
     // Render events for the logged-in organizer
     renderEventsFromDB();
   } else {
     currentUser = null;
-    // Optionally redirect if user is not logged in:
-    // window.location.href = 'index.html';
+    // Redirect if user is not logged in
+    window.location.href = 'list-your-event.html';
   }
 });
 
