@@ -35,10 +35,16 @@
       "!**/node_modules/**",
       "!**/vendor/**"
     ],
-    "coverageReporters": ["text", "lcov"],
+    "coverageReporters": [
+      "text",
+      "lcov"
+    ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/__mocks__/"
     ]
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
   }
 }

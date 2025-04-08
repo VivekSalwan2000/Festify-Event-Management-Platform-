@@ -1,3 +1,4 @@
+import {config} from './config.js';
 // firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
@@ -27,7 +28,7 @@ import { sendWelcomeEmail } from "./email.js";
 
 // TODO: Replace with your Firebase project configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDe0ZCrJCtspANzB-is2Hh8gvkyvLNcRmA",
+  apiKey: config.FIREBASE_API_KEY,
   authDomain: "fir-festify.firebaseapp.com",
   projectId: "fir-festify",
   storageBucket: "fir-festify.firebasestorage.app",

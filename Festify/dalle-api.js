@@ -1,5 +1,7 @@
 // DALL-E API Integration
-const OPENAI_API_KEY = 'OUR_OPENAI_API_KEY';
+import { config } from './config.js';
+
+const OPENAI_API_KEY = config.OPENAI_API_KEY;
 const API_URL = 'https://api.openai.com/v1/images/generations';
 
 export async function generateEventPoster(eventTitle, eventDescription) {

@@ -1,6 +1,7 @@
 // email.js - Email sending functionality
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 
+import { config } from "./config.js";
 /**
  * Generate QR code as a data URL
  * @param {Object} ticketData - The ticket data to encode in the QR code
@@ -18,10 +19,10 @@ export async function generateQRCode(ticketData) {
       tickets: ticketData.tickets,
       totalQuantity: ticketData.totalQuantity
     });
-    
+
     // Generate QR code as data URL using the QRCode library loaded in the HTML
     return new Promise((resolve, reject) => {
-      window.QRCode.toDataURL(ticketInfo, { 
+      window.QRCode.toDataURL(ticketInfo, {
         width: 300,
         margin: 2,
         color: {
@@ -49,9 +50,9 @@ export async function generateQRCode(ticketData) {
 export async function sendWelcomeEmail(userEmail, userName = '') {
   try {
     // EmailJS configuration
-    const serviceID = 'service_0k8kvpq';
+    const serviceID = config.EMAIL_SERVICE_ID;
     const templateID = 'template_ojujtlo';
-    
+
     // Template parameters
     const templateParams = {
       email: userEmail,
@@ -81,25 +82,25 @@ export async function sendTicketConfirmationEmail(ticketData) {
     // EmailJS configuration
     const serviceID = 'service_0k8kvpq';
     const templateID = 'template_ntl7hvp';
-    
+
     // Extract ticket information for the template
     const hasGeneralTickets = ticketData.tickets.general > 0;
     const hasSeniorTickets = ticketData.tickets.senior > 0;
     const hasChildTickets = ticketData.tickets.child > 0;
-    
+
     // Format event time from startTime and endTime
-    const eventTime = ticketData.eventDetails.startTime && ticketData.eventDetails.endTime 
+    const eventTime = ticketData.eventDetails.startTime && ticketData.eventDetails.endTime
       ? `${ticketData.eventDetails.startTime} - ${ticketData.eventDetails.endTime}`
       : ticketData.eventDetails.time || 'N/A';
-    
+
     // Calculate individual ticket prices
     const generalPrice = hasGeneralTickets ? (ticketData.eventDetails.generalPrice || 0) : 0;
     const seniorPrice = hasSeniorTickets ? (ticketData.eventDetails.seniorPrice || 0) : 0;
     const childPrice = hasChildTickets ? (ticketData.eventDetails.childPrice || 0) : 0;
-    
+
     // Get order ID for the subject line
     const orderId = ticketData.id || 'UNKNOWN';
-    
+
     // Template parameters matched to the email template
     const templateParams = {
       email: ticketData.email,
@@ -110,22 +111,22 @@ export async function sendTicketConfirmationEmail(ticketData) {
       event_date: ticketData.eventDetails.date,
       event_time: eventTime,
       event_location: ticketData.eventDetails.location,
-      
+
       // Ticket quantities
       general_qty: ticketData.tickets.general || 0,
       senior_qty: ticketData.tickets.senior || 0,
       child_qty: ticketData.tickets.child || 0,
-      
+
       // Ticket prices - ensure these are numbers
       general_price: generalPrice,
       senior_price: seniorPrice,
       child_price: childPrice,
-      
+
       // Show/hide flags for the template
       has_general: hasGeneralTickets,
       has_senior: hasSeniorTickets,
       has_child: hasChildTickets,
-      
+
       // Totals
       total_tickets: ticketData.totalQuantity || 0,
       total_price: ticketData.totalPrice || 0
