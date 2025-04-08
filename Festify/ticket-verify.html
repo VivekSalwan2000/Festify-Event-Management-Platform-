@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Festify - Ticket Verification</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f172a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .logo {
+      height: 40px;
+    }
+    
+    .scanner-container {
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    #reader {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin: 0 0.5rem;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .ticket-details {
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      display: none;
+    }
+    
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .ticket-title {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+    
+    .ticket-status {
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    
+    .status-valid {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+    }
+    
+    .status-invalid {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+    
+    .ticket-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .ticket-info {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    
+    .ticket-info h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .ticket-info p {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    
+    .ticket-summary {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .ticket-summary h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
+    }
+    
+    .ticket-type {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .ticket-type:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .ticket-actions {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="images/festifyLogo.png" alt="Festify Logo" class="logo">
+      <h1>Ticket Verification</h1>
+    </div>
+    
+    <div class="scanner-container">
+      <h2>Scan Ticket QR Code</h2>
+      <div id="reader"></div>
+      <div class="controls">
+        <button class="btn" id="startButton">Start Scanner</button>
+        <button class="btn btn-secondary" id="resetButton">Reset</button>
+      </div>
+    </div>
+    
+    <div class="ticket-details" id="ticketDetails">
+      <div class="ticket-header">
+        <h2 class="ticket-title" id="eventTitle">Event Title</h2>
+        <div class="ticket-status status-valid" id="ticketStatus">Valid</div>
+      </div>
+      
+      <div class="ticket-grid">
+        <div class="ticket-info">
+          <h3>Ticket ID</h3>
+          <p id="ticketId">TKT12345</p>
+        </div>
+        <div class="ticket-info">
+          <h3>Event Date</h3>
+          <p id="eventDate">January 1, 2023</p>
+        </div>
+        <div class="ticket-info">
+          <h3>Attendee</h3>
+          <p id="attendeeName">John Doe</p>
+        </div>
+      </div>
+      
+      <div class="ticket-summary">
+        <h3>Ticket Summary</h3>
+        <div id="ticketTypesList">
+          <!-- Ticket types will be populated here -->
+        </div>
+      </div>
+      
+      <div class="ticket-actions">
+        <button class="btn" id="verifyButton">Mark as Verified</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // QR Code Scanner Configuration
+    const html5QrCode = new Html5Qrcode("reader");
+    const qrConfig = { fps: 10, qrbox: { width: 250, height: 250 } };
+    let scanning = false;
+    
+    // DOM Elements
+    const startButton = document.getElementById('startButton');
+    const resetButton = document.getElementById('resetButton');
+    const verifyButton = document.getElementById('verifyButton');
+    const ticketDetails = document.getElementById('ticketDetails');
+    
+    // Event Listeners
+    startButton.addEventListener('click', startScanner);
+    resetButton.addEventListener('click', resetScanner);
+    verifyButton.addEventListener('click', markAsVerified);
+    
+    // Start the QR code scanner
+    function startScanner() {
+      if (scanning) return;
+      
+      Html5Qrcode.getCameras()
+        .then(devices => {
+          if (devices && devices.length) {
+            scanning = true;
+            startButton.disabled = true;
+            
+            html5QrCode.start(
+              { facingMode: "environment" }, // Use back camera if available
+              qrConfig,
+              onScanSuccess,
+              onScanFailure
+            )
+            .catch(err => {
+              console.error("Error starting scanner:", err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Scanner Error',
+                text: 'Could not start the camera. Please check permissions and try again.',
+              });
+              resetScanner();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'No Camera Found',
+              text: 'No camera devices were found. Please connect a camera and try again.',
+            });
+          }
+        })
+        .catch(err => {
+          console.error("Error getting cameras:", err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Camera Error',
+            text: 'Could not access your camera. Please check permissions and try again.',
+          });
+        });
+    }
+    
+    // Reset the scanner
+    function resetScanner() {
+      if (scanning) {
+        html5QrCode.stop()
+          .then(() => {
+            console.log('Scanner stopped');
+            scanning = false;
+            startButton.disabled = false;
+            ticketDetails.style.display = 'none';
+          })
+          .catch(err => {
+            console.error("Error stopping scanner:", err);
+          });
+      }
+    }
+    
+    // Handle successful QR code scan
+    function onScanSuccess(decodedText, decodedResult) {
+      console.log(`Code scanned: ${decodedText}`);
+      
+      try {
+        // Parse the QR code data
+        const ticketData = JSON.parse(decodedText);
+        
+        // Stop scanning after successful read
+        resetScanner();
+        
+        // Display the ticket details
+        displayTicketDetails(ticketData);
+      } catch (error) {
+        console.error("Error parsing QR code data:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid QR Code',
+          text: 'The scanned QR code is not a valid Festify ticket.',
+        });
+      }
+    }
+    
+    // Handle scan failures
+    function onScanFailure(error) {
+      // Just log the error, don't display anything to the user
+      // console.error(`Code scan error: ${error}`);
+    }
+    
+    // Display ticket details from QR code
+    function displayTicketDetails(ticketData) {
+      console.log("Ticket data:", ticketData);
+      
+      // Populate ticket details
+      document.getElementById('eventTitle').textContent = ticketData.event || 'Unknown Event';
+      document.getElementById('ticketId').textContent = ticketData.ticketId || 'Unknown';
+      document.getElementById('eventDate').textContent = ticketData.date || 'Unknown Date';
+      document.getElementById('attendeeName').textContent = ticketData.attendee || 'Unknown Attendee';
+      
+      // Populate ticket types
+      const ticketTypesList = document.getElementById('ticketTypesList');
+      ticketTypesList.innerHTML = '';
+      
+      // General tickets
+      if (ticketData.tickets && ticketData.tickets.general > 0) {
+        const typeEl = document.createElement('div');
+        typeEl.className = 'ticket-type';
+        typeEl.innerHTML = `
+          <span>General Admission</span>
+          <span>x${ticketData.tickets.general}</span>
+        `;
+        ticketTypesList.appendChild(typeEl);
+      }
+      
+      // Senior tickets
+      if (ticketData.tickets && ticketData.tickets.senior > 0) {
+        const typeEl = document.createElement('div');
+        typeEl.className = 'ticket-type';
+        typeEl.innerHTML = `
+          <span>Senior</span>
+          <span>x${ticketData.tickets.senior}</span>
+        `;
+        ticketTypesList.appendChild(typeEl);
+      }
+      
+      // Child tickets
+      if (ticketData.tickets && ticketData.tickets.child > 0) {
+        const typeEl = document.createElement('div');
+        typeEl.className = 'ticket-type';
+        typeEl.innerHTML = `
+          <span>Child</span>
+          <span>x${ticketData.tickets.child}</span>
+        `;
+        ticketTypesList.appendChild(typeEl);
+      }
+      
+      // Add total
+      const totalEl = document.createElement('div');
+      totalEl.className = 'ticket-type';
+      totalEl.innerHTML = `
+        <span><strong>Total Tickets</strong></span>
+        <span><strong>x${ticketData.totalQuantity || 0}</strong></span>
+      `;
+      ticketTypesList.appendChild(totalEl);
+      
+      // Show the ticket details section
+      ticketDetails.style.display = 'block';
+      
+      // Set the ticket status
+      const ticketStatus = document.getElementById('ticketStatus');
+      ticketStatus.textContent = 'Valid';
+      ticketStatus.className = 'ticket-status status-valid';
+    }
+    
+    // Mark ticket as verified
+    function markAsVerified() {
+      const ticketStatus = document.getElementById('ticketStatus');
+      
+      if (ticketStatus.textContent === 'Valid') {
+        ticketStatus.textContent = 'Verified';
+        ticketStatus.className = 'ticket-status status-valid';
+        verifyButton.textContent = 'Ticket Verified';
+        verifyButton.disabled = true;
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Ticket Verified',
+          text: 'This ticket has been marked as verified.',
+        });
+      }
+    }
+  </script>
+</body>
+</html> 
