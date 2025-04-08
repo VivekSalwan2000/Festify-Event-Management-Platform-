@@ -1,4 +1,5 @@
 import { fetchEvents, updateTickets, saveUserTicket, updateRevenue } from './firebase.js';
+import { sendTicketConfirmationEmailNoQR } from './email.js';
 
 let currentEvent = null;
 let slideIndex = 0;
@@ -495,7 +496,11 @@ export function submitPayment() {
               date: currentEvent.date,
               time: `${formatTime(currentEvent.startTime)} - ${formatTime(currentEvent.endTime)}`,
               location: currentEvent.location,
-              imageUrl: currentEvent.imageUrl
+              imageUrl: currentEvent.imageUrl,
+              // Add ticket prices to eventDetails
+              generalPrice: currentEvent.generalPrice || 0,
+              seniorPrice: currentEvent.seniorPrice || 0,
+              childPrice: currentEvent.childPrice || 0
           },
           tickets: {
               general: generalQuantity,
@@ -511,17 +516,41 @@ export function submitPayment() {
       
       // Save ticket to user's account
       saveUserTicket(user.uid, ticketData)
-          .then(() => {
+          .then((ticketId) => {
+              // Add the ticket ID to the ticket data
+              ticketData.id = ticketId;
+              
               // Update available tickets for the event
               updateTickets(eventID, totalQuantity);
               
-              // Sweet alert for success
-              Swal.fire({
-                  icon: 'success',
-                  title: 'Tickets purchased',
-                  text: 'Tickets purchased successfully! View them in your tickets tab.',
-              });
-              closeEventPopup();
+              // Send confirmation email WITHOUT QR code
+              sendTicketConfirmationEmailNoQR(ticketData)
+                .then(emailResult => {
+                  const emailSent = emailResult !== null;
+                  console.log('Email notification status:', emailSent ? 'Sent' : 'Failed');
+                  
+                  // Sweet alert for success with email status
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Tickets purchased',
+                    html: `
+                      <p>Tickets purchased successfully! View them in your tickets tab.</p>
+                      ${emailSent ? '<p>A confirmation email has been sent to your email.</p>' : ''}
+                    `,
+                  });
+                })
+                .catch(error => {
+                  console.error('Error sending confirmation email:', error);
+                  // Still show success for purchase
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Tickets purchased',
+                    text: 'Tickets purchased successfully! View them in your tickets tab.',
+                  });
+                })
+                .finally(() => {
+                  closeEventPopup();
+                });
           })
           .catch(error => {
               console.error('Error saving ticket:', error);

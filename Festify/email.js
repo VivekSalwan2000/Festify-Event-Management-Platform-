@@ -21,8 +21,8 @@ export async function sendWelcomeEmail(userEmail, userName = '') {
       message: `Welcome to Festify! We're excited to have you on board. Start exploring amazing events or create your own.`,
     };
 
-    // Send the email using EmailJS
-    const response = await emailjs.send(serviceID, templateID, templateParams);
+    // Send the email using EmailJS - use window.emailjs to access the global object
+    const response = await window.emailjs.send(serviceID, templateID, templateParams);
     console.log('Welcome email sent successfully:', response.status, response.text);
     return response;
   } catch (error) {
@@ -30,4 +30,91 @@ export async function sendWelcomeEmail(userEmail, userName = '') {
     // Don't throw the error to prevent disrupting the signup process
     return null;
   }
+}
+
+/**
+ * Send a ticket confirmation email
+ * @param {Object} ticketData - The ticket data
+ * @returns {Promise} - Promise resolving when email is sent
+ */
+export async function sendTicketConfirmationEmail(ticketData) {
+  try {
+    // EmailJS configuration
+    const serviceID = 'service_0k8kvpq';
+    const templateID = 'template_ntl7hvp';
+    
+    // Extract ticket information for the template
+    const hasGeneralTickets = ticketData.tickets.general > 0;
+    const hasSeniorTickets = ticketData.tickets.senior > 0;
+    const hasChildTickets = ticketData.tickets.child > 0;
+    
+    // Format event time from startTime and endTime
+    const eventTime = ticketData.eventDetails.startTime && ticketData.eventDetails.endTime 
+      ? `${ticketData.eventDetails.startTime} - ${ticketData.eventDetails.endTime}`
+      : ticketData.eventDetails.time || 'N/A';
+    
+    // Calculate individual ticket prices
+    const generalPrice = hasGeneralTickets ? (ticketData.eventDetails.generalPrice || 0) : 0;
+    const seniorPrice = hasSeniorTickets ? (ticketData.eventDetails.seniorPrice || 0) : 0;
+    const childPrice = hasChildTickets ? (ticketData.eventDetails.childPrice || 0) : 0;
+    
+    // Get order ID for the subject line
+    const orderId = ticketData.id || 'UNKNOWN';
+    
+    // Template parameters matched to the email template
+    const templateParams = {
+      email: ticketData.email,
+      to_name: ticketData.name,
+      subject: `Order Confirmed #${orderId}!`,
+      order_id: orderId,
+      event_title: ticketData.eventDetails.title,
+      event_date: ticketData.eventDetails.date,
+      event_time: eventTime,
+      event_location: ticketData.eventDetails.location,
+      
+      // Ticket quantities
+      general_qty: ticketData.tickets.general || 0,
+      senior_qty: ticketData.tickets.senior || 0,
+      child_qty: ticketData.tickets.child || 0,
+      
+      // Ticket prices - ensure these are numbers
+      general_price: generalPrice,
+      senior_price: seniorPrice,
+      child_price: childPrice,
+      
+      // Show/hide flags for the template
+      has_general: hasGeneralTickets,
+      has_senior: hasSeniorTickets,
+      has_child: hasChildTickets,
+      
+      // Totals
+      total_tickets: ticketData.totalQuantity || 0,
+      total_price: ticketData.totalPrice || 0
+    };
+
+    // Log template parameters for debugging
+    console.log('Sending email with params:', {
+      general_price: generalPrice,
+      senior_price: seniorPrice,
+      child_price: childPrice,
+      order_id: orderId
+    });
+
+    // Send the email using EmailJS
+    const response = await window.emailjs.send(serviceID, templateID, templateParams);
+    console.log('Ticket confirmation email sent successfully:', response.status, response.text);
+    return response;
+  } catch (error) {
+    console.error('Error sending ticket confirmation email:', error);
+    return null;
+  }
+}
+
+/**
+ * Send a ticket confirmation email (alias for sendTicketConfirmationEmail for backward compatibility)
+ * @param {Object} ticketData - The ticket data
+ * @returns {Promise} - Promise resolving when email is sent
+ */
+export async function sendTicketConfirmationEmailNoQR(ticketData) {
+  return sendTicketConfirmationEmail(ticketData);
 } 
