@@ -505,3 +505,19 @@ export async function getEventFeedback(eventId) {
   }
 }
 
+// Function to update user's subscription status
+export async function updateUserSubscription(userId, status) {
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      subscriptionStatus: status,
+      subscriptionUpdatedAt: new Date()
+    });
+    console.log(`User ${userId} subscription updated to ${status}`);
+    return true;
+  } catch (error) {
+    console.error("Error updating subscription status:", error);
+    throw error;
+  }
+}
+
