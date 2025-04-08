@@ -292,7 +292,7 @@
   <script type="module" src="organizer.js"></script>
 <!-- Authentication Logic -->
 <script type="module">
-  import { signInUser, signUpUser, onUserStateChanged } from './firebase.js';
+  import { signInUser, signUpUser, onUserStateChanged, getUserProfile } from './firebase.js';
 
   // Listen for authentication state changes
   onUserStateChanged((user) => {
@@ -315,8 +315,28 @@
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
         try {
-          await signInUser(email, password);
-          window.location.href = 'basic-org-dash.html';
+          // Sign in the user
+          const userCredential = await signInUser(email, password);
+          
+          // Get user profile to check subscription status
+          const userProfile = await getUserProfile(userCredential.user.uid);
+          
+          // Show success message
+          await Swal.fire({
+            icon: 'success',
+            title: 'Login Successful!',
+            text: 'Welcome back to Festify!',
+            timer: 1500
+          });
+          
+          // Redirect based on subscription status
+          if (userProfile && userProfile.subscriptionStatus === 'PRO') {
+            console.log('PRO user detected, redirecting to organization dashboard');
+            window.location.href = 'organization-dashboard.html';
+          } else {
+            console.log('Basic user detected, redirecting to basic dashboard');
+            window.location.href = 'basic-org-dash.html';
+          }
         } catch (error) {
           console.error('Sign In Error:', error);
           showIncorrectCredentials('Sign In Error: ' + error.message);
