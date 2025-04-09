@@ -444,6 +444,16 @@
             console.error("Error stopping scanner:", err);
           });
       }
+      
+      // Reset ticket information display
+      const simpleTicketInfo = document.getElementById('simpleTicketInfo');
+      simpleTicketInfo.style.display = 'none';
+      
+      // Clear all displayed information
+      document.getElementById('displayTicketId').textContent = '';
+      document.getElementById('displayEventName').textContent = '';
+      document.getElementById('displayEventDate').textContent = '';
+      document.getElementById('displayTicketTypes').innerHTML = '';
     }
     
     // Handle successful QR code scan
