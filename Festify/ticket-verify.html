@@ -179,8 +179,131 @@
       display: flex;
       justify-content: center;
     }
+
+    /* Add new styles for ticket info display */
+    .ticket-info-display {
+      background: rgba(212, 214, 218, 0.8);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+
+    .ticket-info-card {
+      color: #fff;
+    }
+
+    .ticket-info-card h3 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+      color: #4facfe;
+    }
+
+    .info-row {
+      display: flex;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .info-label {
+      width: 120px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+    }
+
+    .info-value {
+      flex: 1;
+      color: #fff;
+    }
+
+    .ticket-types {
+      margin-top: 1rem;
+    }
+
+    .ticket-type-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .ticket-type-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Add new styles for simple ticket info */
+    .simple-ticket-info {
+      max-width: 500px;
+      margin: 2rem auto;
+    }
+
+    .ticket-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .ticket-header {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .ticket-id {
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .ticket-content {
+      padding: 1.5rem;
+      color: #1a1a1a;
+    }
+
+    .ticket-content h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.25rem;
+      color: #2c3e50;
+    }
+
+    .event-date {
+      color: #4a5568;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .ticket-types {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .ticket-type-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem;
+      background: rgba(0, 0, 0, 0.03);
+      border-radius: 8px;
+    }
+
+    .ticket-type-item span:first-child {
+      color: #4a5568;
+    }
+
+    .ticket-type-item span:last-child {
+      font-weight: 600;
+      color: #2c3e50;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="header">
@@ -197,10 +320,20 @@
       </div>
     </div>
 
-    <!-- Add new section for raw ticket data -->
-    <div class="raw-ticket-data" id="rawTicketData" style="display: none;">
-      <h3>Raw Ticket Data</h3>
-      <pre id="ticketJson" style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px; overflow-x: auto;"></pre>
+    <!-- Simple ticket info display -->
+    <div class="simple-ticket-info" id="simpleTicketInfo" style="display: none;">
+      <div class="ticket-card">
+        <div class="ticket-header">
+          <span class="ticket-id">Ticket #<span id="displayTicketId"></span></span>
+        </div>
+        <div class="ticket-content">
+          <h3 id="displayEventName"></h3>
+          <div class="event-date" id="displayEventDate"></div>
+          <div class="ticket-types">
+            <div id="displayTicketTypes"></div>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div class="ticket-details" id="ticketDetails">
@@ -327,11 +460,43 @@
         // Display the ticket details
         displayTicketDetails(ticketData);
 
-        // Display raw ticket data
-        const rawTicketData = document.getElementById('rawTicketData');
-        const ticketJson = document.getElementById('ticketJson');
-        rawTicketData.style.display = 'block';
-        ticketJson.textContent = JSON.stringify(ticketData, null, 2);
+        // Display simple ticket information
+        const simpleTicketInfo = document.getElementById('simpleTicketInfo');
+        const displayTicketId = document.getElementById('displayTicketId');
+        const displayEventName = document.getElementById('displayEventName');
+        const displayEventDate = document.getElementById('displayEventDate');
+        const displayTicketTypes = document.getElementById('displayTicketTypes');
+
+        simpleTicketInfo.style.display = 'block';
+        displayTicketId.textContent = ticketData.ticketId;
+        displayEventName.textContent = ticketData.event;
+        displayEventDate.textContent = ticketData.date;
+
+        // Clear previous ticket types
+        displayTicketTypes.innerHTML = '';
+
+        // Add ticket types
+        if (ticketData.tickets.general > 0) {
+          const typeEl = document.createElement('div');
+          typeEl.className = 'ticket-type-item';
+          typeEl.innerHTML = `<span>General Admission</span><span>x${ticketData.tickets.general}</span>`;
+          displayTicketTypes.appendChild(typeEl);
+        }
+
+        if (ticketData.tickets.senior > 0) {
+          const typeEl = document.createElement('div');
+          typeEl.className = 'ticket-type-item';
+          typeEl.innerHTML = `<span>Senior</span><span>x${ticketData.tickets.senior}</span>`;
+          displayTicketTypes.appendChild(typeEl);
+        }
+
+        if (ticketData.tickets.child > 0) {
+          const typeEl = document.createElement('div');
+          typeEl.className = 'ticket-type-item';
+          typeEl.innerHTML = `<span>Child</span><span>x${ticketData.tickets.child}</span>`;
+          displayTicketTypes.appendChild(typeEl);
+        }
+
       } catch (error) {
         console.error("Error parsing QR code data:", error);
         Swal.fire({
