@@ -196,6 +196,12 @@
         <button class="btn btn-secondary" id="resetButton">Reset</button>
       </div>
     </div>
+
+    <!-- Add new section for raw ticket data -->
+    <div class="raw-ticket-data" id="rawTicketData" style="display: none;">
+      <h3>Raw Ticket Data</h3>
+      <pre id="ticketJson" style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px; overflow-x: auto;"></pre>
+    </div>
     
     <div class="ticket-details" id="ticketDetails">
       <div class="ticket-header">
@@ -320,6 +326,12 @@
         
         // Display the ticket details
         displayTicketDetails(ticketData);
+
+        // Display raw ticket data
+        const rawTicketData = document.getElementById('rawTicketData');
+        const ticketJson = document.getElementById('ticketJson');
+        rawTicketData.style.display = 'block';
+        ticketJson.textContent = JSON.stringify(ticketData, null, 2);
       } catch (error) {
         console.error("Error parsing QR code data:", error);
         Swal.fire({
