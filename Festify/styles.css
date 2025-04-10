@@ -559,6 +559,34 @@ h4 {
   gap: 0.5rem;
 }
 
+.generate-btn {
+    background: linear-gradient(to right, #33f0e2, #7b2ff7);
+    padding: 3px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: 'Segoe UI', sans-serif;
+    transition: transform 0.2s ease;
+}
+  
+.generate-btn::before {
+    content: '';
+    display: block;
+    background: white;
+    border-radius: 999px;
+    padding: 10px 30px;
+    position: relative;
+    z-index: -1;
+}
+  
+.generate-btn {
+    position: relative;
+    color: #000;
+    background-clip: padding-box;
+    display: inline-block;
+    text-align: center;
+}
 
 @keyframes pulse {
   0% {
