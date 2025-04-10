@@ -522,3 +522,21 @@ export async function updateUserSubscription(userId, status) {
   }
 }
 
+// Function to check if user has already submitted feedback for an event
+export async function hasUserSubmittedFeedback(userId, eventId) {
+  try {
+    const feedbackCollectionRef = collection(db, "feedback");
+    const q = query(
+      feedbackCollectionRef,
+      where("userId", "==", userId),
+      where("eventId", "==", eventId)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error("Error checking existing feedback:", error);
+    throw error;
+  }
+}
+

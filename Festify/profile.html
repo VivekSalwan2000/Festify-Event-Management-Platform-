@@ -1195,12 +1195,39 @@
 
 <!-- Tickets Tab Script -->
 <script type="module">
-  import { getUserTickets, saveFeedback } from './firebase.js';
+  import { getUserTickets, saveFeedback, hasUserSubmittedFeedback } from './firebase.js';
   import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
   import { generateQRCode } from './email.js';
   
   // Show Feedback Modal
-  function sendFeedback(ticket) {
+  async function sendFeedback(ticket) {
+    // Check if user is logged in
+    if (!window.currentUser) {
+      showProfileNotUpdated("Please log in to submit feedback.");
+      return;
+    }
+
+    // Get event ID from ticket
+    const eventId = ticket.eventDetails?.id || ticket.eventId;
+    if (!eventId) {
+      showProfileNotUpdated("Error: Event ID not found.");
+      return;
+    }
+
+    // Check if user has already submitted feedback
+    try {
+      const hasSubmitted = await hasUserSubmittedFeedback(window.currentUser.uid, eventId);
+      if (hasSubmitted) {
+        showProfileNotUpdated("You have already submitted feedback for this event.");
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking existing feedback:", error);
+      showProfileNotUpdated("Error checking feedback status. Please try again.");
+      return;
+    }
+
+    // If we get here, user hasn't submitted feedback yet - show the form
     document.getElementById('feedbackModal').style.display = 'flex';
     document.getElementById('eventTitle').innerText = `Feedback for ${ticket.eventDetails.title}`;
 
@@ -1225,12 +1252,6 @@
     document.getElementById('feedbackForm').onsubmit = async function(event) {
       event.preventDefault();
 
-      // Check if user is logged in
-      if (!window.currentUser) {
-        showProfileNotUpdated("Please log in to submit feedback.");
-        return;
-      }
-
       let feedbackData = {
         eventTitle: ticket.eventDetails.title,
         organized: document.querySelector('input[name="organized"]:checked').value,
@@ -1239,15 +1260,8 @@
         attendAgain: document.querySelector('input[name="attendAgain"]:checked').value,
         rating: document.getElementById('ratingInput').value,
         userId: window.currentUser.uid,
+        eventId: eventId
       };
-      
-      // Only add eventId if it exists in the ticket data
-      if (ticket.eventDetails && ticket.eventDetails.id) {
-        feedbackData.eventId = ticket.eventDetails.id;
-      } else if (ticket.eventId) {
-        // Try alternate location
-        feedbackData.eventId = ticket.eventId;
-      }
       
       // Add debugging logs
       console.log("Ticket data:", JSON.stringify(ticket, null, 2));
