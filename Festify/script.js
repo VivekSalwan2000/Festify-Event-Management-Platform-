@@ -1095,6 +1095,57 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
             if (!value) {
               return 'You need to select an event!';
             }
+          },
+          customClass: {
+            popup: 'boost-event-popup',
+            select: 'boost-event-select'
+          },
+          didOpen: () => {
+            // Add custom styles after popup is opened
+            const style = document.createElement('style');
+            style.textContent = `
+              .boost-event-popup {
+                min-width: 800px;
+                padding: 3em;
+                max-width: 95%;
+              }
+              .boost-event-select {
+                width: 80%;
+                padding: 1em;
+                margin: 2em auto;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 1.2em;
+                display: block;
+              }
+              .swal2-select {
+                width: 80% !important;
+                margin: 2em auto !important;
+                font-size: 1.2em !important;
+                padding: 1em !important;
+                display: block !important;
+              }
+              .swal2-title {
+                font-size: 2em !important;
+                margin-bottom: 1.5em !important;
+                text-align: center !important;
+              }
+              .swal2-html-container {
+                margin: 1.5em 0 !important;
+                font-size: 1.2em !important;
+                text-align: center !important;
+              }
+              .swal2-actions {
+                margin-top: 2em !important;
+                justify-content: center !important;
+              }
+              .swal2-confirm, .swal2-cancel {
+                font-size: 1.2em !important;
+                padding: 0.8em 2em !important;
+                margin: 0 0.5em !important;
+              }
+            `;
+            document.head.appendChild(style);
           }
         });
 
