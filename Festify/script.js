@@ -1073,6 +1073,18 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
           return;
         }
 
+        // Check if any event already has a boost
+        const hasBoostedEvent = events.some(event => event.boost === 'boost');
+        if (hasBoostedEvent) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Boost Already Applied',
+            text: 'You already have a boosted event. The current boost must expire or be deleted before you can boost another event.',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
+
         // Create options for the select dropdown
         const eventOptions = events.map(event => ({
           value: event.id,
