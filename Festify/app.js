@@ -15,8 +15,10 @@ function formatTime(time) {
 // Create HTML for an event card
 function createEventCard(event, eventId) {
   const eventData = encodeURIComponent(JSON.stringify(event));
+  const isBoosted = event.boost === "boost";
   return `
-    <div class="event-card" onclick="showEventPopup('${eventData}', '${eventId}')" style="cursor: pointer;">
+    <div class="event-card ${isBoosted ? 'boosted' : ''}" onclick="showEventPopup('${eventData}', '${eventId}')" style="cursor: pointer;">
+      ${isBoosted ? '<div class="boost-badge">🔥 Featured</div>' : ''}
       <div class="event-image-container">
         <img src="${event.imageUrl}" alt="${event.title}" class="event-image">
         <div class="event-price">${event.generalPrice ? `$${event.generalPrice}` : 'N/A'}</div>
@@ -264,7 +266,13 @@ window.prevSlide = function() {
 function renderEvents(events) {
   const eventsGrid = document.getElementById('eventsGrid');
   if (eventsGrid) {
-    eventsGrid.innerHTML = events.map(event => createEventCard(event,event.id)).join('');
+    // Sort events to put boosted ones first
+    const sortedEvents = [...events].sort((a, b) => {
+      if (a.boost === "boost" && b.boost !== "boost") return -1;
+      if (a.boost !== "boost" && b.boost === "boost") return 1;
+      return 0;
+    });
+    eventsGrid.innerHTML = sortedEvents.map(event => createEventCard(event, event.id)).join('');
   }
 }
 
