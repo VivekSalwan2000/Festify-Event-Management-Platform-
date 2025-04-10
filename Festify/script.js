@@ -1055,4 +1055,70 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
       generatePosterBtn.click();
     });
   }
+
+  // Add event listener for boost event button
+  const boostEventBtn = document.getElementById('boostEventBtn');
+  if (boostEventBtn) {
+    boostEventBtn.addEventListener('click', async () => {
+      try {
+        // Get all events for the current user
+        const events = await fetchUserEvents(currentUser.uid);
+        
+        if (!events || events.length === 0) {
+          Swal.fire({
+            icon: 'error',
+            title: 'No Events Found',
+            text: 'You need to create an event first before you can boost it.',
+          });
+          return;
+        }
+
+        // Create options for the select dropdown
+        const eventOptions = events.map(event => ({
+          value: event.id,
+          text: event.title
+        }));
+
+        // Show SweetAlert2 popup with event selection
+        const { value: selectedEventId } = await Swal.fire({
+          title: 'Select Event to Boost',
+          input: 'select',
+          inputOptions: eventOptions.reduce((acc, option) => {
+            acc[option.value] = option.text;
+            return acc;
+          }, {}),
+          inputPlaceholder: 'Select an event',
+          showCancelButton: true,
+          confirmButtonText: 'Boost Event',
+          cancelButtonText: 'Cancel',
+          inputValidator: (value) => {
+            if (!value) {
+              return 'You need to select an event!';
+            }
+          }
+        });
+
+        if (selectedEventId) {
+          // Update the event with boost status
+          await updateEvent(selectedEventId, { boost: 'boost' });
+          
+          Swal.fire({
+            icon: 'success',
+            title: 'Event Boosted!',
+            text: 'Your event has been successfully boosted.',
+          });
+          
+          // Refresh the events list
+          await renderEventsFromDB();
+        }
+      } catch (error) {
+        console.error('Error boosting event:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to boost event. Please try again.',
+        });
+      }
+    });
+  }
 });
