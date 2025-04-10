@@ -18,7 +18,11 @@ function createEventCard(event, eventId) {
   const isBoosted = event.boost === "boost";
   return `
     <div class="event-card ${isBoosted ? 'boosted' : ''}" onclick="showEventPopup('${eventData}', '${eventId}')" style="cursor: pointer;">
-      ${isBoosted ? '<div class="boost-badge">🔥 Boosted</div>' : ''}
+<<<<<<< HEAD
+      ${isBoosted ? '<div class="boost-badge">🔥 Featured</div>' : ''}
+=======
+      ${isBoosted ? '<div class="boost-badge">🔥 Featured</div>' : ''}
+>>>>>>> 344bceae7e812d03576f19ef7a1292b27de79090
       <div class="event-image-container">
         <img src="${event.imageUrl}" alt="${event.title}" class="event-image">
         <div class="event-price">${event.generalPrice ? `$${event.generalPrice}` : 'N/A'}</div>
