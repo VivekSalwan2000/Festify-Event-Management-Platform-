@@ -14,6 +14,127 @@
   <!-- Include dashboard logic -->
   <script type="module" src="basic-script.js"></script>
   
+  <!-- Add date and time validation script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Function to create a Date object from date and time strings
+      function createDateTime(dateStr, timeStr) {
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return new Date(year, month - 1, day, hours, minutes);
+      }
+
+      // Function to validate time
+      function validateTime(input, dateInput, isStartTime = true, showAlert = true) {
+        const selectedDate = dateInput.value;
+        const selectedTime = input.value;
+        const currentDate = new Date();
+        
+        if (selectedDate && selectedTime) {
+          const selectedDateTime = createDateTime(selectedDate, selectedTime);
+          
+          if (selectedDateTime < currentDate) {
+            // If selected time is in past, set to current time
+            const currentHours = String(currentDate.getHours()).padStart(2, '0');
+            const currentMinutes = String(currentDate.getMinutes()).padStart(2, '0');
+            input.value = `${currentHours}:${currentMinutes}`;
+            
+            if (isStartTime && showAlert) {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Invalid Time',
+                text: 'Start time cannot be in the past. Set to current time.',
+                timer: 2000,
+                showConfirmButton: false
+              });
+            }
+          }
+        }
+      }
+
+      // Function to initialize date and time validation for a form
+      function initializeDateTimeValidation(dateInput, startTimeInput, endTimeInput) {
+        // Set minimum date to today
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const minDate = `${year}-${month}-${day}`;
+        dateInput.min = minDate;
+
+        // Add event listener to date input
+        dateInput.addEventListener('change', function() {
+          const selectedDate = new Date(this.value);
+          const currentDate = new Date();
+          
+          if (selectedDate.toDateString() === currentDate.toDateString()) {
+            const currentHours = String(currentDate.getHours()).padStart(2, '0');
+            const currentMinutes = String(currentDate.getMinutes()).padStart(2, '0');
+            startTimeInput.min = `${currentHours}:${currentMinutes}`;
+            startTimeInput.value = `${currentHours}:${currentMinutes}`;
+          } else {
+            startTimeInput.min = '00:00';
+            startTimeInput.value = '00:00';
+          }
+          endTimeInput.value = ''; // Clear end time when date changes
+        });
+
+        // Add event listeners to time inputs
+        startTimeInput.addEventListener('input', function() {
+          validateTime(this, dateInput, true, false); // Don't show alert on input
+        });
+
+        startTimeInput.addEventListener('change', function() {
+          validateTime(this, dateInput, true, true); // Show alert on change
+          endTimeInput.min = this.value;
+          if (endTimeInput.value && endTimeInput.value <= this.value) {
+            endTimeInput.value = '';
+          }
+        });
+
+        endTimeInput.addEventListener('change', function() {
+          const startTime = startTimeInput.value;
+          const endTime = this.value;
+          
+          if (startTime && endTime) {
+            if (endTime <= startTime) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Invalid Time',
+                text: 'End time must be after start time',
+              });
+              this.value = '';
+            }
+          }
+        });
+
+        // Initial validation
+        if (dateInput.value === minDate) {
+          const currentHours = String(today.getHours()).padStart(2, '0');
+          const currentMinutes = String(today.getMinutes()).padStart(2, '0');
+          startTimeInput.min = `${currentHours}:${currentMinutes}`;
+          startTimeInput.value = `${currentHours}:${currentMinutes}`;
+        }
+      }
+
+      // Initialize validation for create event form
+      const createDateInput = document.getElementById('date');
+      const createStartTimeInput = document.getElementById('start-time');
+      const createEndTimeInput = document.getElementById('end-time');
+      if (createDateInput && createStartTimeInput && createEndTimeInput) {
+        initializeDateTimeValidation(createDateInput, createStartTimeInput, createEndTimeInput);
+      }
+
+      // Initialize validation for edit event form
+      const editDateInput = document.getElementById('editDate');
+      const editStartTimeInput = document.getElementById('editStartTime');
+      const editEndTimeInput = document.getElementById('editEndTime');
+      if (editDateInput && editStartTimeInput && editEndTimeInput) {
+        initializeDateTimeValidation(editDateInput, editStartTimeInput, editEndTimeInput);
+      }
+    });
+  </script>
+  
   <!-- Google Places API with better error handling -->
   <script>
     // Define a global callback that will be called when the API loads
