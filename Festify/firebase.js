@@ -539,4 +539,3 @@ export async function hasUserSubmittedFeedback(userId, eventId) {
     throw error;
   }
 }
-
