@@ -333,6 +333,13 @@ export function checkout() {
               <input type="email" id="email" placeholder="johndoe@gmail.com" required>
             </div>
             
+            <h3>Promo Code</h3>
+            <div class="promo-code-group">
+              <input type="text" id="promoCode" placeholder="Enter promo code">
+              <button class="apply-promo-btn" onclick="applyPromoCode()">Apply</button>
+            </div>
+            <div id="promoMessage" class="promo-message"></div>
+            
             <h3>Pay with</h3>
             <div class="card-icons">
               <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
@@ -379,6 +386,61 @@ export function checkout() {
       document.head.appendChild(styleElement);
   } else {
       console.error("eventPopup element not found!");
+  }
+}
+
+// Add promo code validation function
+window.applyPromoCode = function() {
+  const promoCode = document.getElementById('promoCode').value.toUpperCase();
+  const promoMessage = document.getElementById('promoMessage');
+  const totalPriceElement = document.getElementById('totalPrice');
+  
+  // Get the current total price from the event details
+  const generalQuantity = parseInt(document.getElementById('generalQuantity').value) || 0;
+  const seniorQuantity = parseInt(document.getElementById('seniorQuantity').value) || 0;
+  const childQuantity = parseInt(document.getElementById('childQuantity').value) || 0;
+  
+  // Calculate total price based on ticket quantities and prices
+  let totalPrice = 0;
+  if (currentEvent) {
+    totalPrice += generalQuantity * (currentEvent.generalPrice || 0);
+    totalPrice += seniorQuantity * (currentEvent.seniorPrice || 0);
+    totalPrice += childQuantity * (currentEvent.childPrice || 0);
+  }
+
+  // Valid promo codes and their discount percentages
+  const validPromoCodes = {
+    'WELCOME20': 0.20, // 20% off
+    'FESTIVAL15': 0.15 // 15% off
+  };
+
+  if (promoCode in validPromoCodes) {
+    const discount = totalPrice * validPromoCodes[promoCode];
+    const discountedPrice = totalPrice - discount;
+    
+    promoMessage.innerHTML = `
+      <div class="promo-success">
+        <i class="fas fa-check-circle"></i>
+        Promo code applied! You saved $${discount.toFixed(2)}
+      </div>
+    `;
+    
+    // Update the total price display
+    totalPriceElement.textContent = `$${discountedPrice.toFixed(2)}`;
+    
+    // Store the discounted price for payment processing
+    currentEvent.discountedPrice = discountedPrice;
+  } else {
+    promoMessage.innerHTML = `
+      <div class="promo-error">
+        <i class="fas fa-times-circle"></i>
+        Invalid promo code
+      </div>
+    `;
+    
+    // Reset to original price if invalid code
+    totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
+    currentEvent.discountedPrice = totalPrice;
   }
 }
 
@@ -486,8 +548,11 @@ export function submitPayment() {
       totalPrice += seniorQuantity * (currentEvent.seniorPrice || 0);
       totalPrice += childQuantity * (currentEvent.childPrice || 0);
   }
+
+  // Get the final price (either discounted or original)
+  const finalPrice = currentEvent.discountedPrice || totalPrice;
   
-  // Get the current user (assuming firebase auth is used)
+  // Import Firebase auth
   import('https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js').then((module) => {
       const auth = module.getAuth();
       const user = auth.currentUser;
@@ -506,7 +571,6 @@ export function submitPayment() {
               time: `${formatTime(currentEvent.startTime)} - ${formatTime(currentEvent.endTime)}`,
               location: currentEvent.location,
               imageUrl: currentEvent.imageUrl,
-              // Add ticket prices to eventDetails
               generalPrice: currentEvent.generalPrice || 0,
               seniorPrice: currentEvent.seniorPrice || 0,
               childPrice: currentEvent.childPrice || 0
@@ -517,7 +581,10 @@ export function submitPayment() {
               child: childQuantity
           },
           totalQuantity: totalQuantity,
-          totalPrice: totalPrice.toFixed(2),
+          originalPrice: totalPrice.toFixed(2),
+          finalPrice: finalPrice.toFixed(2),
+          discountApplied: finalPrice < totalPrice,
+          discountAmount: (totalPrice - finalPrice).toFixed(2),
           // Add user's name and email to ticket data
           name: `${firstName.value.trim()} ${lastName.value.trim()}`,
           email: email.value.trim()
@@ -572,7 +639,7 @@ export function submitPayment() {
           });
   });
 
-  updateRevenue(eventID, totalPrice);
+  updateRevenue(eventID, finalPrice);
 }
 
 window.checkout = checkout;
