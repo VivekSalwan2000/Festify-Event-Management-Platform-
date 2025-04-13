@@ -605,7 +605,7 @@ h4 {
 
 /* Promo Code Slider */
 .promo-slider {
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    background: linear-gradient(135deg, #1e3c72, #2a5298, #4facfe);
     border-radius: 16px;
     padding: 2.5rem;
     margin-bottom: 3rem;
@@ -674,7 +674,7 @@ h4 {
 
 .promo-code {
     display: block;
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+    background: linear-gradient(135deg, #1e3c72, #2a5298, #4facfe);
     color: white;
     padding: 1rem 2rem;
     border-radius: 8px;
