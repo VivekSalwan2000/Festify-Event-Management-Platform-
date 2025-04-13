@@ -700,6 +700,32 @@
     <!-- Events Grid -->
     <section class="events-section">
       <div class="container2">
+        <div class="promo-slider">
+          <div class="promo-header">
+            <h3>🎉 Special Promo Codes</h3>
+            <p>Use these codes at checkout for amazing discounts!</p>
+          </div>
+          <div class="promo-slides">
+            <div class="promo-slide">
+              <div class="promo-content">
+                <span class="promo-code">WELCOME20</span>
+                <span class="promo-desc">20% off first purchase</span>
+                <span class="promo-valid">Valid until Dec 31, 2024</span>
+              </div>
+            </div>
+            <div class="promo-slide">
+              <div class="promo-content">
+                <span class="promo-code">FESTIVAL15</span>
+                <span class="promo-desc">15% off festival tickets</span>
+                <span class="promo-valid">Valid until Dec 31, 2024</span>
+              </div>
+            </div>
+          </div>
+          <div class="promo-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
         <div class="events-grid" id="eventsGrid">
           <!-- Event cards will be injected here by app.js -->
         </div>
@@ -1402,6 +1428,10 @@
       qrCodeDataURL = 'https://via.placeholder.com/150?text=Ticket';
     }
 
+    // Check if there was a discount applied
+    const hasDiscount = ticket.discountApplied;
+    const discountAmount = hasDiscount ? ticket.discountAmount : 0;
+
     ticketEl.innerHTML = `
       <img src="${ticket.eventDetails.imageUrl || 'images/event-placeholder.jpg'}" alt="${ticket.eventDetails.title}" class="ticket-image">
       <div class="ticket-content">
@@ -1448,7 +1478,14 @@
               <span>x${ticket.tickets.child}</span>
             </div>` : ''
           }
-          <div class="ticket-price">$${ticket.totalPrice}</div>
+          ${hasDiscount ? 
+            `<div class="ticket-price">
+              <span class="original-price">$${ticket.originalPrice}</span>
+              <span class="discounted-price">$${ticket.finalPrice}</span>
+              <span class="discount-badge">You saved $${discountAmount}</span>
+            </div>` :
+            `<div class="ticket-price">$${ticket.finalPrice}</div>`
+          }
         </div>
         <div class="ticket-qr-code">
           <h4>Your Ticket QR Code</h4>
