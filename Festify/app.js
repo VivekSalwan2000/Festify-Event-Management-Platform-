@@ -468,7 +468,7 @@ export function submitPayment() {
   // Validate first name
   if (!firstName.value.trim()) {
       firstName.classList.add('error');
-      errorMessage.textContent = "First name is required";
+      errorMessage.textContent = "Please complete profile information before purchasing tickets";
       errorMessage.style.display = 'block';
       hasError = true;
   }
@@ -476,7 +476,8 @@ export function submitPayment() {
   // Validate last name
   if (!lastName.value.trim()) {
       lastName.classList.add('error');
-      errorMessage.textContent = "Last name is required";
+      errorMessage.textContent = "Please complete profile information before purchasing tickets";
+      showSection('editProfile'); 
       errorMessage.style.display = 'block';
       hasError = true;
   }
