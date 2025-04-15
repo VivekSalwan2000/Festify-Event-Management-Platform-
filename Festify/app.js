@@ -468,18 +468,31 @@ export function submitPayment() {
   // Validate first name
   if (!firstName.value.trim()) {
       firstName.classList.add('error');
-      errorMessage.textContent = "Please complete profile information before purchasing tickets";
-      errorMessage.style.display = 'block';
+      closeEventPopup();  // Close payment popup first
+      Swal.fire({
+          icon: 'warning',
+          title: 'Profile Incomplete',
+          text: 'Please complete profile information before purchasing tickets'
+      }).then(() => {
+          showSection('editProfile');
+      });
       hasError = true;
+      return;
   }
 
   // Validate last name
   if (!lastName.value.trim()) {
       lastName.classList.add('error');
-      errorMessage.textContent = "Please complete profile information before purchasing tickets";
-      showSection('editProfile'); 
-      errorMessage.style.display = 'block';
+      closeEventPopup();  // Close payment popup first
+      Swal.fire({
+          icon: 'warning',
+          title: 'Profile Incomplete',
+          text: 'Please complete profile information before purchasing tickets'
+      }).then(() => {
+          showSection('editProfile');
+      });
       hasError = true;
+      return;
   }
 
   inputs.forEach(input => {
