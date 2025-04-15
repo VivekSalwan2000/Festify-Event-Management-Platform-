@@ -1115,6 +1115,7 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
           didOpen: () => {
             // Add custom styles after popup is opened
             const style = document.createElement('style');
+            style.id = 'boost-event-style';
             style.textContent = `
               .boost-event-popup {
                 min-width: 340px;
@@ -1205,16 +1206,17 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
         });
 
         if (selectedEventId) {
-          // Update the event with boost status
           await updateEvent(selectedEventId, { boost: 'boost' });
-          
-          Swal.fire({
-            icon: 'success',
-            title: 'Event Boosted!',
-            text: 'Your event has been successfully boosted.'
-          });
-          
-          // Refresh the events list
+          Swal.close();
+          const boostStyle = document.getElementById('boost-event-style');
+          if (boostStyle) boostStyle.remove();
+          setTimeout(() => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Event Boosted!',
+              text: 'Your event has been successfully boosted.'
+            });
+          }, 50);
           await renderEventsFromDB();
         }
       } catch (error) {
