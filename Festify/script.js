@@ -662,7 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Swal.fire({
           icon: 'success',
           title: 'Event Created!',
-          text: 'Your event has been created successfully.',
+          text: 'Your event has been created successfully.'
         });
 
         // Reset form and hide it
@@ -973,7 +973,7 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
         Swal.fire({
           icon: 'success',
           title: 'Deleted!',
-          text: 'Your event has been deleted.',
+          text: 'Your event has been deleted.'
         });
             hideEditForm();
             await renderEventsFromDB();
@@ -1117,44 +1117,87 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
             const style = document.createElement('style');
             style.textContent = `
               .boost-event-popup {
-                min-width: 800px;
-                padding: 3em;
-                max-width: 95%;
+                min-width: 340px;
+                max-width: 400px;
+                padding: 1.5em 1.5em 2em 1.5em;
+                border-radius: 22px;
+                background: linear-gradient(135deg, rgba(23,34,64,0.92), rgba(36,52,99,0.92));
+                box-shadow: 0 8px 32px 0 rgba(20, 30, 60, 0.25);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 2px solid #233a63;
+                font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+                color: #e3e8f7;
               }
-              .boost-event-select {
-                width: 80%;
-                padding: 1em;
-                margin: 2em auto;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-size: 1.2em;
-                display: block;
-              }
-              .swal2-select {
-                width: 80% !important;
-                margin: 2em auto !important;
-                font-size: 1.2em !important;
-                padding: 1em !important;
+              .boost-event-select, .swal2-select {
+                width: 90% !important;
+                padding: 0.7em !important;
+                margin: 1.2em auto 1.5em auto !important;
+                border: 2px solid #334e7b !important;
+                border-radius: 10px !important;
+                font-size: 1.08em !important;
                 display: block !important;
+                background: rgba(30,41,59,0.95) !important;
+                color: #e3e8f7 !important;
+                box-shadow: 0 2px 8px rgba(36,52,99,0.10);
+                transition: border 0.2s, box-shadow 0.2s;
+              }
+              .boost-event-select:hover, .swal2-select:hover, .boost-event-select:focus, .swal2-select:focus {
+                border: 2px solid #3b82f6 !important;
+                box-shadow: 0 4px 16px rgba(59,130,246,0.10);
+                outline: none;
               }
               .swal2-title {
-                font-size: 2em !important;
-                margin-bottom: 1.5em !important;
+                font-size: 1.5em !important;
+                margin-bottom: 1em !important;
                 text-align: center !important;
+                font-weight: 700 !important;
+                color: #e3e8f7 !important;
+                letter-spacing: 0.01em;
+                text-shadow: 0 2px 8px rgba(36,52,99,0.10);
               }
               .swal2-html-container {
-                margin: 1.5em 0 !important;
-                font-size: 1.2em !important;
+                margin: 1em 0 !important;
+                font-size: 1em !important;
                 text-align: center !important;
+                color: #cbd5e1 !important;
               }
               .swal2-actions {
-                margin-top: 2em !important;
+                margin-top: 1.2em !important;
                 justify-content: center !important;
+                gap: 1em !important;
               }
               .swal2-confirm, .swal2-cancel {
-                font-size: 1.2em !important;
-                padding: 0.8em 2em !important;
-                margin: 0 0.5em !important;
+                font-size: 1em !important;
+                padding: 0.6em 2em !important;
+                margin: 0 0.3em !important;
+                border-radius: 999px !important;
+                font-weight: 600 !important;
+                box-shadow: 0 2px 8px rgba(36,52,99,0.10);
+                border: none !important;
+                transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+              }
+              .swal2-confirm {
+                background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%) !important;
+                color: #fff !important;
+                border: none !important;
+              }
+              .swal2-confirm:hover {
+                background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%) !important;
+                color: #fff !important;
+                box-shadow: 0 6px 18px rgba(59,130,246,0.18);
+                transform: scale(1.05);
+              }
+              .swal2-cancel {
+                background: #1e293b !important;
+                color: #60a5fa !important;
+                border: 2px solid #334e7b !important;
+              }
+              .swal2-cancel:hover {
+                background: #233a63 !important;
+                color: #fff !important;
+                border: 2px solid #3b82f6 !important;
+                box-shadow: 0 4px 16px rgba(59,130,246,0.10);
               }
             `;
             document.head.appendChild(style);
@@ -1168,7 +1211,7 @@ setupImagePreview("upload-box3", "fileInput3", "preview-selected-image3");
           Swal.fire({
             icon: 'success',
             title: 'Event Boosted!',
-            text: 'Your event has been successfully boosted.',
+            text: 'Your event has been successfully boosted.'
           });
           
           // Refresh the events list
