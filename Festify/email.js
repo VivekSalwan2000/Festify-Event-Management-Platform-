@@ -98,6 +98,17 @@ export async function sendTicketConfirmationEmail(ticketData) {
     const seniorPrice = hasSeniorTickets ? (ticketData.eventDetails.seniorPrice || 0) : 0;
     const childPrice = hasChildTickets ? (ticketData.eventDetails.childPrice || 0) : 0;
 
+    // Calculate subtotals for each ticket type
+    const generalSubtotal = generalPrice * (ticketData.tickets.general || 0);
+    const seniorSubtotal = seniorPrice * (ticketData.tickets.senior || 0);
+    const childSubtotal = childPrice * (ticketData.tickets.child || 0);
+
+    // Calculate total price before any discounts
+    const subtotal = generalSubtotal + seniorSubtotal + childSubtotal;
+
+    // Use the provided total price if available, otherwise use calculated subtotal
+    const finalTotalPrice = ticketData.totalPrice !== undefined ? ticketData.totalPrice : subtotal;
+
     // Get order ID for the subject line
     const orderId = ticketData.id || 'UNKNOWN';
 
@@ -129,7 +140,7 @@ export async function sendTicketConfirmationEmail(ticketData) {
 
       // Totals
       total_tickets: ticketData.totalQuantity || 0,
-      total_price: ticketData.totalPrice || 0
+      total_price: finalTotalPrice
     };
 
     // Log template parameters for debugging
