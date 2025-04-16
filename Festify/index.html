@@ -89,7 +89,14 @@
           const password = document.getElementById('loginPassword').value;
           try {
             await signUpUser(email, password);
-            window.location.href = 'profile.html';
+            Swal.fire({
+              icon: 'success',
+              title: 'Account Created!',
+              text: 'Your account has been successfully created.',
+              confirmButtonText: 'Continue'
+            }).then(() => {
+              window.location.href = 'profile.html';
+            });
           } catch (error) {
             console.error('Sign Up Error:', error);
             showAccountExists('Sign Up Error: ' + error.message);
