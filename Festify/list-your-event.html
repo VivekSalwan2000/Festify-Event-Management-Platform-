@@ -13,6 +13,32 @@
   <!-- Your main stylesheet (if you have one) -->
   <link rel="stylesheet" href="list-your-event.css">
 
+  <!-- Load your organizer.js to handle sign in/up -->
+  <script type="module" src="organizer.js"></script>
+
+  <!-- API Keys Initialization -->
+  <script type="module">
+    import { fetchApiKeys } from './firebase.js';
+    
+    // Initialize API keys by fetching them from Firebase
+    async function initApiKeys() {
+      try {
+        // Fetch API keys from Firebase
+        const apiKeys = await fetchApiKeys();
+        console.log("API keys initialized successfully");
+        
+        // Initialize EmailJS with the fetched public key
+        emailjs.init({
+          publicKey: apiKeys.EMAIL_PUBLIC_KEY,
+        });
+      } catch (error) {
+        console.error("Error initializing API keys:", error);
+      }
+    }
+    
+    // Call the initialization function
+    document.addEventListener('DOMContentLoaded', initApiKeys);
+  </script>
 
   <!-- Inline CSS for gradient hero, features, etc. -->
   <style>
@@ -288,8 +314,6 @@
     }
   </style>
 
-  <!-- Load your organizer.js to handle sign in/up -->
-  <script type="module" src="organizer.js"></script>
 <!-- Authentication Logic -->
 <script type="module">
   import { signInUser, signUpUser, onUserStateChanged, getUserProfile, resetPassword } from './firebase.js';
