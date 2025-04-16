@@ -25,6 +25,30 @@
   <!-- Firebase Module -->
   <script type="module" src="firebase.js"></script>
 
+  <!-- API Keys Initialization -->
+  <script type="module">
+    import { storeApiKeys, fetchApiKeys } from './firebase.js';
+    
+    // Initialize API keys in Firebase and fetch them
+    async function initApiKeys() {
+      try {
+        // Fetch API keys from Firebase (this will store them if they don't exist)
+        const apiKeys = await fetchApiKeys();
+        console.log("API keys initialized successfully");
+        
+        // Initialize EmailJS with the fetched public key
+        emailjs.init({
+          publicKey: apiKeys.EMAIL_PUBLIC_KEY,
+        });
+      } catch (error) {
+        console.error("Error initializing API keys:", error);
+      }
+    }
+    
+    // Call the initialization function
+    document.addEventListener('DOMContentLoaded', initApiKeys);
+  </script>
+
   <!-- Authentication Logic -->
   <script type="module">
     import { signInUser, signUpUser, onUserStateChanged, resetPassword } from './firebase.js';
