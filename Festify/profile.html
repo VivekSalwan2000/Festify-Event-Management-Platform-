@@ -37,8 +37,8 @@
       initializeAutocomplete('address1');
     };
     
-    // Function to load the Google Maps API
-    function loadGoogleMapsAPI() {
+    // Function to load the Google Maps API with proper key
+    async function loadGoogleMapsAPI() {
       // Check if API is already loaded
       if (window.google && window.google.maps) {
         console.log('Google Maps API already loaded');
@@ -46,27 +46,52 @@
         return;
       }
       
-      // Create the script element
-      const script = document.createElement('script');
-      script.src = 'https://maps.googleapis.com/maps/api/js?key=API_KEY_HERE&libraries=places&callback=initGoogleMapsAPI';
-      script.async = true;
-      script.defer = true;
-      
-      // Add error handling
-      script.onerror = function() {
-        console.error('Failed to load Google Maps API');
-        document.getElementById('address1').placeholder = 'Enter your address manually (API failed to load)';
-      };
-      
-      // Append to document
-      document.head.appendChild(script);
+      try {
+        // Get Google Maps API key from Firebase via localStorage
+        const googleMapsApiKey = localStorage.getItem('festify_google_maps_api_key') || 'YOUR_FALLBACK_API_KEY';
+        console.log('Using Google Maps API key from storage');
+        
+        // Create the script element
+        const script = document.createElement('script');
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=' + 
+                    googleMapsApiKey + 
+                    '&libraries=places&callback=initGoogleMapsAPI';
+        script.async = true;
+        script.defer = true;
+        
+        // Add error handling
+        script.onerror = function() {
+          console.error('Failed to load Google Maps API');
+          document.getElementById('address1').placeholder = 'Enter your address manually (API failed to load)';
+        };
+        
+        // Append to document
+        document.head.appendChild(script);
+      } catch (error) {
+        console.error('Error loading Google Maps API:', error);
+      }
     }
     
     // Load the API when the document is ready
     document.addEventListener('DOMContentLoaded', function() {
-      loadGoogleMapsAPI();
+      // Attempt to fetch the API key from Firebase first
+      import('./firebase.js').then(module => {
+        module.getApiKey('GOOGLE_MAPS_API_KEY').then(apiKey => {
+          if (apiKey) {
+            console.log('Successfully got Google Maps API key from Firebase');
+            localStorage.setItem('festify_google_maps_api_key', apiKey);
+          }
+          loadGoogleMapsAPI();
+        }).catch(error => {
+          console.error('Error getting Google Maps API key:', error);
+          loadGoogleMapsAPI();
+        });
+      }).catch(error => {
+        console.error('Error importing Firebase module:', error);
+        loadGoogleMapsAPI();
+      });
       
-      // Add a focus event listener to ensure API is loaded when the field is focused
+      // Add a focus event listener to ensure API is loaded when the fields are focused
       const addressField = document.getElementById('address1');
       if (addressField) {
         addressField.addEventListener('focus', function() {
