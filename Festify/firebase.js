@@ -7,7 +7,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
-  signOut
+  signOut,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 import {
   getFirestore,
@@ -78,6 +79,19 @@ export function signOutUser() {
 
 export function onUserStateChanged(callback) {
   return onAuthStateChanged(auth, callback);
+}
+
+export async function resetPassword(email) {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return { success: true, message: "Password reset email sent successfully." };
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
+    return { 
+      success: false, 
+      message: error.message || "Failed to send password reset email." 
+    };
+  }
 }
 
 // Define an asynchronous function to save or update the user's profile data
