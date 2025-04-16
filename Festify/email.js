@@ -1,7 +1,8 @@
 // email.js - Email sending functionality
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-
 import { config } from "./config.js";
+import { getApiKey } from "./firebase.js";
+
 /**
  * Generate QR code as a data URL
  * @param {Object} ticketData - The ticket data to encode in the QR code
@@ -49,8 +50,8 @@ export async function generateQRCode(ticketData) {
  */
 export async function sendWelcomeEmail(userEmail, userName = '') {
   try {
-    // EmailJS configuration
-    const serviceID = config.EMAIL_SERVICE_ID;
+    // Get EmailJS service ID from Firebase
+    const serviceID = await getApiKey('EMAIL_SERVICE_ID');
     const templateID = 'template_ojujtlo';
 
     // Template parameters
@@ -79,8 +80,8 @@ export async function sendWelcomeEmail(userEmail, userName = '') {
  */
 export async function sendTicketConfirmationEmail(ticketData) {
   try {
-    // EmailJS configuration
-    const serviceID = 'service_0k8kvpq';
+    // Get EmailJS service ID from Firebase
+    const serviceID = await getApiKey('EMAIL_SERVICE_ID');
     const templateID = 'template_ntl7hvp';
 
     // Extract ticket information for the template
