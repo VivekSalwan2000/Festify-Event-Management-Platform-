@@ -440,7 +440,15 @@ p {
     color: white;
     font-size: 16px;
     font-weight: bold;
+    cursor: pointer !important;
+    transition: all 0.3s ease;
 }
+
+.btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
 
 /* Slider container with fixed dimensions */
 .slider {
