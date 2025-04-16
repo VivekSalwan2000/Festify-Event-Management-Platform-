@@ -1,7 +1,16 @@
+// This is a placeholder configuration file
+// Actual API keys are stored in Firebase and fetched at runtime
+
 const config = {
-    FIREBASE_API_KEY: "AIzaSyDe0ZCrJCtspANzB-is2Hh8gvkyvLNcRmA",
-    EMAIL_SERVICE_ID: "service_0k8kvpq",
-    OPENAI_API_KEY: "OUR_OPENAI_API_KEY"
-  };
+  // We only keep the Firebase API key here as it's needed to initialize Firebase
+  // All other keys are stored in the Firebase database for better security
+  FIREBASE_API_KEY: "AIzaSyDe0ZCrJCtspANzB-is2Hh8gvkyvLNcRmA",
   
-  export { config };
+  // These placeholders get replaced with values from Firebase
+  EMAIL_SERVICE_ID: null,
+  EMAIL_PUBLIC_KEY: null,
+  OPENAI_API_KEY: null,
+  GOOGLE_MAPS_API_KEY: null
+};
+
+export { config };
