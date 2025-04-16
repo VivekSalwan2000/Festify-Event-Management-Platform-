@@ -303,44 +303,26 @@ async function showFeedbackAnalytics(eventId) {
               </div>
             </div>
             <div class="rating-distribution">
-              <canvas id="ratingChart"></canvas>
+              <canvas id="ratingChart" style="max-width: 300px; margin: 0 auto;"></canvas>
             </div>
           </div>
 
-          <div class="analytics-charts">
-            <div class="chart-row">
-              <div class="chart-container">
-                <h3>Organization</h3>
-                <canvas id="organizedChart"></canvas>
-              </div>
-              <div class="chart-container">
-                <h3>Venue Comfort</h3>
-                <canvas id="venueChart"></canvas>
-              </div>
+          <div class="analytics-charts" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">
+            <div class="chart-container" style="position: relative; height: 200px; padding: 10px;">
+              <h3>Organization</h3>
+              <canvas id="organizedChart"></canvas>
             </div>
-            <div class="chart-row">
-              <div class="chart-container">
-                <h3>Schedule Adherence</h3>
-                <canvas id="scheduleChart"></canvas>
-              </div>
-              <div class="chart-container">
-                <h3>Would Attend Again</h3>
-                <canvas id="attendChart"></canvas>
-              </div>
+            <div class="chart-container" style="position: relative; height: 200px; padding: 10px;">
+              <h3>Venue Comfort</h3>
+              <canvas id="venueChart"></canvas>
             </div>
-          </div>
-
-          <div class="recent-feedback">
-            <h3>Recent Feedback</h3>
-            <div class="feedback-list">
-              ${feedbackData.slice(0, 5).map(feedback => `
-                <div class="feedback-item">
-                  <div class="feedback-header">
-                    <span class="feedback-rating">${'★'.repeat(parseInt(feedback.rating))}${'☆'.repeat(5-parseInt(feedback.rating))}</span>
-                    <span class="feedback-date">${new Date(feedback.createdAt.seconds * 1000).toLocaleDateString()}</span>
-                  </div>
-                </div>
-              `).join('')}
+            <div class="chart-container" style="position: relative; height: 200px; padding: 10px;">
+              <h3>Schedule Adherence</h3>
+              <canvas id="scheduleChart"></canvas>
+            </div>
+            <div class="chart-container" style="position: relative; height: 200px; padding: 10px;">
+              <h3>Would Attend Again</h3>
+              <canvas id="attendChart"></canvas>
             </div>
           </div>
         </div>
@@ -353,8 +335,10 @@ async function showFeedbackAnalytics(eventId) {
         width: '90%',
         confirmButtonText: 'Close',
         customClass: {
-          htmlContainer: 'feedback-analytics-popup'
+          popup: 'feedback-analytics-popup'
         },
+        background: '#1a2942',
+        color: '#ffffff',
         didRender: () => {
           // Create rating distribution chart
           new Chart(document.getElementById('ratingChart'), {
@@ -371,10 +355,9 @@ async function showFeedbackAnalytics(eventId) {
             options: {
               indexAxis: 'y',
               maintainAspectRatio: false,
-              responsive: false,
+              responsive: true,
               plugins: {
-                legend: { display: false },
-                tooltip: { enabled: false }
+                legend: { display: false }
               },
               scales: {
                 x: {
@@ -382,7 +365,8 @@ async function showFeedbackAnalytics(eventId) {
                   ticks: { 
                     precision: 0,
                     font: {
-                      size: 10
+                      size: 11,
+                      color: '#ffffff'
                     }
                   }
                 },
@@ -390,7 +374,8 @@ async function showFeedbackAnalytics(eventId) {
                   grid: { display: false },
                   ticks: {
                     font: {
-                      size: 11
+                      size: 11,
+                      color: '#ffffff'
                     }
                   }
                 }
@@ -407,14 +392,12 @@ async function showFeedbackAnalytics(eventId) {
                 datasets: [{
                   data: data,
                   backgroundColor: ['#4CAF50', '#ff4444'],
-                  borderWidth: 0,
-                  hoverOffset: 0,
-                  hoverBorderWidth: 0
+                  borderWidth: 0
                 }]
               },
               options: {
-                maintainAspectRatio: true,
-                responsive: false,
+                maintainAspectRatio: false,
+                responsive: true,
                 plugins: {
                   legend: {
                     position: 'bottom',
@@ -422,16 +405,15 @@ async function showFeedbackAnalytics(eventId) {
                       boxWidth: 12,
                       padding: 8,
                       font: {
-                        size: 11
+                        size: 11,
+                        color: '#ffffff'
                       }
                     }
-                  },
-                  tooltip: { enabled: false }
+                  }
                 },
                 cutout: '65%',
-                events: [],
                 layout: {
-                  padding: 10
+                  padding: 5
                 }
               }
             });
