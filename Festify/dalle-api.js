@@ -1,11 +1,18 @@
 // DALL-E API Integration
 import { config } from './config.js';
+import { getApiKey } from './firebase.js';
 
-const OPENAI_API_KEY = config.OPENAI_API_KEY;
 const API_URL = 'https://api.openai.com/v1/images/generations';
 
 export async function generateEventPoster(eventTitle, eventDescription) {
   try {
+    // Get OpenAI API key from Firebase
+    const OPENAI_API_KEY = await getApiKey('OPENAI_API_KEY');
+    
+    if (!OPENAI_API_KEY) {
+      throw new Error('OpenAI API key not found');
+    }
+    
     const prompt = `Create a professional event poster for: ${eventTitle}. Description: ${eventDescription}. 
     The poster should be modern, visually appealing, and suitable for social media sharing. 
     Include elements that represent the event theme and make it stand out.`;
@@ -27,6 +34,8 @@ export async function generateEventPoster(eventTitle, eventDescription) {
     });
 
     if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('OpenAI API error:', errorData);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
