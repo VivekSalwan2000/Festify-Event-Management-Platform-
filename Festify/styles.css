@@ -605,115 +605,85 @@ h4 {
 
 /* Promo Code Slider */
 .promo-slider {
-    background: linear-gradient(135deg, #1e3c72, #2a5298, #4facfe);
-    border-radius: 16px;
-    padding: 2.5rem;
-    margin-bottom: 3rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 2rem;
     position: relative;
     overflow: hidden;
-}
-
-.promo-slider::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .promo-header {
     text-align: center;
-    margin-bottom: 2rem;
-    position: relative;
-    z-index: 1;
+    margin-bottom: 0.5rem;
 }
 
 .promo-header h3 {
-    color: #ffffff;
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: white;
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
 }
 
 .promo-header p {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1rem;
-    margin: 0;
+    color: rgba(255,255,255,0.9);
+    font-size: 0.875rem;
 }
 
 .promo-slides {
     display: flex;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 200%;
-    position: relative;
-    z-index: 1;
+    overflow: hidden;
+    margin: 0.5rem 0;
+    width: 200%;  /* Make room for both slides */
 }
 
 .promo-slide {
-    flex: 0 0 50%;
-    padding: 0 1rem;
+    flex: 0 0 50%;  /* Each slide takes up half of the container */
+    padding: 0.5rem;
 }
 
 .promo-content {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 12px;
-    padding: 2rem;
-    text-align: center;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.promo-slide:hover .promo-content {
-    transform: translateY(-5px);
+    background: rgba(255,255,255,0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .promo-code {
-    display: block;
-    background: linear-gradient(135deg, #1e3c72, #2a5298, #4facfe);
+    font-size: 1.25rem;
+    font-weight: bold;
     color: white;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    text-transform: uppercase;
+    background: rgba(255,255,255,0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
 }
 
 .promo-desc {
-    display: block;
-    color: #2c3e50;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+    color: white;
+    font-size: 0.875rem;
+    margin: 0.25rem 0;
 }
 
 .promo-valid {
-    display: block;
-    color: #7f8c8d;
-    font-size: 0.9rem;
-    font-style: italic;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.75rem;
 }
 
 .promo-dots {
     display: flex;
     justify-content: center;
-    gap: 1rem;
-    margin-top: 2rem;
-    position: relative;
-    z-index: 1;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .dot {
-    width: 12px;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.5);
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.3);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -731,8 +701,9 @@ h4 {
 }
 
 @keyframes slide {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0%, 45% { transform: translateX(0); }
+    50%, 95% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
 }
 
 .promo-slides {
