@@ -3,7 +3,7 @@ import {config} from './config.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
 import {
-  getAuth,
+  getAuth as getFirebaseAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
@@ -42,12 +42,88 @@ const app = initializeApp(firebaseConfig);
 
 const analytics = getAnalytics(app);
 
-const auth = getAuth(app);
+const auth = getFirebaseAuth(app);
 
 const db = getFirestore(app);
 
 const storage = getStorage(app);
 
+// Store API Keys securely in Firebase
+export async function storeApiKeys(customApiKeys = null) {
+  try {
+    // Create a reference to the apiKeys document in the "config" collection
+    const apiKeysRef = doc(db, "config", "apiKeys");
+    
+    // Define the API keys - use custom keys if provided, otherwise use defaults
+    const apiKeys = customApiKeys || {
+      FIREBASE_API_KEY: config.FIREBASE_API_KEY,
+      EMAIL_SERVICE_ID: "service_0k8kvpq",
+      OPENAI_API_KEY: "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",
+      EMAIL_PUBLIC_KEY: "LKnJvFcvSslYggCly",
+      GOOGLE_MAPS_API_KEY: "AIzaSyAonxqmWbiOhBmIrRG-Y1SYrgrh_4-p59c",
+    };
+    
+    // Add timestamp
+    apiKeys.updatedAt = new Date();
+    
+    // Set the API keys in the document
+    await setDoc(apiKeysRef, apiKeys);
+    console.log("API keys stored successfully in Firebase.");
+    return true;
+  } catch (error) {
+    console.error("Error storing API keys:", error);
+    return false;
+  }
+}
+
+// Fetch API Keys from Firebase
+export async function fetchApiKeys() {
+  try {
+    // Create a reference to the apiKeys document in the "config" collection
+    const apiKeysRef = doc(db, "config", "apiKeys");
+    
+    // Get the document
+    const docSnap = await getDoc(apiKeysRef);
+    
+    if (docSnap.exists()) {
+      const apiKeys = docSnap.data();
+      
+      // Store keys in localStorage for faster access (but be careful with sensitive keys)
+      localStorage.setItem('festify_email_public_key', apiKeys.EMAIL_PUBLIC_KEY);
+      localStorage.setItem('festify_email_service_id', apiKeys.EMAIL_SERVICE_ID);
+      localStorage.setItem('festify_google_maps_api_key', apiKeys.GOOGLE_MAPS_API_KEY);
+      
+      // Return the API keys
+      return apiKeys;
+    } else {
+      console.log("No API keys found in Firebase, attempting to store defaults");
+      await storeApiKeys();
+      return await fetchApiKeys();
+    }
+  } catch (error) {
+    console.error("Error fetching API keys:", error);
+    // Fall back to config.js keys
+    return config;
+  }
+}
+
+// Get a specific API key
+export async function getApiKey(keyName) {
+  try {
+    // Check localStorage first for non-sensitive keys
+    if (['EMAIL_PUBLIC_KEY', 'EMAIL_SERVICE_ID', 'GOOGLE_MAPS_API_KEY'].includes(keyName)) {
+      const localKey = localStorage.getItem(`festify_${keyName.toLowerCase()}`);
+      if (localKey) return localKey;
+    }
+    
+    // If not in localStorage, fetch from Firebase
+    const apiKeys = await fetchApiKeys();
+    return apiKeys[keyName];
+  } catch (error) {
+    console.error(`Error getting API key ${keyName}:`, error);
+    return null;
+  }
+}
 
 /* ------------------------------
    Authentication Functions
@@ -552,4 +628,9 @@ export async function hasUserSubmittedFeedback(userId, eventId) {
     console.error("Error checking existing feedback:", error);
     throw error;
   }
+}
+
+// Export auth functions
+export function getAuth() {
+  return auth;
 }
