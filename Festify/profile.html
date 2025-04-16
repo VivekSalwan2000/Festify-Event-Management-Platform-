@@ -1077,10 +1077,22 @@
             
             // Save to Firestore
             await saveUserProfile(window.currentUser.uid, profileData);
-            showProfileUpdate('Profile updated successfully!');
+            
+            // Show success popup
+            Swal.fire({
+              title: 'Profile Updated',
+              text: 'Your profile information has been updated successfully!',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            });
           } catch (error) {
             console.error('Error updating profile:', error);
-            showProfileNotUpdated('Error updating profile. Please try again.');
+            Swal.fire({
+              title: 'Error',
+              text: 'Failed to update profile. Please try again.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
           }
         });
       }
