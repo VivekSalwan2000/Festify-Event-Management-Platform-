@@ -57,10 +57,10 @@ export async function storeApiKeys(customApiKeys = null) {
     // Define the API keys - use custom keys if provided, otherwise use defaults
     const apiKeys = customApiKeys || {
       FIREBASE_API_KEY: config.FIREBASE_API_KEY,
-      EMAIL_SERVICE_ID: "service_0k8kvpq",
-      OPENAI_API_KEY: "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",
-      EMAIL_PUBLIC_KEY: "LKnJvFcvSslYggCly",
-      GOOGLE_MAPS_API_KEY: "AIzaSyAonxqmWbiOhBmIrRG-Y1SYrgrh_4-p59c",
+      EMAIL_SERVICE_ID: config.EMAIL_SERVICE_ID,
+      OPENAI_API_KEY: config.OPENAI_API_KEY,
+      EMAIL_PUBLIC_KEY: config.EMAIL_PUBLIC_KEY,
+      GOOGLE_MAPS_API_KEY: config.GOOGLE_MAPS_API_KEY,
     };
     
     // Add timestamp
