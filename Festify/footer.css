@@ -4,6 +4,24 @@
     color: #e2e8f0;
     padding: 60px 0 30px;
     position: relative;
+    width: 100%;
+    margin-top: auto; /* Push footer to bottom when used with flex layout */
+}
+
+/* Add these styles to create a sticky footer */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full viewport height */
+}
+
+#content {
+    flex: 1 0 auto; /* Allow content to grow but not shrink */
 }
 
 .footer::before {
