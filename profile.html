@@ -627,10 +627,16 @@
       <a href="javascript:location.reload();" class="logo">
         <img src="images/festifyLogo.png" alt="Festify" />
       </a>
-      <div class="nav-links" style="display: flex; justify-content: flex-end; flex-grow: 1;">
-        <a href="#" class="nav-item" onclick="showSection('FindEvent')">Find an Event</a>
+      <div class="hamburger-menu">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
-      <div class="nav-actions" style="display: flex; justify-content: flex-end;">
+      <div class="nav-links" id="mobileNavLinks">
+        <!-- Empty in desktop view, will be used for additional links in the future -->
+      </div>
+      <div class="nav-actions" id="mobileNavActions">
+        <a href="#" class="nav-item" onclick="showSection('FindEvent')">Find an Event</a>
         <a href="list-your-event.html" class="nav-item">List your Event</a>
         <div class="dropdown">
           <button class="icon-button">
@@ -817,7 +823,7 @@
       const sections = document.querySelectorAll('.tab-content');
       sections.forEach(sec => sec.style.display = 'none');
       document.getElementById(section).style.display = 'block';
-
+      
       // Update active navigation link
       const navItems = document.querySelectorAll('.nav-item');
       navItems.forEach(item => item.classList.remove('active'));
@@ -830,7 +836,69 @@
       } else {
         document.body.classList.remove('tickets-view');
       }
+      
+      // Close mobile menu when a section is selected
+      document.querySelector('.hamburger-menu').classList.remove('active');
+      document.getElementById('mobileNavLinks').classList.remove('active');
+      document.getElementById('mobileNavActions').classList.remove('active');
     }
+    
+    // Toggle mobile menu
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.querySelector('.hamburger-menu');
+      const navLinks = document.getElementById('mobileNavLinks');
+      const navActions = document.getElementById('mobileNavActions');
+      const dropdown = document.querySelector('.dropdown');
+      const dropdownButton = dropdown.querySelector('.icon-button');
+      const dropdownContent = dropdown.querySelector('.dropdown-content');
+      
+      hamburger.addEventListener('click', function() {
+        this.classList.toggle('active');
+        
+        // Only toggle navLinks if it has children
+        if (navLinks.children.length > 0) {
+          navLinks.classList.toggle('active');
+        }
+        
+        navActions.classList.toggle('active');
+      });
+      
+      // Make dropdown work with touch on mobile
+      dropdownButton.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropdownContent.classList.toggle('active');
+        }
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function(event) {
+        const isClickInside = navLinks.contains(event.target) || 
+                             navActions.contains(event.target) || 
+                             hamburger.contains(event.target);
+                             
+        if (!isClickInside && navActions.classList.contains('active')) {
+          hamburger.classList.remove('active');
+          navLinks.classList.remove('active');
+          navActions.classList.remove('active');
+        }
+        
+        // Close dropdown when clicking outside
+        const isDropdownClick = dropdown.contains(event.target);
+        if (!isDropdownClick && dropdownContent.classList.contains('active')) {
+          dropdownContent.classList.remove('active');
+        }
+      });
+      
+      // Prevent dropdown menu items from closing the menu when clicked
+      dropdownContent.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          // Don't propagate the click to document, which would close the mobile menu
+          e.stopPropagation();
+        });
+      });
+    });
 
     // Search functionality for events
     document.getElementById('searchInput').addEventListener('input', function () {
