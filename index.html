@@ -162,6 +162,55 @@
   </div>
 
   <script type="module" src="app.js"></script>
+
+  <!-- Initialize hamburger menu after navbar is loaded -->
+  <script>
+    // Function to initialize hamburger menu
+    function initializeHamburgerMenu() {
+      const hamburger = document.querySelector('.hamburger-menu');
+      const navLinks = document.getElementById('mobileNavLinks');
+      const navActions = document.getElementById('mobileNavActions');
+      
+      if (hamburger && navLinks && navActions) {
+        hamburger.addEventListener('click', function() {
+          this.classList.toggle('active');
+          
+          // Only toggle navLinks if it has children
+          if (navLinks.children.length > 0) {
+            navLinks.classList.toggle('active');
+          }
+          
+          navActions.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+          const isClickInside = navLinks.contains(event.target) || 
+                              navActions.contains(event.target) || 
+                              hamburger.contains(event.target);
+                              
+          if (!isClickInside && navActions.classList.contains('active')) {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            navActions.classList.remove('active');
+          }
+        });
+      }
+    }
+    
+    // Initialize the hamburger menu after navbar is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for navbar to be loaded from navbar.html
+      setTimeout(initializeHamburgerMenu, 500);
+    });
+
+    // Function to close the promo slider
+    function closePromoSlider(button) {
+      const promoSlider = button.closest('.promo-slider');
+      promoSlider.style.display = 'none';
+    }
+  </script>
+
 <!-- Event Details Popup -->
 <div id="eventPopup" class="hidden">
   <button class="close-btn" onclick="closeEventPopup()">✖</button>
@@ -500,13 +549,5 @@
     position: relative;
   }
 </style>
-  
-<script>
-  // Function to close the promo slider
-  function closePromoSlider(button) {
-    const promoSlider = button.closest('.promo-slider');
-    promoSlider.style.display = 'none';
-  }
-</script>
 </body>
 </html>
