@@ -260,20 +260,50 @@
         top: 60px;
     }
 
+    /* Make buttons symmetrical */
     .nav-item {
-        width: 80%;
+        width: 85%;
         max-width: 300px;
-        padding: 12px 16px;
-        justify-content: center;
-        text-align: center;
+        height: 45px;
+        padding: 0;
         margin: 5px auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
     }
     
     .dropdown {
-        width: 80%;
+        width: 85%;
         max-width: 300px;
         margin: 5px auto;
         position: relative;
+    }
+    
+    .icon-button {
+        width: 85%;
+        max-width: 300px;
+        height: 45px;
+        margin: 5px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .icon-button svg {
+        margin: 0;
+        display: block;
     }
     
     /* Mobile dropdown content */
@@ -303,15 +333,18 @@
     }
     
     .dropdown-content a {
-        padding: 12px 16px;
-        text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        margin-bottom: 0;
-        background: rgba(255, 255, 255, 0.05);
-        width: 100%;
+        width: 85%;
         max-width: 300px;
-        margin: 0 auto;
+        height: 45px;
+        padding: 0;
+        margin: 4px auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
         transition: all 0.2s ease;
     }
     
@@ -327,13 +360,6 @@
     
     .dropdown .dropdown-content.active {
         display: flex;
-    }
-    
-    .icon-button {
-        width: 100%;
-        margin: 0 auto;
-        padding: 12px 16px;
-        justify-content: center;
     }
 }
 
