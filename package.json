@@ -30,7 +30,7 @@
     },
     "collectCoverage": true,
     "coverageReporters": [
-      "text-summary"
+      "text"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
