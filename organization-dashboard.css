@@ -424,22 +424,52 @@
   }
 }
 
+/* Base styles to prevent horizontal scrolling */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 15px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Form styles */
+.form-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
 .form-row {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     margin-bottom: 15px;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .form-group {
     flex: 1 1 150px;
     min-width: 150px;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Form input styles */
 .form-group input {
     width: 100%;
+    max-width: 100%;
     height: 40px;
     padding: 8px;
     border: 1px solid #ddd;
@@ -449,11 +479,13 @@
 
 .form-group input[type="date"] {
     width: 100%;
+    max-width: 100%;
 }
 
 .form-group input[type="time"] {
     width: calc(50% - 7.5px);
     min-width: 120px;
+    max-width: 100%;
 }
 
 .form-group label {
@@ -462,14 +494,16 @@
     font-weight: 500;
 }
 
-.form-container {
-    max-width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
 /* Mobile screens */
 @media screen and (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+
+    .form-container {
+        padding: 10px;
+    }
+
     .form-row {
         flex-direction: column;
         gap: 10px;
@@ -483,6 +517,7 @@
     .form-group input[type="date"],
     .form-group input[type="time"] {
         width: 100%;
+        font-size: 14px;
     }
 
     .form-group input {
@@ -493,8 +528,12 @@
 
 /* Extra small screens */
 @media screen and (max-width: 360px) {
+    .container {
+        padding: 0 8px;
+    }
+
     .form-container {
-        padding: 12px;
+        padding: 8px;
     }
 
     .form-row {
@@ -509,8 +548,12 @@
 
 /* Very small screens */
 @media screen and (max-width: 320px) {
+    .container {
+        padding: 0 5px;
+    }
+
     .form-container {
-        padding: 10px;
+        padding: 5px;
     }
 
     .form-row {
