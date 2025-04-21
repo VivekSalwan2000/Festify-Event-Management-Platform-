@@ -3,10 +3,10 @@
  */
 
 // Import the functions we want to test
-import * as AppModule from '../Festify/app.js';
+import * as AppModule from '../app.js';
 
 // Mock firebase.js module
-jest.mock('../Festify/firebase.js', () => ({
+jest.mock('../firebase.js', () => ({
   fetchEvents: jest.fn().mockResolvedValue([
     {
       id: 'event1',

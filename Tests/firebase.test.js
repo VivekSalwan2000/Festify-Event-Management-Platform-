@@ -1,10 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-
 /* istanbul ignore next */
-jest.mock('../Festify/firebase.js');
-  
+jest.mock('../firebase.js');
+
 import {
     signUpUser,
     signInUser,
@@ -18,7 +17,7 @@ import {
     updateEvent,
     getEventById,
     deleteEvent
-  } from '../Festify/firebase.js';
+} from '../firebase.js';
   
 describe('firebase.js module', () => {
   beforeEach(() => {

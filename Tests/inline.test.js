@@ -3,7 +3,7 @@
  */
 
 // Import the functions we want to test from our new module
-import { toggle, closePopup, handleSignIn, handleSignUp } from '../Festify/inline.js';
+import { toggle, closePopup, handleSignIn, handleSignUp } from '../inline.js';
 
 // Add the dummy implementation for the unimplemented API.(was throwing an error as jsdom (which Jest uses for a DOM-like environment) does not implement all browser APIs, such as requestSubmit or navigation features like updating window.location.href)
 HTMLFormElement.prototype.requestSubmit = function() {};

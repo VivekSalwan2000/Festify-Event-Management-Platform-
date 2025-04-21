@@ -3,13 +3,13 @@
  */
 
 // Mock the firebase.js module BEFORE importing script.js
-jest.mock('../Festify/firebase.js');
+jest.mock('../firebase.js');
 
 // Only import utility functions that don't rely on DOM manipulation
 import {
   formatDate,
   formatCurrency
-} from '../Festify/script.js';
+} from '../script.js';
 
 describe('script.js utility functions', () => {
   test('formatDate() should format date strings', () => {

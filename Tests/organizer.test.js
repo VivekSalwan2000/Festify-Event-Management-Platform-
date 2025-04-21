@@ -3,11 +3,11 @@
  */
 
 // Import the functions we want to test
-import '../Festify/organizer.js';
+import '../organizer.js';
 
 // Mock firebase.js module
-jest.mock('../Festify/firebase.js', () => {
-  // Create a mock function to store the callback
+jest.mock('../firebase.js', () => {
+    // Create a mock function to store the callback
   const onAuthChangedCallback = jest.fn();
   
   return {
@@ -17,14 +17,9 @@ jest.mock('../Festify/firebase.js', () => {
     onUserStateChanged: jest.fn(callback => {
       // Store the callback for testing
       onAuthChangedCallback.mockImplementation(callback);
-    }),
-    // Expose the callback function for tests
-    _getAuthCallback: () => onAuthChangedCallback
+    })
   };
 });
-
-// Import the mock to access the callback
-import { _getAuthCallback } from '../Festify/firebase.js';
 
 describe('organizer.js module', () => {
   beforeEach(() => {
@@ -38,11 +33,14 @@ describe('organizer.js module', () => {
   });
 
   it('should log when user is logged in', () => {
-    // Get the callback function
-    const callback = _getAuthCallback();
+    //Get onUserStateChanged from the mock
+    const onUserStateChangedMock = require('../firebase.js').onUserStateChanged;
+
+    //Get the mock callback that was stored in onUserStateChangedMock
+    const callback = onUserStateChangedMock.mock.calls[0][0]
     
     // Simulate calling the callback with a user
-    callback({ email: 'test@example.com' });
+    callback({ email: 'test@example.com', uid: '123' });
     
     // Verify log was called
     expect(console.log).toHaveBeenCalledWith(
