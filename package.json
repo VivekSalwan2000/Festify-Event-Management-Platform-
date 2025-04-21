@@ -4,7 +4,7 @@
   "description": "Festify project - a platform to list events",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage"
+    "test": "jest"
   },
   "author": "Kartikkumar Parekh",
   "license": "MIT",
@@ -29,15 +29,8 @@
       "^https://www\\.gstatic\\.com/firebasejs/11\\.2\\.0/firebase-storage\\.js$": "<rootDir>/__mocks__/firebase-storage.js"
     },
     "collectCoverage": true,
-    "coverageProvider": "v8",
-    "collectCoverageFrom": [
-      "Festify/*.js",
-      "!**/node_modules/**",
-      "!**/vendor/**"
-    ],
     "coverageReporters": [
-      "text",
-      "lcov"
+      "text-summary"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
