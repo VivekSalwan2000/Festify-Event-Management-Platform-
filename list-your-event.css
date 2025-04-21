@@ -5,6 +5,7 @@ body, html {
     overflow-x: hidden;
 }
 
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
 body {
@@ -902,6 +903,94 @@ body {
         padding: 7px;
         font-size: 12px;
         margin-top: 5px;
+    }
+}
+
+.password-field-container {
+    position: relative;
+    width: 100%;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 4px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.password-toggle-btn:hover {
+    color: #333;
+}
+
+.password-field-container .input-field {
+    padding-right: 35px;
+    margin: 0;
+    width: 100%;
+}
+
+.password-toggle-btn i {
+    color: black; /* Set icon color to black */
+    font-size: 20px;
+}
+
+/* Mobile adjustments for password toggle */
+@media screen and (max-width: 480px) {
+    .password-toggle-btn {
+        right: 6px;
+        padding: 4px;
+    }
+    
+    .password-toggle-btn i {
+        font-size: 14px;
+    }
+    
+    .password-field-container .input-field {
+        padding-right: 30px;
+    }
+}
+
+/* Extra small screens */
+@media screen and (max-width: 360px) {
+    .password-toggle-btn {
+        right: 5px;
+        padding: 3px;
+    }
+    
+    .password-toggle-btn i {
+        font-size: 12px;
+    }
+    
+    .password-field-container .input-field {
+        padding-right: 25px;
+    }
+}
+
+/* Very small screens */
+@media screen and (max-width: 320px) {
+    .password-toggle-btn {
+        right: 4px;
+        padding: 2px;
+    }
+    
+    .password-toggle-btn i {
+        font-size: 11px;
+    }
+    
+    .password-field-container .input-field {
+        padding-right: 22px;
     }
 }
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Festify - Discover Amazing Events</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <!-- EmailJS Library -->
@@ -16,7 +17,8 @@
     })();
   </script>
 
-  <!-- Main Stylesheet -->
+  <!-- Main Stylesheet -->  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
   <link rel="stylesheet" href="styles.css" />
 
   <!-- QR Code Generator Library -->
@@ -290,7 +292,12 @@
     <p>Sign in or Sign up with your email &amp; password.</p>
     <form id="authForm">
       <input type="email" id="loginEmail" class="input-field" placeholder="Enter your email address" required />
-      <input type="password" id="loginPassword" class="input-field" placeholder="Enter your password" required />
+      <div class="password-field-container">
+        <input type="password" id="loginPassword" class="input-field" placeholder="Enter your password" required />
+        <button type="button" class="password-toggle-btn" id="passwordToggleBtn">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
       <div style="display: flex; gap: 1rem;">
         <button class="btn" id="signInBtn">Sign In</button>
         <button class="btn" id="signUpBtn">Sign Up</button>
@@ -300,6 +307,93 @@
       </div>
     </form>
   </div>
+
+  <!-- Add password toggle functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const passwordInput = document.getElementById('loginPassword');
+      const toggleButton = document.getElementById('passwordToggleBtn');
+      
+      if (toggleButton) {
+        toggleButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          const icon = this.querySelector('i');
+          
+          if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+          } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+          }
+        });
+      }
+    });
+  </script>
+
+  <style>
+    .password-field-container {
+      position: relative;
+      width: 100%;
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      color: #666;
+    }
+
+    .password-toggle-btn:hover {
+      color: #333;
+    }
+
+    .password-toggle-btn i {
+      font-size: 16px;
+    }
+
+    .password-field-container .input-field {
+      padding-right: 35px;
+      margin: 0;
+      width: 100%;
+    }
+
+    /* Mobile adjustments */
+    @media screen and (max-width: 480px) {
+      .password-toggle-btn i {
+        font-size: 14px;
+      }
+      
+      .password-field-container .input-field {
+        padding-right: 30px;
+      }
+    }
+
+    /* Extra small screens */
+    @media screen and (max-width: 360px) {
+      .password-toggle-btn i {
+        font-size: 12px;
+      }
+      
+      .password-field-container .input-field {
+        padding-right: 25px;
+      }
+    }
+  </style>
 
   <!-- Forgot Password Popup -->
   <div id="forgotPasswordPopup" class="hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; color: #000; padding: 2rem; border-radius: 8px; z-index: 1001; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); min-width: 320px;">

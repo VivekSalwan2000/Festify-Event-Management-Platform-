@@ -772,3 +772,14 @@ h4 {
     font-size: 16px;
 }
 
+/* Password Toggle Button for login page*/
+.password-toggle-btn i {
+    font-size: 20px;
+    color: black; /* Ensure the icon is black */
+    display: inline-block;
+}
+
+.password-toggle-btn {
+    padding: 10px;
+    margin-left: 10px;
+}
