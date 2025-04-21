@@ -544,6 +544,20 @@
           </form>
         </div>
       </section>
+      <style>
+        @media (max-width: 768px) {
+            .form-row {
+                display: flex;
+                flex-direction: column;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            #start-time, #end-time {
+                margin-top: 1rem;
+            }
+        }
+    </style>
 
       <!-- Edit Event Form Section (Hidden by default) -->
       <section class="event-form-section" id="editEventFormSection" style="display: none;">
