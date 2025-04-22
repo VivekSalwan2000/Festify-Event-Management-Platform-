@@ -6,7 +6,7 @@ Project: Festify - Where Your Events Become Festival
 ## Project Website and Demo
 Visit the live site at (https://festify.ca/)
 
-Youtube Video for demonstration [youtu.be/](https://youtu.be/)
+Youtube Video for demonstration [https://www.youtube.com/watch?v=VuXNThtdMFQ](https://www.youtube.com/watch?v=VuXNThtdMFQ)
 
 
 ## Project Description
