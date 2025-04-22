@@ -30,12 +30,22 @@
     },
     "collectCoverage": true,
     "coverageReporters": [
-      "text"
+      "text",
+      "lcov"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/__mocks__/"
     ]
+  },
+  "jest-junit": {
+    "outputDirectory": "./test-results",
+    "outputName": "junit.xml",
+    "ancestorSeparator": " › ",
+    "uniqueOutputName": "false",
+    "suiteNameTemplate": "{filepath}",
+    "classNameTemplate": "{classname}",
+    "titleTemplate": "{title}"
   },
   "dependencies": {
     "dotenv": "^16.4.7"
