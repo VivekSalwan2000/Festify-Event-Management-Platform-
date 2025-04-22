@@ -1006,3 +1006,60 @@ body {
     }
 }
 
+/* Add slower smooth scrolling behavior */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 70px;
+}
+
+/* Add custom slow scroll behavior */
+.nav-link {
+    transition: color 0.3s ease;
+}
+
+/* Custom scroll animation */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+        --scroll-duration: 1.5s; /* Increased duration for slower scroll */
+        --scroll-timing: cubic-bezier(0.45, 0, 0.25, 1); /* Smooth easing function */
+    }
+
+    /* JavaScript smooth scroll fallback */
+    .smooth-scroll {
+        scroll-behavior: smooth;
+        transition: scroll-behavior var(--scroll-duration) var(--scroll-timing);
+    }
+}
+
+/* Ensure sections have proper spacing and padding */
+#features, #clients {
+    scroll-margin-top: 70px;
+    padding-top: 60px;
+    transition: scroll-margin-top 0.3s ease;
+}
+
+@media screen and (max-width: 480px) {
+    html {
+        scroll-padding-top: 50px;
+        --scroll-duration: 1.2s; /* Slightly faster for mobile but still smooth */
+    }
+    
+    #features, #clients {
+        scroll-margin-top: 50px;
+        padding-top: 40px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    html {
+        scroll-padding-top: 40px;
+        --scroll-duration: 1s; /* Even slightly faster for very small screens */
+    }
+    
+    #features, #clients {
+        scroll-margin-top: 40px;
+        padding-top: 30px;
+    }
+}
+

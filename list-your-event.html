@@ -444,9 +444,9 @@
         <img src="./images/festifyLogo.png" alt="Logo">
       </div>
       <div class="nav-links" >
-        <a href="#features">Features</a>
-        <a href="#clients">Clients</a>
-        <a href="index.html">Events</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#clients" class="nav-link">Clients</a>
+        <a href="index.html" class="nav-link">Events</a>
       </div>
     </div>
 
@@ -619,6 +619,34 @@
     document.addEventListener('DOMContentLoaded', function() {
       const passwordInput = document.getElementById('loginPassword');
       const toggleButton = document.getElementById('passwordToggleBtn');
+      
+      // Add smooth scrolling for navigation links
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          // Only handle same-page links
+          if (this.getAttribute('href').startsWith('#')) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+              targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest'
+              });
+              
+              // Add class for transition
+              document.documentElement.classList.add('smooth-scroll');
+              
+              // Remove class after animation
+              setTimeout(() => {
+                document.documentElement.classList.remove('smooth-scroll');
+              }, 1500); // Match this with the CSS scroll duration
+            }
+          }
+        });
+      });
       
       if (toggleButton) {
         toggleButton.addEventListener('click', function(e) {
